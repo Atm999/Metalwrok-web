@@ -5,31 +5,6 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\grafana-UI-frame\.git\config" />
-    <None Include="wwwroot\grafana-UI-frame\.git\description" />
-    <None Include="wwwroot\grafana-UI-frame\.git\HEAD" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\applypatch-msg.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\commit-msg.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\post-update.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\pre-applypatch.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\pre-commit.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\pre-push.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\pre-rebase.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\prepare-commit-msg.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\hooks\update.sample" />
-    <None Include="wwwroot\grafana-UI-frame\.git\index" />
-    <None Include="wwwroot\grafana-UI-frame\.git\info\exclude" />
-    <None Include="wwwroot\grafana-UI-frame\.git\logs\HEAD" />
-    <None Include="wwwroot\grafana-UI-frame\.git\logs\refs\heads\master" />
-    <None Include="wwwroot\grafana-UI-frame\.git\logs\refs\remotes\origin\HEAD" />
-    <None Include="wwwroot\grafana-UI-frame\.git\objects\pack\pack-45c3f0849ed8cbd023b1a2c29597657b40db935c.idx" />
-    <None Include="wwwroot\grafana-UI-frame\.git\objects\pack\pack-45c3f0849ed8cbd023b1a2c29597657b40db935c.pack" />
-    <None Include="wwwroot\grafana-UI-frame\.git\packed-refs" />
-    <None Include="wwwroot\grafana-UI-frame\.git\refs\heads\master" />
-    <None Include="wwwroot\grafana-UI-frame\.git\refs\remotes\origin\HEAD" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -44,8 +19,6 @@
 
 
   <ItemGroup>
-    <Folder Include="wwwroot\grafana-UI-frame\.git\objects\info\" />
-    <Folder Include="wwwroot\grafana-UI-frame\.git\refs\tags\" />
     <Folder Include="wwwroot\grafana-UI-frame\loginSpecial\images\" />
   </ItemGroup>
 
