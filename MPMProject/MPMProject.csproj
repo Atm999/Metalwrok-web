@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\grafanaUIframe\loginSpecial\images\" />
+  </ItemGroup>
+
 </Project>
