@@ -29,13 +29,13 @@ Version: 3.2 Timestamp: Mon Sep 10 10:38:04 PDT 2012
 
 .select2-container .select2-choice {
   background-color: #fff;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(0.5, white));
+  /*background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(0.5, white));
   background-image: -webkit-linear-gradient(center bottom, #eeeeee 0%, white 50%);
   background-image: -moz-linear-gradient(center bottom, #eeeeee 0%, white 50%);
   background-image: -o-linear-gradient(bottom, #eeeeee 0%, #ffffff 50%);
-  background-image: -ms-linear-gradient(top, #eeeeee 0%, #ffffff 50%);
+  background-image: -ms-linear-gradient(top, #eeeeee 0%, #ffffff 50%);*/
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#eeeeee', endColorstr = '#ffffff', GradientType = 0);
-  background-image: linear-gradient(top, #eeeeee 0%, #ffffff 50%);
+  /*background-image: linear-gradient(top, #eeeeee 0%, #ffffff 50%);*/
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
@@ -44,11 +44,13 @@ Version: 3.2 Timestamp: Mon Sep 10 10:38:04 PDT 2012
   overflow: hidden;
   white-space: nowrap;
   position: relative;
-  height: 26px;
-  line-height: 26px;
+  height: 36px;
+  line-height: 36px;
   padding: 0 0 0 8px;
   color: #444;
   text-decoration: none;
+  border-radius:4px;
+  width:180px;
 }
 
 .select2-container.select2-drop-above .select2-choice

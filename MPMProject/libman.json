@@ -5,6 +5,10 @@
     {
       "library": "echarts@4.3.0",
       "destination": "wwwroot/lib/echarts/"
+    },
+    {
+      "library": "select2@4.0.12",
+      "destination": "wwwroot/lib/select2/"
     }
   ]
 }

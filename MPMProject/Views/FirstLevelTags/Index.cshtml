@@ -7,46 +7,71 @@
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
+
+            $('#table').bootstrapTable({
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'typeName',
+                    title: '类别名称'
+                }, {
+                    field: 'description',
+                    title: '报警设备数'
+                }],
+                data: [{
+                    id: 1,
+                    typeName: 'LightTower',
+                    description: '警示灯'
+                }, {
+                    id: 2,
+                    typeName: 'Error',
+                    description: '警示灯'
+                }, {
+                    id: 3,
+                    typeName: 'CircleTime',
+                    description: '节拍时间类别'
+                }, {
+                    id: 4,
+                    typeName: 'ProductionSchedule',
+                    description: '工单相关信息'
+                }, {
+                    id: 5,
+                    typeName: 'Other',
+                    description: '其他类别'
+                }]
+            });
         });
     </script>
 </head>
 <body>
-    <div class='page-header'>
-        <h1 class='pull-left'>
-            <i class='icon-dashboard'></i>
-            <span>Dashboard</span>
-        </h1>
-        <ul class='pull-right'>
-            <li class='dropdown dark user-menu'>
-                <a class='dropdown-toggle' data-toggle='dropdown' href='#'>
-                    <span class='user-name hidden-phone'>Mila Kunis</span>
-                    <b class='caret'></b>
-                </a>
-                <ul class='dropdown-menu'>
-                    <li>
-                        <a href='#'>
-                            <i class='icon-user'></i>
-                            Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a href='#'>
-                            <i class='icon-cog'></i>
-                            Settings
-                        </a>
-                    </li>
-                    <li class='divider'></li>
-                    <li>
-                        <a href='sign_in.html'>
-                            <i class='icon-signout'></i>
-                            Sign out
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>一级标签</span>
+                </div>
+                
 
+            </div>
+        </div> 
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <table class="table" id="table"></table>
+            </div>
+            
+        </div>
+    </div>
 </body>
 </html>
 
