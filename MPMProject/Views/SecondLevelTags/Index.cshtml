@@ -112,8 +112,6 @@
                     <i class='icon-angle-right'></i>
                     <span>一级标签</span>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -143,9 +141,69 @@
     </div>
     <div class='row-fluid'>
         <div class='span12 box bordered-box'>
+
             <div class="box-content box-padding">
+                <div style="padding:14px 0px">
+                    <div class="form-group">
+                        <button class="btn btn-primary" data-toggle='modal' data-target='#myAddModal'><span class="icon-plus"> 新增</span></button>
+                    </div>
+                </div>
+
                 <table class="table" id="table"></table>
             </div>
+
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="control-group">
+                                <label class="control-label">一级标签</label>
+                                <select class="select2 span12">
+                                    <option value="1">Circle Time</option>
+                                    <option value="2">Error</option>
+                                    <option value="3">LightTower</option>
+                                    <option value="4">Other</option>
+                                    <option value="5">ProductionSchedule</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（英）</label>
+                                <input class="span12" type="text" id="enTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（间中）</label>
+                                <input class="span12" type="text" id="enTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（繁中）</label>
+                                <input class="span12" type="text" id="zhCNTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">描述</label>
+                                <input class="span12" type="text" id="zhTWTag" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
             <!-- 编辑模态框（Modal） -->
             <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -159,32 +217,32 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                                <div class="control-group">
-                                    <label class="control-label">一级标签</label>
-                                    <select class="select2 span12" id="firstTagSelect">
-                                        <option value="1">Circle Time</option>
-                                        <option value="2">Error</option>
-                                        <option value="3">LightTower</option>
-                                        <option value="4">Other</option>
-                                        <option value="5">ProductionSchedule</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label">二级标签（英）</label>
-                                    <input class="span12" type="text" id="enTag" />
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label">二级标签（间中）</label>
-                                    <input class="span12" type="text" id="enTag" />
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label">二级标签（繁中）</label>
-                                    <input class="span12" type="text" id="zhCNTag" />
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label">描述</label>
-                                    <input class="span12" type="text" id="zhTWTag" />
-                                </div>
+                            <div class="control-group">
+                                <label class="control-label">一级标签</label>
+                                <select class="select2 span12">
+                                    <option value="1">Circle Time</option>
+                                    <option value="2">Error</option>
+                                    <option value="3">LightTower</option>
+                                    <option value="4">Other</option>
+                                    <option value="5">ProductionSchedule</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（英）</label>
+                                <input class="span12" type="text" id="enTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（间中）</label>
+                                <input class="span12" type="text" id="enTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">二级标签（繁中）</label>
+                                <input class="span12" type="text" id="zhCNTag" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">描述</label>
+                                <input class="span12" type="text" id="zhTWTag" />
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
