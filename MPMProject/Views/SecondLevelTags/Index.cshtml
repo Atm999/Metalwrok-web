@@ -4,11 +4,15 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-        
+        $(document).ready(function () {
+            //$("#firstTagSelect").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
 
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(2)').addClass('active');
+            
 
             $('#table').bootstrapTable({
                 theadClasses: "thead-blue",
@@ -32,8 +36,6 @@
                 }, {
                     field: 'actionEvent',
                     title: '操作',
-                    align: 'center',
-                    valign: 'middle',
                     formatter: actionFormatter
                 }],
                 data: [{
@@ -97,7 +99,6 @@
 
         function Delete(a) {
             document.getElementById('deleteId').value = a;
-
         }
         
     </script>
@@ -160,7 +161,7 @@
                         <div class="modal-body">
                                 <div class="control-group">
                                     <label class="control-label">一级标签</label>
-                                    <select class="span12" id="firstTagSelect">
+                                    <select class="select2 span12" id="firstTagSelect">
                                         <option value="1">Circle Time</option>
                                         <option value="2">Error</option>
                                         <option value="3">LightTower</option>
@@ -226,7 +227,8 @@
         </div>
     </div>
     <script>
-       
+        
+        
     </script>
 </body>
 </html>
