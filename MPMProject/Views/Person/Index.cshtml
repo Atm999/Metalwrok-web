@@ -1,406 +1,230 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+
+
+        $(function () {
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
+            $('#table').bootstrapTable({
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'dept_id',
+                    title: '部门'
+                }, {
+                    field: 'user_name',
+                    title: '员工名称'
+                }, {
+                    field: 'id_num',
+                    title: '员工工号'
+                }, {
+                    field: 'user_level',
+                    title: '员工职位'
+                }, {
+                    field: 'email',
+                    title: '邮箱'
+                }, {
+                    field: 'wechart',
+                    title: '微信'
+                }, {
+                    field: 'mobile_phone',
+                    title: '手机号'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter
+                }],
+                data: [{
+                    //id: 1,
+                    //firstTag: 'CircleTime',
+                    //secondTag: 'cycle_time',
+                    //description: '警示灯',
+                    //actionEvent: actionFormatter
+                }]
+            });
+        });
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        function Edit() {
+
+
+        }
+
+        function Delete(a) {
+            document.getElementById('deleteId').value = a;
+
+        }
+
+    </script>
 </head>
-<body class='contrast-red '>
-    <div class='span12'>
-        <div class='page-header'>
-            <h1 class='pull-left'>
-                <span style="color:#008BD5">安灯异常管理 </span> > 人员列表
-            </h1>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>人员列表</span>
+                </div>
+
+
+            </div>
         </div>
     </div>
     <div class='row-fluid'>
-        <div class='span12 box bordered-box ' style='margin-bottom:0;'>
-            <div class='box-header' style='border:0.5px solid #D7D7D7;box-shadow:10px 10px 5px #888888'>
-            
-                    <div class='title' >
-                        <input type="text" class="text" id="type_2e" name="type_n2e" value="请求权" />
-                       
-                        <input type="text" class="text" id="type_name" name="type_name" value="多大点事儿" />
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">部门</label>
                     </div>
-              
-            </div>
-            <br />
-            <br />
-            <div class='box-header orange-background'>
-                <div class='title'><input type="button" value="新增异常类别" class="submit" onclick="window.location.href = '/ErrorType/Edit'" /></div>
-             
-            </div>
-            <div class='box-content box-no-padding'>
-                <div class='responsive-table'>
-                    <div class='scrollable-area'>
-                        <table class='data-table table table-bordered table-striped' style='margin-bottom:0;'>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        E-mail
-                                    </th>
-                                    <th>
-                                        Status
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Sigurd Klocko</td>
-                                    <td>norene@hotmail.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Donald Cummings</td>
-                                    <td>kane@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Gwendolyn Stark</td>
-                                    <td>jesus@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-warning'>Warning</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Angeline Padberg</td>
-                                    <td>palma@gmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Delbert Koch</td>
-                                    <td>grayson@gmail.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Josie Roob</td>
-                                    <td>anastacio@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Dana Kilback</td>
-                                    <td>silas@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-warning'>Warning</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Leonel Block</td>
-                                    <td>sammy@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jeromy Ruecker</td>
-                                    <td>yasmeen@hotmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Janis Crooks</td>
-                                    <td>kenyatta@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Delpha Schinner</td>
-                                    <td>breanne@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Rosemarie Kautzer</td>
-                                    <td>loy@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Araceli Deckow</td>
-                                    <td>reanna@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Karianne Bogisich</td>
-                                    <td>itzel@gmail.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Cletus Farrell</td>
-                                    <td>samantha@gmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Kayli Walsh</td>
-                                    <td>callie@gmail.com</td>
-                                    <td>
-                                        <span class='label label-warning'>Warning</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Della O'Kon</td>
-                                    <td>nellie@yahoo.com</td>
-                                    <td>
-                                        <span class='label label-important'>Important</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Arno McDermott</td>
-                                    <td>destinee@hotmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nelson Lesch</td>
-                                    <td>makenna@hotmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Pat Wyman</td>
-                                    <td>eldridge@hotmail.com</td>
-                                    <td>
-                                        <span class='label label-success'>Success</span>
-                                    </td>
-                                    <td>
-                                        <div class='text-right'>
-                                            <a class='btn btn-success btn-mini' href='#'>
-                                                <i class='icon-ok'></i>
-                                            </a>
-                                            <a class='btn btn-danger btn-mini' href='#'>
-                                                <i class='icon-remove'></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="form-group">
+                        <select class="select2">
+                            <option value="1">Circle Time</option>
+                            <option value="2">Error</option>
+                            <option value="3">LightTower</option>
+                            <option value="4">Other</option>
+                            <option value="5">ProductionSchedule</option>
+                        </select>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">职位</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="select2">
+                            <option value="1">Circle Time</option>
+                            <option value="2">Error</option>
+                            <option value="3">LightTower</option>
+                            <option value="4">Other</option>
+                            <option value="5">ProductionSchedule</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">姓名</label>
+                    </div>
+                    <div class="form-group">
+                        <input class="span10" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
-
-
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <table class="table" id="table"></table>
+            </div>
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="control-group">
+                                <label class="control-label">部门</label>
+                                <select class="span12" id="dept_id" name="dept_id">
+                                    <option value="1">Circle Time</option>
+                                    <option value="2">Error</option>
+                                    <option value="3">LightTower</option>
+                                    <option value="4">Other</option>
+                                    <option value="5">ProductionSchedule</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">员工名称</label>
+                                <input class="span12" type="text" id="user_name" name="user_name"/>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">员工工号</label>
+                                <input class="span12" type="text" id="id_num" name="id_num"/>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">员工职位</label>
+                                <input class="span12" type="text" id="user_level"  name="user_level"/>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">邮箱</label>
+                                <input class="span12" type="text" id="email" name="email"/>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">微信</label>
+                                <input class="span12" type="text" id="wechart" name="wechart" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">手机号</label>
+                                <input class="span12" type="text" id="mobile_phone" name="mobile_phone" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
