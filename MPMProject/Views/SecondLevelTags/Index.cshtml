@@ -16,11 +16,15 @@
 
             $('#table').bootstrapTable({
                 theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 10,//每页的记录行数（*）
+                pageSize: 5,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
                 columns: [{
                     field: 'id',
                     title: '序号'
@@ -110,7 +114,7 @@
                 <div class='pull-left' style="font-size:18px">
                     <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>一级标签</span>
+                    <span>二级标签</span>
                 </div>
             </div>
         </div>
@@ -143,7 +147,7 @@
         <div class='span12 box bordered-box'>
 
             <div class="box-content box-padding">
-                <div style="padding:14px 0px">
+                <div style="padding:10px 0px">
                     <div class="form-group">
                         <button class="btn btn-primary" data-toggle='modal' data-target='#myAddModal'><span class="icon-plus"> 新增</span></button>
                     </div>

@@ -1,7 +1,208 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+        $(document).ready(function () {
+            //$("#firstTagSelect").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
 
-<h1>Index</h1>
+
+            var myEchart = echarts.init(document.getElementById('myEchart'));
+
+            var data = {
+                "name": "flare",
+                "children": [
+                    {
+                        "name": "data",
+                        "children": [
+                            {
+                                "name": "converters",
+                                "children": [
+                                    { "name": "Converters", "value": 721 },
+                                    { "name": "DelimitedTextConverter", "value": 4294 }
+                                ]
+                            },
+                            {
+                                "name": "DataUtil",
+                                "value": 3322
+                            }
+                        ]
+                    },
+                    {
+                        "name": "display",
+                        "children": [
+                            { "name": "DirtySprite", "value": 8833 },
+                            { "name": "LineSprite", "value": 1732 },
+                            { "name": "RectSprite", "value": 3623 }
+                        ]
+                    },
+                    {
+                        "name": "flex",
+                        "children": [
+                            { "name": "FlareVis", "value": 4116 }
+                        ]
+                    },
+                    {
+                        "name": "query",
+                        "children": [
+                            { "name": "AggregateExpression", "value": 1616 },
+                            { "name": "And", "value": 1027 },
+                            { "name": "Arithmetic", "value": 3891 },
+                            { "name": "Match", "value": 3748 },
+                            { "name": "Maximum", "value": 843 },
+                            {
+                                "name": "methods",
+                                "children": [
+                                    { "name": "add", "value": 593 },
+                                    { "name": "and", "value": 330 },
+                                    { "name": "average", "value": 287 },
+                                    { "name": "update", "value": 307 },
+                                    { "name": "variance", "value": 335 },
+                                    { "name": "where", "value": 299 },
+                                    { "name": "xor", "value": 354 },
+                                    { "name": "x_x", "value": 264 }
+                                ]
+                            },
+                            { "name": "Minimum", "value": 843 },
+                            { "name": "Not", "value": 1554 },
+                            { "name": "Or", "value": 970 },
+                            { "name": "Variance", "value": 1876 },
+                            { "name": "Xor", "value": 1101 }
+                        ]
+                    },
+                    {
+                        "name": "scale",
+                        "children": [
+                            { "name": "IScaleMap", "value": 2105 },
+                            { "name": "LinearScale", "value": 1316 },
+                            { "name": "Scale", "value": 4268 },
+                            { "name": "ScaleType", "value": 1821 },
+                            { "name": "TimeScale", "value": 5833 }
+                        ]
+                    }
+                ]
+            };
+
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove'
+                },
+                series: [
+                    {
+                        type: 'tree',
+                        id: 0,
+                        name: 'tree1',
+                        data: [data],
+                        layout: 'orthogona',
+
+                        top: '10%',
+                        left: '8%',
+                        bottom: '22%',
+                        right: '20%',
+                        symbol: 'rect',                       // 矩形标记
+                        symbolSize: [100, 40], 
+                        initialTreeDepth: 2,
+                        itemStyle: {
+                            color:'#fff',
+                            borderColor: '#008FD7',
+                            borderWidth: 2,
+                            borderType: 'solid'
+                        },
+                        lineStyle: {
+                            //width: 2,
+                            curveness: 0.5
+                        },
+
+                        label: {
+                            normal: {
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                fontSize: 16,
+                                offset: [-100, 0],             // 文本偏移量
+                                color: '#2F4157',
+                                align: 'left'
+                            }
+                        },
+                        expandAndCollapse: true,
+                        animationDuration: 550,
+                        animationDurationUpdate: 750
+                    }
+                ]
+            };
+            myEchart.setOption(option);
+            var container = document.getElementById('myEchart');
+            //var container = document.getElementById('myEchart');
+            var allNode = 0;
+            var nodes = myEchart._chartsViews[0]._data._graphicEls;
+            for (var i = 0, count = nodes.length; i < count; i++) {
+                var node = nodes[i];
+                if (node === undefined)
+                    continue;
+                allNode++;
+            }
+            var height = window.innerHeight;
+            var currentHeight = 80 * allNode;
+            var newWidth = Math.max(currentHeight, height);
+            //container.style.width = window.innerWidth + 'px';
+            container.style.height = newWidth + 'px';
+            myEchart.resize();
+            
+            
+            myEchart.on('click', function (params) {
+                if (params.componentType === 'series') {
+                    // 点击到了 series 上
+                    if (!params.value) {
+                        // 点击的节点有子分支（可点开）
+                        var elesArr = Array.from(new Set(myEchart._chartsViews[0]._data._graphicEls));
+                        var height = 200; // 这里限制最小高
+                        var currentHeight = 100 * (elesArr.length - 1) || 100; // 每项10px
+                        var newHeight = Math.max(currentHeight, height);
+                        container.style.height = newHeight + 'px';
+                        myEchart.resize();
+                    }
+                }
+            });
+        });
+
+        $(function () {
+            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(3)').addClass('active');
+
+            
+        });
+
+
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>层级概览</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+
+            <div class="box-content box-padding">
+                <div id="myEchart" style="width:100%;height:800px"></div>
+            </div>
+
+
+        </div>
+    </div>
+    <script>
+
+
+    </script>
+</body>
+</html>
 
