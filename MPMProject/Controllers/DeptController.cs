@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class DeptController : Controller
+    public class DeptController : BaseController
     {
         public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
@@ -23,16 +23,8 @@ namespace MPMProject.Controllers
         }
         public  JsonResult GetData()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "api/v1/configuration/public/dept");
-            //GET请求
-            request.Method = "GET";
-            request.ReadWriteTimeout = 5000;
-            request.ContentType = "text/html;charset=UTF-8";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
-            //返回内容
-            string result = myStreamReader.ReadToEnd();
+            url = url + "api/v1/configuration/public/dept";
+            string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -47,28 +39,21 @@ namespace MPMProject.Controllers
                     break;
                 default:
                     break;
-
             }
             return Json(jo["data"]); 
         }
 
-        public JsonResult Update(int id, string name_en, string name_tw, string name_cn) 
+        public IActionResult Update([FromBody]dept dept) 
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "api/v1/configuration/public/dept");
-            //GET请求
-            request.Method = "PUT";
-            request.ReadWriteTimeout = 5000;
-            request.ContentType = "text/html;charset=UTF-8";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
-            //返回内容
-            string result = myStreamReader.ReadToEnd();
+            url=url + "api/v1/configuration/public/dept";
+            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
+            postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
+            string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
-                   
+                    Json("Success"); 
                     break;
                 case 400:
                     break;
@@ -78,10 +63,53 @@ namespace MPMProject.Controllers
                     break;
                 default:
                     break;
-
             }
-            return Json(jo["data"]);
+            return Json("Success");
+        }
+        public IActionResult Add([FromBody]dept dept)
+        {
+            url = url + "api/v1/configuration/public/dept";
+            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
+            postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
+            string result = PostUrl(url, postData);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
         }
 
+        public IActionResult Delete([FromBody]dept dept)
+        {
+            url = url + "api/v1/configuration/public/dept?id="+dept.id.ToString();
+            string result = DeleteUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
+        }
     }
 }
