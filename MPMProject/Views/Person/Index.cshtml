@@ -14,7 +14,10 @@
 
         $(function () {
             $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(1)').removeClass('active');
+
             $('#table').bootstrapTable({
                 url: '/Person/GetData',
                 method: 'get',
@@ -225,14 +228,14 @@
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-                            <input class="span10" id="userlevel" name="user_level" />
+                            <input type="text" class="span11" id="userlevel" name="user_level" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="name">姓名</label>
                     </div>
                     <div class="form-group">
-                        <input class="span10" />
+                        <input type="text" class="span11" />
                     </div>
                     <div class="form-group">
                         <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
@@ -269,7 +272,7 @@
                         <div class="modal-body">
                             <div class="control-group">
                                 <label class="control-label">部门</label>
-                                <select class="select2 span12" id="dept_id" name="dept_id">
+                                <select class="select2" id="dept_id" name="dept_id">
                                     <option value="1">Circle Time</option>
                                     <option value="2">Error</option>
                                     <option value="3">LightTower</option>
