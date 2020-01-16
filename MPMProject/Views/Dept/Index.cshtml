@@ -1,7 +1,229 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    @model Model.dept
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
+    <script type='text/javascript'>
 
-<h1>Index</h1>
 
+        $(function () {
+
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
+
+            $('#table').bootstrapTable({
+                url: '/Dept/GetData',
+                method: 'get',
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'name_en',
+                    title: '部门名称（英）'
+                }, {
+                    field: 'name_tw',
+                    title: '部门名称（繁中）'
+                }, {
+                    field: 'name_cn',
+                    title: '部门名称（简中）'
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter,
+                    events: operateEvents
+                }]
+            });
+        });
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a class='edit ml10'; href='javascript:;' onclick=\"EditViewById('" + id + "')\" title='编辑' data-toggle='modal' data-target='#myEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10'; href='javascript:;' onclick=\"DeleteByIds('" + id + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+
+                document.getElementById("id").value = row.id;
+                document.getElementById("name_en").value = row.name_en;
+                document.getElementById("name_tw").value = row.name_tw;
+                document.getElementById("name_cn").value = row.name_cn;
+                document.getElementById("description").value = row.description;
+            },
+            'click .remove': function (e, value, row, index) {
+
+                console.log(value, row, index);
+            }
+        };
+        function EditViewById(row) {
+            var id = row.id;
+
+
+        }
+
+        function Delete(a) {
+            document.getElementById('deleteId').value = a;
+
+        }
+        function finish() {
+                   var id = document.getElementById("id").value;
+                    var name_en = document.getElementById("name_en").value;
+                    var name_tw = document.getElementById("name_tw").value;
+                    var name_cn = document.getElementById("name_cn").value;
+                    var description = document.getElementById("description").value;
+                    $('#id').val(id);
+                    $('#name_en').val(name_en);
+                    $('#name_tw').val(name_tw);
+                    $('#name_cn').val(name_cn);
+                    $('#description').val(description);
+            $.ajax({
+
+                type: "POST",
+                url: "/Dept/Update",
+                //beforeSend: function (xhr) {
+                //    xhr.setRequestHeader("XSRF-TOKEN",
+                //        $('input:hidden[name="__RequestVerificationToken"]').val());
+                //},
+                data: { id: id },
+                success: function (msg) {
+                }, error: function (msg) {
+                    alert("Failed");
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>部门列表</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">部门</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="select2">
+                            <option value="1">Circle Time</option>
+                            <option value="2">Error</option>
+                            <option value="3">LightTower</option>
+                            <option value="4">Other</option>
+                            <option value="5">ProductionSchedule</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <table class="table" id="table"></table>
+            </div>
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
+                            <div class="control-group">
+                                <label class="control-label">部门名称（英）</label>
+                                <input class="span12" type="text" id="name_en" name="name_en" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">部门名称（繁中）</label>
+                                <input class="span12" type="text" id="name_tw" name="name_tw" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">部门名称（简中）</label>
+                                <input class="span12" type="text" id="name_cn" name="name_cn" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">描述</label>
+                                <input class="span12" type="text" id="description" name="description" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button onclick="finish()"   class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
