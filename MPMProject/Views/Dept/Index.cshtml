@@ -12,8 +12,8 @@
 
         $(function () {
 
-            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
+           $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(6)').addClass('active');
 
             $('#table').bootstrapTable({
                 url: '/Dept/GetData',
@@ -53,62 +53,127 @@
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a class='edit ml10'; href='javascript:;' onclick=\"EditViewById('" + id + "')\" title='编辑' data-toggle='modal' data-target='#myEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a class='remove ml10'; href='javascript:;' onclick=\"DeleteByIds('" + id + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+              result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
-
                 document.getElementById("id").value = row.id;
                 document.getElementById("name_en").value = row.name_en;
                 document.getElementById("name_tw").value = row.name_tw;
                 document.getElementById("name_cn").value = row.name_cn;
                 document.getElementById("description").value = row.description;
+                $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
-
-                console.log(value, row, index);
+                document.getElementById("id").value = row.id;
+                $('#myDelModal').modal('show');
+             
             }
         };
-        function EditViewById(row) {
-            var id = row.id;
-
-
+        function Delete() {
+           var id = $('#id').val();
+                var dept = {
+                     id: id
+                };
+                 $.ajax({
+                     type: "POST",
+                     url: "/Dept/Delete",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             alert("执行成功");
+                             $('#myDelModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             alert("执行失败");
+                         }
+                     }, error: function (msg) {
+                         alert("执行失败");
+                     }
+                 });
+            
         }
+         function finish() {
+            var id = $('#id').val();
+            var name_en = $('#name_en').val();
+            var name_tw = $('#name_tw').val();
+            var name_cn = $('#name_cn').val();
+            var description = $('#description').val();
+            var dept = {
+                 id: id,
+                 name_en: name_en,
+                 name_tw:name_tw,
+                 name_cn: name_cn,
+                 description:description
+             };
+             if (id != 0) {
+                 $.ajax({
+                     type: "POST",
+                     url: "/Dept/Update",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             alert("执行成功");
+                             $('#myEditModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             alert("执行失败");
+                         }
+                     }, error: function (msg) {
+                         alert("执行失败");
+                     }
+                 });
+             } else {
+                   $.ajax({
+                     type: "POST",
+                     url: "/Dept/Add",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             alert("执行成功");
+                             $('#myEditModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             alert("执行失败");
+                         }
+                     }, error: function (msg) {
+                         alert("执行失败");
+                     }
+                 });
 
-        function Delete(a) {
-            document.getElementById('deleteId').value = a;
-
+             }
+           
         }
-        function finish() {
-                   var id = document.getElementById("id").value;
-                    var name_en = document.getElementById("name_en").value;
-                    var name_tw = document.getElementById("name_tw").value;
-                    var name_cn = document.getElementById("name_cn").value;
-                    var description = document.getElementById("description").value;
-                    $('#id').val(id);
-                    $('#name_en').val(name_en);
-                    $('#name_tw').val(name_tw);
-                    $('#name_cn').val(name_cn);
-                    $('#description').val(description);
-            $.ajax({
-
-                type: "POST",
-                url: "/Dept/Update",
-                //beforeSend: function (xhr) {
-                //    xhr.setRequestHeader("XSRF-TOKEN",
-                //        $('input:hidden[name="__RequestVerificationToken"]').val());
-                //},
-                data: { id: id },
-                success: function (msg) {
-                }, error: function (msg) {
-                    alert("Failed");
-                }
-            });
+        function clean() {
+            $('#myEditModal').modal('show');
+                document.getElementById("id").value = 0;
+                document.getElementById("name_en").value = "";
+                document.getElementById("name_tw").value ="";
+                document.getElementById("name_cn").value = "";
+                document.getElementById("description").value = "";
         }
-
+        function search() {
+            var name = $('#namecn').val();
+            if (name == "") {
+                $('#table').bootstrapTable('filterBy');
+            } else {
+                 $('#table').bootstrapTable('filterBy', {
+                name_en: name,
+                name_cn: name,
+                name_tw: name
+            }, { 'filterAlgorithm': 'or' });
+            }
+           
+        }
     </script>
 </head>
 <body>
@@ -133,16 +198,12 @@
                         <label class="sr-only" for="name">部门</label>
                     </div>
                     <div class="form-group">
-                        <select class="select2">
-                            <option value="1">Circle Time</option>
-                            <option value="2">Error</option>
-                            <option value="3">LightTower</option>
-                            <option value="4">Other</option>
-                            <option value="5">ProductionSchedule</option>
-                        </select>
+                        <div class="form-group">
+                            <input class="span10" id="namecn" name="name_cn"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                        <button  onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
                     </div>
                 </form>
 
@@ -152,8 +213,16 @@
     <div class='row-fluid'>
         <div class='span12 box bordered-box'>
             <div class="box-content box-padding">
+                <div style="padding:14px 0px">
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="clean()" data-toggle='modal' ><span class="icon-plus"> 新增</span></button>
+                    </div>
+                </div>
+
+
                 <table class="table" id="table"></table>
             </div>
+           
             <!-- 编辑模态框（Modal） -->
             <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -163,7 +232,7 @@
                                 &times;
                             </button>
                             <h4 class="modal-title" id="myModalLabel">
-                                编辑
+                                新增/编辑
                             </h4>
                         </div>
                         <div class="modal-body">
@@ -189,7 +258,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 取消
                             </button>
-                            <button onclick="finish()"   class="btn btn-primary">
+                            <button onclick="finish()" class="btn btn-primary">
                                 确认
                             </button>
                         </div>
@@ -216,7 +285,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 否
                             </button>
-                            <button type="button" class="btn btn-primary">
+                            <button type="button"  onclick="Delete()" class="btn btn-primary">
                                 是
                             </button>
                         </div>
