@@ -49982,16 +49982,34 @@ function updateNode(data, dataIndex, symbolEl, group, seriesModel, seriesScope) 
 
     if (node.parentNode && node.parentNode !== virtualRoot) {
         var edge = symbolEl.__edge;
+        // 贝塞尔曲线
+        //if (!edge) {
+        //    edge = symbolEl.__edge = new BezierCurve({
+        //        shape: getEdgeShape(seriesScope, sourceOldLayout, sourceOldLayout),
+        //        style: defaults({opacity: 0, strokeNoScale: true}, seriesScope.lineStyle)
+        //    });
+        //}
+
+        //updateProps(edge, {
+        //    shape: getEdgeShape(seriesScope, sourceLayout, targetLayout),
+        //    style: {opacity: 1}
+        //}, seriesModel);
+
+        // 多边形折线
         if (!edge) {
-            edge = symbolEl.__edge = new BezierCurve({
-                shape: getEdgeShape(seriesScope, sourceOldLayout, sourceOldLayout),
-                style: defaults({opacity: 0, strokeNoScale: true}, seriesScope.lineStyle)
+            edge = symbolEl.__edge = new Polyline({
+                shape: {
+                    points: getEdgeShape(seriesScope, sourceLayout, targetLayout)
+                },
+                style: defaults({ opacity: 0, strokeNoScale: true }, seriesScope.lineStyle)
             });
         }
 
         updateProps(edge, {
-            shape: getEdgeShape(seriesScope, sourceLayout, targetLayout),
-            style: {opacity: 1}
+            shape: {
+                points: getEdgeShape(seriesScope, sourceLayout, targetLayout)
+            },
+            style: { opacity: 1 }
         }, seriesModel);
 
         group.add(edge);
@@ -50072,9 +50090,13 @@ function getEdgeShape(seriesScope, sourceLayout, targetLayout) {
         y2 = targetLayout.y;
 
         if (orient === 'LR' || orient === 'RL') {
+            //cpx1 = x1 + (x2 - x1) * seriesScope.curvature;
+            //cpy1 = y1;
+            //cpx2 = x2 + (x1 - x2) * seriesScope.curvature;
+            //cpy2 = y2;
             cpx1 = x1 + (x2 - x1) * seriesScope.curvature;
             cpy1 = y1;
-            cpx2 = x2 + (x1 - x2) * seriesScope.curvature;
+            cpx2 = x1 + (x2 - x1) * seriesScope.curvature;
             cpy2 = y2;
         }
         if (orient === 'TB' || orient === 'BT') {
@@ -50084,17 +50106,17 @@ function getEdgeShape(seriesScope, sourceLayout, targetLayout) {
             cpy2 = y2 + (y1 - y2) * seriesScope.curvature;
         }
     }
-
-    return {
-        x1: x1,
-        y1: y1,
-        x2: x2,
-        y2: y2,
-        cpx1: cpx1,
-        cpy1: cpy1,
-        cpx2: cpx2,
-        cpy2: cpy2
-    };
+    return [[x1, y1], [cpx1, cpy1], [cpx2, cpy2], [x2, y2]]; // 二维数组
+    //return {
+    //    x1: x1,
+    //    y1: y1,
+    //    x2: x2,
+    //    y2: y2,
+    //    cpx1: cpx1,
+    //    cpy1: cpy1,
+    //    cpx2: cpx2,
+    //    cpy2: cpy2
+    //};
 
 }
 
