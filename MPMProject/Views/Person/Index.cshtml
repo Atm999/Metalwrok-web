@@ -11,7 +11,6 @@
 
         $(function () {
             $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').removeClass('dropdown-collapse in');
             $('#table').bootstrapTable({
@@ -224,14 +223,14 @@
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-                            <input class="span10" id="userlevel" name="user_level" />
+                            <input class="span10" type="text" id="userlevel" name="user_level" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="name">姓名</label>
                     </div>
                     <div class="form-group">
-                        <input class="span10" id="username" name="user_name" />
+                        <input class="span10" type="text" id="username" name="user_name" />
                     </div>
                     <div class="form-group">
                         <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
