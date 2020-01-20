@@ -9,6 +9,8 @@
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
 
             $('#table').bootstrapTable({
+                url: '/FirstLevelTags/GetData',
+                method: 'get',
                 theadClasses: "thead-blue",
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
@@ -16,38 +18,29 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
-                    field: 'id',
-                    title: '序号'
+                        field: 'no',
+                        title: '序号',
+                        formatter: function (value, row, index) {
+                            var options = $('#table').bootstrapTable('getOptions');
+                            return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        }
+                    },{
+                    field: 'name_en',
+                    title: '类别名称(英)'
                 }, {
-                    field: 'typeName',
-                    title: '类别名称'
+                    field: 'name_cn',
+                    title: '类别名称(简中)'
+                }, {
+                    field: 'name_tw',
+                    title: '类别名称(繁中)'
                 }, {
                     field: 'description',
-                    title: '报警设备数'
-                }],
-                data: [{
-                    id: 1,
-                    typeName: 'LightTower',
-                    description: '警示灯'
-                }, {
-                    id: 2,
-                    typeName: 'Error',
-                    description: '警示灯'
-                }, {
-                    id: 3,
-                    typeName: 'CircleTime',
-                    description: '节拍时间类别'
-                }, {
-                    id: 4,
-                    typeName: 'ProductionSchedule',
-                    description: '工单相关信息'
-                }, {
-                    id: 5,
-                    typeName: 'Other',
-                    description: '其他类别'
-                }]
+                    title: '描述'
+                }
+                ]
             });
         });
+      
     </script>
 </head>
 <body>

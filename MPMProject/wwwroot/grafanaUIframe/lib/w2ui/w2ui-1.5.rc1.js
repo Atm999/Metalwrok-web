@@ -11140,7 +11140,8 @@ w2utils.event = {
                     // need to remove unnecessary classes
                     if ($(pname +'> .w2ui-panel-content').length > 0) {
                         $(pname +'> .w2ui-panel-content')
-                            .removeClass()
+                            .
+
                             .removeAttr('name')
                             .addClass('w2ui-panel-content')
                             .html(p.content)
