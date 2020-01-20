@@ -3635,10 +3635,12 @@ a, .btn-link, .btn-link:hover {
   color: #222222;
   padding:10px;
   text-shadow: none; }
-a:hover {
+a:hover,a:focus {
   color: #008FD7;
   /*padding:10px;*/
-  text-shadow: none; }
+  text-shadow: none; 
+  text-decoration:none;
+}
   a.disabled:hover, a[disabled]:hover, a:hover.disabled:hover, a:hover[disabled]:hover, .btn-link.disabled:hover, .btn-link[disabled]:hover, .btn-link:hover.disabled:hover, .btn-link:hover[disabled]:hover {
     background-color: #e6e6e6; }
 

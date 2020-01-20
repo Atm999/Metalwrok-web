@@ -21,12 +21,12 @@
         $("input.nakedpassword").nakedPassword({
             path: "assets/images/plugins/naked_password/"
         });
-        setDataTable($(".data-table"));
-        setDataTable($(".data-table-column-filter")).columnFilter();
-        $(".box .box-remove").click(function(e) {
-            $(this).parents(".box").first().remove();
-            return e.preventDefault();
-        });
+        //setDataTable($(".data-table"));
+        //setDataTable($(".data-table-column-filter")).columnFilter();
+        //$(".box .box-remove").click(function(e) {
+        //    $(this).parents(".box").first().remove();
+        //    return e.preventDefault();
+        //});
         $(".box .box-collapse").click(function(e) {
             var box;
 
@@ -139,15 +139,15 @@
         });
     };
 
-    this.setDataTable = function(selector) {
-        return selector.dataTable({
-            sDom: "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'p>>",
-            sPaginationType: "bootstrap",
-            oLanguage: {
-                sLengthMenu: "_MENU_ records per page"
-            }
-        });
-    };
+    //this.setDataTable = function(selector) {
+    //    return selector.dataTable({
+    //        sDom: "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'p>>",
+    //        sPaginationType: "bootstrap",
+    //        oLanguage: {
+    //            sLengthMenu: "_MENU_ records per page"
+    //        }
+    //    });
+    //};
 
     this.setMaxLength = function(selector) {
         if (selector == null) {

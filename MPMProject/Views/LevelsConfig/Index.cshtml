@@ -1,7 +1,768 @@
 ﻿
-@{
-    ViewData["Title"] = "Index";
-}
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+        $(document).ready(function () {           
+            //$("#settingselect").select2(); 
+            //$("#machinebind").select2();
+            //$("#father").select2();
+            //$("#content").select2();     
+        });
 
-<h1>Index</h1>
+        $(function () {
+            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
 
+            //群组
+            $('#group').bootstrapTable({
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'groupName',
+                    title: '群组'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: actionFormatter
+                }, {
+                    field: 'level',
+                    title: '层级跳转',
+                    formatter: levelFormatter
+                }],
+                data: [{
+                    id: 1,
+                    groupName: 'Group1',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 2,
+                    groupName: 'Group2',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 3,
+                    groupName: 'Group3',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 4,
+                    groupName: 'Group4',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 5,
+                    groupName: 'Group5',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 6,
+                    groupName: 'Group6',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }, {
+                    id: 7,
+                    groupName: 'Group7',
+                    actionEvent: actionFormatter,
+                    level: levelFormatter
+                }]
+            });
+
+            //设备绑定中，已绑定的设备
+            $('#machineList').bootstrapTable({
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'machineName',
+                    title: '设备名称'
+                }],
+                data: [{
+                    id: 1,
+                    machineName: '设备001'
+                }, {
+                    id: 2,
+                    machineName: '设备002'
+                }, {
+                    id: 3,
+                    machineName: '设备003'
+                }, {
+                    id: 4,
+                    machineName: '设备004'
+                }, {
+                    id: 5,
+                    machineName: '设备005'
+                }, {
+                    id: 6,
+                    machineName: '设备006'
+                }, {
+                    id: 7,
+                    machineName: '设备007'
+                }]
+            });
+
+            //设备
+            $('#machineAll').bootstrapTable({
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'machineName',
+                    title: '设备'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: machineActionFormatter
+                }, {
+                    field: 'level',
+                    title: '层级跳转',
+                    formatter: machineLevelFormatter
+                }],
+                data: [{
+                    id: 1,
+                    machineName: '设备001',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 2,
+                    machineName: '设备002',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 3,
+                    machineName: '设备003',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 4,
+                    machineName: '设备004',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 5,
+                    machineName: '设备005',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 6,
+                    machineName: '设备006',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }, {
+                    id: 7,
+                    machineName: '设备007',
+                    actionEvent: machineActionFormatter,
+                    level: machineLevelFormatter
+                }]
+            });
+
+            //层级
+            $('#cityTable').bootstrapTable({
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'id',
+                    title: '序号'
+                }, {
+                    field: 'levelName',
+                    title: '层级名称'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: actionFormatter
+                }, {
+                    field: 'level',
+                    title: '层级跳转',
+                    formatter: centerLevelFormatter
+                }],
+                data: [{
+                    id: 1,
+                    levelName: '南京',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 2,
+                    levelName: '苏州',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 3,
+                    levelName: '无锡',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 4,
+                    levelName: '上海',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 5,
+                    levelName: '广州',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 6,
+                    levelName: '天津',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }, {
+                    id: 7,
+                    levelName: '深圳',
+                    actionEvent: actionFormatter,
+                    level: centerLevelFormatter
+                }]
+            });
+        });
+
+        //群组操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' onclick=\"Setting('" + 1 + "')\" title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Binding('" + 1 + "')\" title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        //设备操作栏的格式化
+        function machineActionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' onclick=\"Binding('" + 1 + "')\" title='Tag点绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-list'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        //群组层级栏的格式化
+        function levelFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;'><span style='color:#C8C8C8'>上一级</span></a>";
+            result += "丨";
+            result += "<a data-toggle='tab' href='#tab2' onclick=\"JumpToDown()\"><span>下一级</span></a>";
+            return result;
+        }
+
+        //群组层级栏的格式化
+        function machineLevelFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a data-toggle='tab' href='#tab1' onclick=\"JumpToUp()\"><span>上一级</span></a>";
+            result += "丨";
+            result += "<a href='javascript:;'><span  style='color:#C8C8C8'>下一级</span></a>";
+            return result;
+        }
+
+        //群组层级栏的格式化
+        function centerLevelFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a data-toggle='tab' href='#tab1' onclick=\"JumpToUp()\"><span>上一级</span></a>";
+            result += "丨";
+            result += "<a data-toggle='tab' href='#tab2' onclick=\"JumpToDown()\"><span>下一级</span></a>";
+            return result;
+        }
+
+        //层级跳转（下一级）
+        function JumpToDown() {
+            $('#tabAll ul li').removeClass('active');
+            $('#tabAll ul li:nth-of-type(3)').addClass('active');
+        }
+        //层级跳转（上一级）
+        function JumpToUp() {
+            $('#tabAll ul li').removeClass('active');
+            $('#tabAll ul li:nth-of-type(1)').addClass('active');
+        }
+        //新增
+        function Add() {
+            document.getElementById('myAddEditLabel').innerText = '新增';
+
+        }
+        //属性设置
+        function Setting() {
+
+
+        }
+        //设备绑定
+        function Binding() {
+            
+
+        }
+        //编辑
+        function Edit() {
+            document.getElementById('myAddEditLabel').innerText = '编辑';
+
+        }
+        //删除
+        function Delete(a) {
+            document.getElementById('deleteId').value = a;
+        }
+
+        //属性设置中三种属性切换
+        function settingFunc(value) {
+            if (value == 1) {
+                document.getElementById('classContent').style.cssText  = 'display:block';
+                document.getElementById('fixRest').style.cssText = 'display:none';
+                document.getElementById('unfixRest').style.cssText = 'display:none';
+            }
+            else if (value == 2) {
+                document.getElementById('classContent').style.cssText = 'display:none';
+                document.getElementById('fixRest').style.cssText = 'display:block';
+                document.getElementById('unfixRest').style.cssText = 'display:none';
+            }
+            else {
+                document.getElementById('classContent').style.cssText = 'display:none';
+                document.getElementById('fixRest').style.cssText = 'display:none';
+                document.getElementById('unfixRest').style.cssText = 'display:block';
+            }
+
+        }
+
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <!-- 属性设置模态框（Modal） -->
+        <div class="modal fade" id="mySetModal" style="display:none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="mySetLabel">
+                            属性设置
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="control-group">
+                            <label class="control-label">属性</label>
+                        </div>
+                        <div class="control-group">
+                            <select class="select2 span12" id="settingSelect" onchange="settingFunc(this.options[this.options.selectedIndex].value)" style="width:100%">
+                                <option value="1">班次</option>
+                                <option value="2">固定排休</option>
+                                <option value="3">非固定排休</option>
+                            </select>
+                        </div>
+                        <hr class="hr-top" style="margin-right:-14px" />
+                        <!-- 默认呈现的是班次的配置 -->
+                        <div id="classContent" style="display:block">
+                            <div class="control-group">
+                                <h4>白班</h4>
+                            </div>
+                            <hr class="hr-top" style="margin-right:-14px" />
+                            <div class="control-group">
+                                <label class="control-label">开始时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="day_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="day_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr class="hr-top" style="margin-right:-14px" />
+                            <div class="control-group">
+                                <h4>夜班</h4>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">开始时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="night_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="night_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="fixRest" style="display:none">
+                            <div class="control-group">
+                                <label class="control-label">开始时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="fix_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束时间</label>
+                                <div class='timepicker input-append' id='timepicker'>
+                                    <input class='span12' type="text" id="fix_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="unfixRest" style="display:none">
+                            <div class="control-group">
+                                <label class="control-label">开始时间</label>
+                                <div class='datetimepicker input-append' id='datetimepicker'>
+                                    <input class='span12' type="text" id="unfix_start_time" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束时间</label>
+                                <div class='datetimepicker input-append' id='datetimepicker'>
+                                    <input class='span12' type="text" id="unfix_end_time" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                                    <span class='add-on'>
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            确认
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 设备绑定模态框（Modal） -->
+        <div class="modal fade" id="myBindModal" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myBindLabel">
+                            设备绑定
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="control-group">
+                            <select class="select2 span12" id="machineBind" multiple="" style="width:100%">
+                                <option value="1">Machine011</option>
+                                <option value="2">Machine012</option>
+                                <option value="3">Machine013</option>
+                                <option value="4">Machine014</option>
+                                <option value="5">Machine015</option>
+                                <option value="6">Machine016</option>
+                                <option value="7">Machine017</option>
+                                <option value="8">Machine018</option>
+                                <option value="9">Machine019</option>
+                                <option value="10">Machine020</option>
+                            </select>
+                        </div>
+                        <hr class="hr-top" style="margin-right:-14px" />
+                        <div class="control-group">
+                            <h4>已绑定的设备</h4>
+                        </div>
+                        <div class="control-group">
+                            <table class="table" id="machineList"></table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            确认
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!-- 新增编辑模态框（Modal） -->
+        <div class="modal fade" id="myAddEditModal" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myAddEditLabel">
+                            编辑
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="control-group">
+                            <label class="control-label">群组（英）</label>
+                            <input class="span12" type="text" id="enTag" />
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">群组（间中）</label>
+                            <input class="span12" type="text" id="enTag" />
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">群组（繁中）</label>
+                            <input class="span12" type="text" id="zhCNTag" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            确认
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!-- 删除模态框（Modal） -->
+        <div class="modal fade" id="myDelModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myDelLabel">
+                            删除
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>是否确认删除该条记录？</div>
+                        <input type="hidden" id="deleteId" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            否
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            是
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!-- 新增层级模态框（Modal） -->
+        <div class="modal fade" id="myAddLevelModal" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myAddEditLabel">
+                            添加层级
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="control-group">
+                            <label class="control-label">层级名称（英）</label>
+                            <input class="span12" type="text" id="enLevel" />
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">层级名称（间中）</label>
+                            <input class="span12" type="text" id="enLevel" />
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">层级名称（繁中）</label>
+                            <input class="span12" type="text" id="zhCNLevel" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            确认
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+
+    <div class='row-fluid'>
+        <!--页面抬头-->
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>层级配置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box' style='margin-bottom: 0'>
+            <div class='box-content'>
+                <div class='tabbable' id="tabAll">
+                    <ul class='nav nav-tabs'>
+                        <!--群组-->
+                        <li class='active'>
+                            <a data-toggle='tab' href='#tab1'>
+                                <i class='icon-home'></i>
+                                群组
+                            </a>
+                        </li>
+                        <!--各层级-->
+                        <li>
+                            <a data-toggle='tab' href='#tab3'>
+                                城市
+                                <i class='icon-chevron-right'></i>
+                            </a>
+                        </li>
+                        <!--设备-->
+                        <li>
+                            <a data-toggle='tab' href='#tab2'>
+                                <i class='icon-desktop'></i>
+                                设备
+                            </a>
+                        </li>
+                        <!--添加层级-->
+                        <li>
+                            <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal'>
+                                <i class='icon-plus'></i>
+                                添加层级 
+                            </a>
+                        </li>
+                    </ul>
+                    <div class='tab-content'>
+                        <!--群组-->
+                        <div class='tab-pane active' id='tab1'>
+                            <div style="padding:10px 0px">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
+                                </div>
+                            </div>
+                            <table class="table" id="group"></table>
+                        </div>
+                        <!--群组-->
+                        <div class='tab-pane' id='tab3'>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">群组</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="city">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">Group1</option>
+                                        <option value="2">Group2</option>
+                                        <option value="3">Group3</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
+                                </div>
+                            </form>
+                            <table class="table" id="cityTable"></table>
+                        </div>
+                        <!--设备-->
+                        <div class='tab-pane' id='tab2'>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">父级</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="father">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">群组</option>
+                                        <option value="2">城市</option>
+                                        <option value="3">厂区</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">父级内容</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="content">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">昆山</option>
+                                        <option value="2">南京</option>
+                                        <option value="3">苏州</option>
+                                        <option value="4">无锡</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="name">设备</label>
+                                    <input type="text" class='span9' id="machineName" />
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                                </div>
+                            </form>
+                            <table class="table" id="machineAll"></table>
+                        </div>
+                        <!--各层级-->
+                        <div class='tab-pane' id='tab3'>
+                            <p>What up girl, this is Section 3.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
