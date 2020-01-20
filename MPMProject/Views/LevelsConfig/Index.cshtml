@@ -21,13 +21,16 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 10,//每页的记录行数（*）
-                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                pageSize: 12,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
                 columns: [{
                     field: 'id',
+                    title: '#',
+                    visible: false
+                },{
+                    field: 'index',
                     title: '序号'
                 }, {
                     field: 'groupName',
@@ -42,37 +45,44 @@
                     formatter: levelFormatter
                 }],
                 data: [{
-                    id: 1,
+                    id: 11,
+                    index:1,
                     groupName: 'Group1',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 2,
+                    id: 12,
+                    index:2,
                     groupName: 'Group2',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 3,
+                    id: 13,
+                    index: 3,
                     groupName: 'Group3',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 4,
+                    id: 14,
+                    index: 4,
                     groupName: 'Group4',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 5,
+                    id: 15,
+                    index: 5,
                     groupName: 'Group5',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 6,
+                    id: 16,
+                    index: 6,
                     groupName: 'Group6',
                     actionEvent: actionFormatter,
                     level: levelFormatter
                 }, {
-                    id: 7,
+                    id: 17,
+                    index: 7,
                     groupName: 'Group7',
                     actionEvent: actionFormatter,
                     level: levelFormatter
@@ -194,8 +204,8 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 10,//每页的记录行数（*）
-                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                pageSize: 3,//每页的记录行数（*）
+                pageList: [2, 4, 6, 8],//可供选择的每页的行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -253,14 +263,14 @@
             });
         });
 
-        //群组操作栏的格式化
+        //群组及层级的操作栏格式化
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a href='javascript:;' onclick=\"Setting('" + 1 + "')\" title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
-            result += "<a href='javascript:;' onclick=\"Binding('" + 1 + "')\" title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-            result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Setting('" + row.id + "')\" title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Binding('" + row.id + "')\" title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Edit('" + row.id + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a href='javascript:;' onclick=\"Delete('" + row.id + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
@@ -268,13 +278,13 @@
         function machineActionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a href='javascript:;' onclick=\"Binding('" + 1 + "')\" title='Tag点绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-list'></span></a>";
+            result += "<a href='/MachineBind/Index' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
             result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
-        //群组层级栏的格式化
+        //群组跳转
         function levelFormatter(value, row, index) {
             var id = value;
             var result = "";
@@ -284,7 +294,7 @@
             return result;
         }
 
-        //群组层级栏的格式化
+        //设备跳转
         function machineLevelFormatter(value, row, index) {
             var id = value;
             var result = "";
@@ -294,7 +304,7 @@
             return result;
         }
 
-        //群组层级栏的格式化
+        //层级跳转
         function centerLevelFormatter(value, row, index) {
             var id = value;
             var result = "";
@@ -336,6 +346,11 @@
         }
         //删除
         function Delete(a) {
+            document.getElementById('deleteId').value = a;
+        }
+
+        //Tag绑定
+        function TagBind(a) {
             document.getElementById('deleteId').value = a;
         }
 
@@ -696,7 +711,7 @@
                             </div>
                             <table class="table" id="group"></table>
                         </div>
-                        <!--群组-->
+                        <!--各层级-->
                         <div class='tab-pane' id='tab3'>
                             <form class="form-inline">
                                 <div class="form-group">
