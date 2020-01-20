@@ -33,7 +33,8 @@ namespace MPMProject.Controllers
             //          join q in typeList
             //          on p.tag_type_id equals q.id
             //          select new { p.id, p.name_cn, p.name_en, p.name_tw, typeName = q.name_cn }).ToList();
-            var jo2 = subList.Join(typeList, p => p.tag_type_id, p => (p as Model.tag_type).id, (p, q) => new {p.id,p.name_cn,p.name_en,p.name_tw,typeName=q.name_cn,p.tag_type_id,p.description }).ToList();
+            var jo2 = subList.Join(typeList, p => p.tag_type_id, p => (p as Model.tag_type).id, (p, q) => 
+            new {p.id,p.name_cn,p.name_en,p.name_tw,typeName=q.name_cn,p.tag_type_id,p.description }).ToList();
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -50,6 +51,7 @@ namespace MPMProject.Controllers
             }
             return Json(jo2);
         }
+
         public JsonResult GetTagType()
         {
             var purl = url + "api/v1/configuration/public/tag_type";

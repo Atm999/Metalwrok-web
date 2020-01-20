@@ -75,7 +75,7 @@ namespace MPMProject.Controllers
             return result;
         }
         /// <summary>
-        /// http post方法
+        /// http put方法
         /// </summary>
         /// <param name="url">url地址</param>
         /// <param name="postData">抛送数据</param>
@@ -145,7 +145,7 @@ namespace MPMProject.Controllers
 
         }
         /// <summary>
-        /// http get方法
+        /// http delete方法
         /// </summary>
         /// <param name="Url">url地址</param>
         /// <param name="paramName">参数名称</param>
