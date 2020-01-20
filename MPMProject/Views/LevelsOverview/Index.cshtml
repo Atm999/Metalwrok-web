@@ -12,74 +12,56 @@
             var myEchart = echarts.init(document.getElementById('myEchart'));
 
             var data = {
-                "name": "flare",
+                "name": "群组一",
                 "children": [
                     {
-                        "name": "data",
+                        "name": "南京",
                         "children": [
                             {
-                                "name": "converters",
+                                "name": "板卡厂",
                                 "children": [
-                                    { "name": "Converters", "value": 721 },
-                                    { "name": "DelimitedTextConverter", "value": 4294 }
+                                    { "name": "设备1" },
+                                    { "name": "设备2" }
                                 ]
                             },
                             {
-                                "name": "DataUtil",
-                                "value": 3322
+                                "name": "机箱厂"
                             }
                         ]
                     },
                     {
-                        "name": "display",
+                        "name": "昆山",
                         "children": [
-                            { "name": "DirtySprite", "value": 8833 },
-                            { "name": "LineSprite", "value": 1732 },
-                            { "name": "RectSprite", "value": 3623 }
+                            { "name": "板卡厂" },
+                            { "name": "机箱厂" },
+                            { "name": "CTOS厂" }
                         ]
                     },
                     {
-                        "name": "flex",
+                        "name": "无锡",
                         "children": [
-                            { "name": "FlareVis", "value": 4116 }
+                            { "name": "CTOS厂" }
                         ]
                     },
                     {
-                        "name": "query",
+                        "name": "南通",
                         "children": [
-                            { "name": "AggregateExpression", "value": 1616 },
-                            { "name": "And", "value": 1027 },
-                            { "name": "Arithmetic", "value": 3891 },
-                            { "name": "Match", "value": 3748 },
-                            { "name": "Maximum", "value": 843 },
+                            { "name": "板卡厂" },
+                            { "name": "CTOS厂" },
+                            { "name": "机箱厂" },
                             {
-                                "name": "methods",
+                                "name": "焊接车间",
                                 "children": [
-                                    { "name": "add", "value": 593 },
-                                    { "name": "and", "value": 330 },
-                                    { "name": "average", "value": 287 },
-                                    { "name": "update", "value": 307 },
-                                    { "name": "variance", "value": 335 },
-                                    { "name": "where", "value": 299 },
-                                    { "name": "xor", "value": 354 },
-                                    { "name": "x_x", "value": 264 }
+                                    { "name": "贴片机1" },
+                                    { "name": "贴片机2" },
+                                    { "name": "贴片机3" },
+                                    { "name": "贴片机4" },
+                                    { "name": "贴片机5" },
+                                    { "name": "贴片机6" },
+                                    { "name": "贴片机7" },
+                                    { "name": "贴片机8" }
                                 ]
-                            },
-                            { "name": "Minimum", "value": 843 },
-                            { "name": "Not", "value": 1554 },
-                            { "name": "Or", "value": 970 },
-                            { "name": "Variance", "value": 1876 },
-                            { "name": "Xor", "value": 1101 }
-                        ]
-                    },
-                    {
-                        "name": "scale",
-                        "children": [
-                            { "name": "IScaleMap", "value": 2105 },
-                            { "name": "LinearScale", "value": 1316 },
-                            { "name": "Scale", "value": 4268 },
-                            { "name": "ScaleType", "value": 1821 },
-                            { "name": "TimeScale", "value": 5833 }
+                            }
                         ]
                     }
                 ]
@@ -98,13 +80,13 @@
                         data: [data],
                         layout: 'orthogona',
 
-                        top: '10%',
+                        top: '2%',
                         left: '8%',
-                        bottom: '22%',
+                        bottom: '2%',
                         right: '20%',
                         symbol: 'rect',                       // 矩形标记
                         symbolSize: [180, 50], 
-                        initialTreeDepth: 2,
+                        initialTreeDepth: 10,
                         itemStyle: {
 
                             borderColor: '#008FD7',

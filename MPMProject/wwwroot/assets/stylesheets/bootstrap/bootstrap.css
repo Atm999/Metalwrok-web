@@ -1070,7 +1070,7 @@ textarea {
 
 label {
     display: block;
-    margin-bottom: 5px;
+    margin: 5px;
 }
 
 select,
@@ -1671,6 +1671,7 @@ select:focus:invalid:focus {
     font-size: 0;
     white-space: nowrap;
     vertical-align: middle;
+    width:93%
 }
 
 .input-append input,
@@ -4171,7 +4172,7 @@ input[type="submit"].btn.btn-mini {
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover,
 .nav-tabs > .active > a:focus {
-    color: #555555;
+    color: #008FD7;
     cursor: default;
     background-color: #ffffff;
     border: 1px solid #ddd;
@@ -5316,7 +5317,7 @@ input[type="submit"].btn.btn-mini {
 }
 
 .modal.fade.in {
-    top: 30%;
+    top: 20%;
 }
 
 .modal-header {
