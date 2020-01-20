@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -71,6 +72,75 @@ namespace MPMProject.Controllers
                     break;
             }
             return Json(jo["data"]);
+        }
+
+        public IActionResult Update([FromBody]tag_type_sub sub) 
+        {
+            url = url + "api/v1/configuration/public/tag_type_sub";
+            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
+            postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description, sub.tag_type_id);
+            string result = PutUrl(url, postData);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
+        }
+        public IActionResult Add([FromBody]tag_type_sub sub)
+        {
+            url = url + "api/v1/configuration/public/tag_type_sub";
+            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
+            postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description,sub.tag_type_id);
+            string result = PostUrl(url, postData);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
+        }
+
+        public IActionResult Delete([FromBody]tag_type_sub sub)
+        {
+            url = url + "api/v1/configuration/public/tag_type_sub?id=" + sub.id.ToString();
+            string result = DeleteUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
         }
     }
 }

@@ -25,8 +25,17 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
+                        field: 'no',
+                        title: '序号',
+                        formatter: function (value, row, index) {
+                            var options = $('#table').bootstrapTable('getOptions');
+                            return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        }
+                    },{
                     field: 'id',
-                    title: '序号'
+                    title: '序号',
+                    visible:false
+
                 }, {
                     field: 'name_en',
                     title: '部门名称（英）'
