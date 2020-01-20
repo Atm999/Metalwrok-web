@@ -15,6 +15,19 @@
            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(6)').addClass('active');
 
+            toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
+
             $('#table').bootstrapTable({
                 url: '/Dept/GetData',
                 method: 'get',
@@ -95,14 +108,14 @@
                      contentType: "application/json;charset=utf-8",
                      success: function (msg) {
                          if (msg == "Success") {
-                             alert("执行成功");
+                             toastr.success('数据删除成功!');
                              $('#myDelModal').modal('hide');
                              $('#table').bootstrapTable('refresh');
                          } else {
-                             alert("执行失败");
+                             toastr.error('执行失败!');
                          }
                      }, error: function (msg) {
-                         alert("执行失败");
+                         toastr.error('执行失败!');
                      }
                  });
             
@@ -129,14 +142,14 @@
                      contentType: "application/json;charset=utf-8",
                      success: function (msg) {
                          if (msg == "Success") {
-                             alert("执行成功");
+                             toastr.success('数据更新成功!');
                              $('#myEditModal').modal('hide');
                              $('#table').bootstrapTable('refresh');
                          } else {
-                             alert("执行失败");
+                             toastr.error('执行失败!');
                          }
                      }, error: function (msg) {
-                         alert("执行失败");
+                         toastr.error('执行失败!');
                      }
                  });
              } else {
@@ -148,14 +161,14 @@
                      contentType: "application/json;charset=utf-8",
                      success: function (msg) {
                          if (msg == "Success") {
-                             alert("执行成功");
+                             toastr.success( '数据新增成功!');
                              $('#myEditModal').modal('hide');
                              $('#table').bootstrapTable('refresh');
                          } else {
-                             alert("执行失败");
+                             toastr.error('执行失败!'); 
                          }
                      }, error: function (msg) {
-                         alert("执行失败");
+                         toastr.error('执行失败!');
                      }
                  });
 

@@ -13,6 +13,10 @@ namespace MPMProject.Controllers
     {
         public IActionResult Index()
         {
+            if (!string.IsNullOrEmpty(Request.Query["tab"]))
+            {
+                ViewBag.tab = 1;
+            }
             return View();
         }
     }

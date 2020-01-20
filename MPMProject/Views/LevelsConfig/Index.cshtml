@@ -96,8 +96,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 10,//每页的记录行数（*）
-                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                pageSize: 12,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -139,8 +138,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 10,//每页的记录行数（*）
-                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                pageSize: 12,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -204,8 +202,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 3,//每页的记录行数（*）
-                pageList: [2, 4, 6, 8],//可供选择的每页的行数（*）
+                pageSize: 12,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -378,12 +375,138 @@
 </head>
 <body>
     <div class='row-fluid'>
+        <!--页面抬头-->
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>层级配置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box' style='margin-bottom: 0'>
+            <div class='box-content'>
+                <div class='tabbable' id="tabAll">
+                    <ul class='nav nav-tabs'>
+                        <!--群组-->
+                        <li class='@if (ViewBag.tab==1) {<text></text> }else{<text>active</text>}'>
+                            <a data-toggle='tab' href='#tab1'>
+                                <i class='icon-home'></i>
+                                群组
+                            </a>
+                        </li>
+                        <!--各层级-->
+                        <li>
+                            <a data-toggle='tab' href='#tab3'>
+                                城市
+                                <i class='icon-chevron-right'></i>
+                            </a>
+                        </li>
+                        <!--设备-->
+                        <li class='@if (ViewBag.tab==1) {<text>active</text> }'>
+
+                           <a data-toggle='tab' href='#tab2'>
+
+                               <i class='icon-desktop'></i>
+                                设备
+                            </a>
+                        </li>
+                        <!--添加层级-->
+                        <li>
+                            <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal'>
+                                <i class='icon-plus'></i>
+                                添加层级
+                            </a>
+                        </li>
+                    </ul>
+                    <div class='tab-content'>
+                        <!--群组-->
+                        <div class='@if (ViewBag.tab==1) {<text>tab-pane</text> }else{<text>tab-pane active</text> }' id='tab1'>
+                            <div style="padding:10px 0px">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
+                                </div>
+                            </div>
+                            <table class="table" id="group"></table>
+                        </div>
+                        <!--各层级-->
+                        <div class='tab-pane' id='tab3'>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">群组</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="city">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">Group1</option>
+                                        <option value="2">Group2</option>
+                                        <option value="3">Group3</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
+                                </div>
+                            </form>
+                            <table class="table" id="cityTable"></table>
+                        </div>
+                        <!--设备-->
+                        <div class='@if (ViewBag.tab==1) {<text>tab-pane active</text> }else{<text>tab-pane</text> }' id='tab2' >
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">父级</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="father">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">群组</option>
+                                        <option value="2">城市</option>
+                                        <option value="3">厂区</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">父级内容</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="content">
+                                        <option value="0">-请选择-</option>
+                                        <option value="1">昆山</option>
+                                        <option value="2">南京</option>
+                                        <option value="3">苏州</option>
+                                        <option value="4">无锡</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="name">设备</label>
+                                    <input type="text" class='span9' id="machineName" />
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                                </div>
+                            </form>
+                            <table class="table" id="machineAll"></table>
+                        </div>
+                        <!--各层级-->
+                        <div class='tab-pane' id='tab3'>
+                            <p>What up girl, this is Section 3.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
         <!-- 属性设置模态框（Modal） -->
         <div class="modal fade" id="mySetModal" style="display:none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                             &times;
                         </button>
                         <h4 class="modal-title" id="mySetLabel">
@@ -654,130 +777,4 @@
             </div><!-- /.modal -->
         </div>
     </div>
-
-    <div class='row-fluid'>
-        <!--页面抬头-->
-        <div class="span12">
-            <div class='page-header'>
-                <div class='pull-left' style="font-size:18px">
-                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
-                    <i class='icon-angle-right'></i>
-                    <span>层级配置</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class='row-fluid'>
-        <div class='span12 box' style='margin-bottom: 0'>
-            <div class='box-content'>
-                <div class='tabbable' id="tabAll">
-                    <ul class='nav nav-tabs'>
-                        <!--群组-->
-                        <li class='active'>
-                            <a data-toggle='tab' href='#tab1'>
-                                <i class='icon-home'></i>
-                                群组
-                            </a>
-                        </li>
-                        <!--各层级-->
-                        <li>
-                            <a data-toggle='tab' href='#tab3'>
-                                城市
-                                <i class='icon-chevron-right'></i>
-                            </a>
-                        </li>
-                        <!--设备-->
-                        <li>
-                            <a data-toggle='tab' href='#tab2'>
-                                <i class='icon-desktop'></i>
-                                设备
-                            </a>
-                        </li>
-                        <!--添加层级-->
-                        <li>
-                            <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal'>
-                                <i class='icon-plus'></i>
-                                添加层级 
-                            </a>
-                        </li>
-                    </ul>
-                    <div class='tab-content'>
-                        <!--群组-->
-                        <div class='tab-pane active' id='tab1'>
-                            <div style="padding:10px 0px">
-                                <div class="form-group">
-                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
-                                </div>
-                            </div>
-                            <table class="table" id="group"></table>
-                        </div>
-                        <!--各层级-->
-                        <div class='tab-pane' id='tab3'>
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <label class="control-label">群组</label>
-                                </div>
-                                <div class="form-group">
-                                    <select class="select2" id="city">
-                                        <option value="0">-请选择-</option>
-                                        <option value="1">Group1</option>
-                                        <option value="2">Group2</option>
-                                        <option value="3">Group3</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
-                                </div>
-                            </form>
-                            <table class="table" id="cityTable"></table>
-                        </div>
-                        <!--设备-->
-                        <div class='tab-pane' id='tab2'>
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <label class="control-label">父级</label>
-                                </div>
-                                <div class="form-group">
-                                    <select class="select2" id="father">
-                                        <option value="0">-请选择-</option>
-                                        <option value="1">群组</option>
-                                        <option value="2">城市</option>
-                                        <option value="3">厂区</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">父级内容</label>
-                                </div>
-                                <div class="form-group">
-                                    <select class="select2" id="content">
-                                        <option value="0">-请选择-</option>
-                                        <option value="1">昆山</option>
-                                        <option value="2">南京</option>
-                                        <option value="3">苏州</option>
-                                        <option value="4">无锡</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="name">设备</label>
-                                    <input type="text" class='span9' id="machineName" />
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
-                                </div>
-                            </form>
-                            <table class="table" id="machineAll"></table>
-                        </div>
-                        <!--各层级-->
-                        <div class='tab-pane' id='tab3'>
-                            <p>What up girl, this is Section 3.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </body>
