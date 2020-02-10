@@ -21,6 +21,18 @@
 
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(2)').addClass('active');
+             toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
 
 
             $('#table').bootstrapTable({
@@ -105,14 +117,14 @@
                 contentType: "application/json;charset=utf-8",
                 success: function (msg) {
                     if (msg == "Success") {
-                        alert("执行成功");
+                        toastr.success('数据删除成功!');
                         $('#myDelModal').modal('hide');
                         $('#table').bootstrapTable('refresh');
                     } else {
-                        alert("执行失败");
+                         toastr.error('执行失败!');
                     }
                 }, error: function (msg) {
-                    alert("执行失败");
+                     toastr.error('执行失败!');
                 }
             });
 
@@ -141,14 +153,14 @@
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {
-                            alert("执行成功");
+                            toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            alert("执行失败");
+                           toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
-                        alert("执行失败");
+                         toastr.error('执行失败!');
                     }
                 });
             } else {
@@ -160,14 +172,14 @@
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {
-                            alert("执行成功");
+                            toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            alert("执行失败");
+                             toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
-                        alert("执行失败");
+                        toastr.error('执行失败!');
                     }
                 });
 
@@ -254,7 +266,7 @@
 
 
             <!-- 编辑模态框（Modal） -->
-            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myEditModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -269,7 +281,7 @@
                             <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
                                 <label class="control-label">一级标签</label>
-                                <select class="select2 span12" id="firstTagSelects">
+                                <select class="select2 span12" id="firstTagSelects" style="width:100%">
                                     <option value="0">请选择</option>
                                 </select>
                             </div>

@@ -7,9 +7,10 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
+         getOption();
         $(document).ready(function () {
-            $("#deptname").select2(); 
-            $("#dept_id").select2(); 
+            $("#deptSelects").select2(); 
+            $("#deptSelect").select2(); 
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
@@ -18,7 +19,18 @@
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(1)').removeClass('active');
-
+            toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
             $('#table').bootstrapTable({
                 url: '/Person/GetData',
                 method: 'get',
@@ -29,10 +41,14 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
-                    field: 'id',
-                    title: '序号'
+                     field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#table').bootstrapTable('getOptions');
+                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                    }
                 }, {
-                    field: 'dept_id',
+                    field: 'deptName',
                     title: '部门'
                 }, {
                     field: 'user_name',
@@ -66,18 +82,21 @@
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a href='javascript:;'  title='编辑' data-toggle='modal'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                document.getElementById("name_en").value = row.name_en;
-                document.getElementById("name_tw").value = row.name_tw;
-                document.getElementById("name_cn").value = row.name_cn;
-                document.getElementById("description").value = row.description;
+                document.getElementById("deptSelect").value = row.dept_id;
+                document.getElementById("user_name").value = row.user_name;
+                document.getElementById("id_num").value = row.id_num;
+                document.getElementById("user_level").value = row.user_level;
+                document.getElementById("email").value = row.email;
+                document.getElementById("wechart").value = row.wechart;
+                document.getElementById("mobile_phone").value = row.mobile_phone;
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -86,10 +105,11 @@
 
             }
         };
+         
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("dept_id").value = "";
+            document.getElementById("deptSelect").value = 0;
             document.getElementById("user_name").value = "";
             document.getElementById("id_num").value = "";
             document.getElementById("user_level").value = "";
@@ -97,101 +117,160 @@
             document.getElementById("wechart").value = "";
             document.getElementById("mobile_phone").value = "";
         }
+      
         function Delete() {
             var id = $('#id').val();
-            var dept = {
+            var person = {
                 id: id
             };
             $.ajax({
                 type: "POST",
                 url: "/Person/Delete",
-                data: JSON.stringify(dept),
+                data: JSON.stringify(person),
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
                 success: function (msg) {
                     if (msg == "Success") {
-                        alert("执行成功");
+                        toastr.success('数据删除成功!');
                         $('#myDelModal').modal('hide');
                         $('#table').bootstrapTable('refresh');
                     } else {
-                        alert("执行失败");
+                         toastr.error('执行失败!');
                     }
                 }, error: function (msg) {
-                    alert("执行失败");
+                     toastr.error('执行失败!');
                 }
             });
 
         }
         function finish() {
             var id = $('#id').val();
-            var name_en = $('#name_en').val();
-            var name_tw = $('#name_tw').val();
-            var name_cn = $('#name_cn').val();
-            var description = $('#description').val();
-            var dept = {
+            var dept_id =$('#deptSelect').val();
+            var user_name = $('#user_name').val();
+            var id_num = $('#id_num').val();
+            var user_level = $('#user_level').val();
+            var email = $('#email').val();
+            var wechart = $('#wechart').val();
+            var mobile_phone = $('#mobile_phone').val();
+            var person = {
                 id: id,
-                name_en: name_en,
-                name_tw: name_tw,
-                name_cn: name_cn,
-                description: description
+                dept_id: dept_id,
+                user_name: user_name,
+                id_num: id_num,
+                user_level: user_level,
+                email: email,
+                wechart: wechart,
+                mobile_phone:mobile_phone
             };
             if (id != 0) {
                 $.ajax({
                     type: "POST",
                     url: "/Person/Update",
-                    data: JSON.stringify(dept),
+                    data: JSON.stringify(person),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {
-                            alert("执行成功");
+                            toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            alert("执行失败");
+                           toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
-                        alert("执行失败");
+                         toastr.error('执行失败!');
                     }
                 });
             } else {
                 $.ajax({
                     type: "POST",
                     url: "/Person/Add",
-                    data: JSON.stringify(dept),
+                    data: JSON.stringify(person),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {
-                            alert("执行成功");
+                            toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            alert("执行失败");
+                             toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
-                        alert("执行失败");
+                        toastr.error('执行失败!');
                     }
                 });
 
             }
 
         }
-        function search() {
-            var userlevel = $('#userlevel').val();
-            var username = $('#username').val();
-            var dept = $("#deptname").find("option:selected").val();
-            if (userlevel == "" || username == "" || dept == "") {
-                $('#table').bootstrapTable('filterBy');
-            } else {
-                $('#table').bootstrapTable('filterBy', {
-                    user_level: userlevel,
-                    user_name: username,
-                    dept_id: dept
-                }, { 'filterAlgorithm': 'or' });
-            }
+      
 
+        //function search() {
+        //   var id = $("#deptSelects").val();
+        //    var userlevel = $("#userlevel").val();
+        //    var name = $("#name").val();
+
+        //    if (id==0&& userlevel=="" &&name=="") {
+        //        $('#table').bootstrapTable('filterBy');
+        //    } else {
+                
+        //        if (id > 0 && userlevel != "" && name != "") {
+        //            $('#table').bootstrapTable('filterBy', {
+        //                dept_id: Number(id),
+        //                user_level: userlevel,
+        //                user_name: name
+        //            });
+        //        } else if (id > 0 && userlevel == "" && name == "") {
+        //            $('#table').bootstrapTable('filterBy', {
+        //                dept_id: Number(id),
+
+        //            });
+        //        } else if (id > 0 && userlevel != "" && name == "") {
+
+        //        }
+        //    }
+        //}
+         function search() {
+           var dept_id = $("#deptSelects").val();
+            var userlevel = $("#userlevel").val();
+             var name = $("#name").val();
+             $('#table').bootstrapTable('filterBy', { dept_id: dept_id, user_level: userlevel, user_name:name },
+                {
+                    //自定义刷选函数
+                    'filterAlgorithm': function (row, filters) {
+                        var result1 = true;//定义一个返回结果
+                        var result2 = true;
+                        var result3 = true;
+                        if (filters.user_name != "") //如果user_name不为空，则进行判断，否则不管
+                        {
+                            result1 = filters.user_name == row.user_name;
+                        }
+                        if (filters.user_level != "") //如果user_level不为空，则进行判断，否则不管
+                        {
+                            result2 = filters.user_level == row.user_level;
+                        }
+                        if (filters.dept_id > 0) {
+                            result3 = filters.dept_id == row.dept_id;
+                        }
+                        return result1 && result2 && result3;
+                    }
+                });
         }
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/Person/Getdept',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#deptSelects").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#deptSelect").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+       
     </script>
 </head>
 <body>
@@ -216,12 +295,8 @@
                         <label class="sr-only" for="name">部门</label>
                     </div>
                     <div class="form-group">
-                        <select class="select2" id="deptname">
-                            <option value="1">Circle Time</option>
-                            <option value="2">Error</option>
-                            <option value="3">LightTower</option>
-                            <option value="4">Other</option>
-                            <option value="5">ProductionSchedule</option>
+                        <select class="select2" id="deptSelects">
+                            <option value="0">请选择</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -236,10 +311,10 @@
                         <label class="sr-only" for="name">姓名</label>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="span11" />
+                        <input type="text" id="name" name="name"class="span11" />
                     </div>
                     <div class="form-group">
-                        <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                        <button onclick="search()"  type="submit" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
                     </div>
                 </form>
 
@@ -259,7 +334,7 @@
                 <table class="table" id="table"></table>
             </div>
             <!-- 编辑模态框（Modal） -->
-            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myEditModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -271,14 +346,11 @@
                             </h4>
                         </div>
                         <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
                                 <label class="control-label">部门</label>
-                                <select class="select2 span12" id="dept_id" name="dept_id">
-                                    <option value="1">Circle Time</option>
-                                    <option value="2">Error</option>
-                                    <option value="3">LightTower</option>
-                                    <option value="4">Other</option>
-                                    <option value="5">ProductionSchedule</option>
+                                <select class="select2 span12" id="deptSelect" name="deptSelect"  style="width:100%">
+                                    <option value="0">请选择</option>
                                 </select>
                             </div>
                             <div class="control-group">
