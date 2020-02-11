@@ -5,9 +5,7 @@
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
         $(document).ready(function () {
-            //$("#firstTagSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
-            var treeData;
             $.ajax({
                 type: "POST",
                 url: "/LevelsOverview/GetData",
@@ -29,8 +27,6 @@
                 for (; j < len; j++)
                 {
                     var aVal = a[j], hashVP = hash[aVal[pid]];
-                    //console.log(aVal);
-                    console.log(hashVP);
                     if (hashVP)
                     {
                         delete aVal.id
@@ -48,62 +44,6 @@
 
             function treeView(msg) {
                 var myEchart = echarts.init(document.getElementById('myEchart'));
-
-                var data = [{
-                    "name": "群组一",
-                    "children": [
-                        {
-                            "name": "南京",
-                            "children": [
-                                {
-                                    "name": "板卡厂",
-                                    "children": [
-                                        { "name": "设备1" },
-                                        { "name": "设备2" }
-                                    ]
-                                },
-                                {
-                                    "name": "机箱厂"
-                                }
-                            ]
-                        },
-                        {
-                            "name": "昆山",
-                            "children": [
-                                { "name": "板卡厂" },
-                                { "name": "机箱厂" },
-                                { "name": "CTOS厂" }
-                            ]
-                        },
-                        {
-                            "name": "无锡",
-                            "children": [
-                                { "name": "CTOS厂" }
-                            ]
-                        },
-                        {
-                            "name": "南通",
-                            "children": [
-                                { "name": "板卡厂" },
-                                { "name": "CTOS厂" },
-                                { "name": "机箱厂" },
-                                {
-                                    "name": "焊接车间",
-                                    "children": [
-                                        { "name": "贴片机1" },
-                                        { "name": "贴片机2" },
-                                        { "name": "贴片机3" },
-                                        { "name": "贴片机4" },
-                                        { "name": "贴片机5" },
-                                        { "name": "贴片机6" },
-                                        { "name": "贴片机7" },
-                                        { "name": "贴片机8" }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }];
 
                 var option = {
                     tooltip: {
