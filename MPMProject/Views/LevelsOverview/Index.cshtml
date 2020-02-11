@@ -7,152 +7,191 @@
         $(document).ready(function () {
             //$("#firstTagSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
-
-
-            var myEchart = echarts.init(document.getElementById('myEchart'));
-
-            var data = {
-                "name": "群组一",
-                "children": [
-                    {
-                        "name": "南京",
-                        "children": [
-                            {
-                                "name": "板卡厂",
-                                "children": [
-                                    { "name": "设备1" },
-                                    { "name": "设备2" }
-                                ]
-                            },
-                            {
-                                "name": "机箱厂"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "昆山",
-                        "children": [
-                            { "name": "板卡厂" },
-                            { "name": "机箱厂" },
-                            { "name": "CTOS厂" }
-                        ]
-                    },
-                    {
-                        "name": "无锡",
-                        "children": [
-                            { "name": "CTOS厂" }
-                        ]
-                    },
-                    {
-                        "name": "南通",
-                        "children": [
-                            { "name": "板卡厂" },
-                            { "name": "CTOS厂" },
-                            { "name": "机箱厂" },
-                            {
-                                "name": "焊接车间",
-                                "children": [
-                                    { "name": "贴片机1" },
-                                    { "name": "贴片机2" },
-                                    { "name": "贴片机3" },
-                                    { "name": "贴片机4" },
-                                    { "name": "贴片机5" },
-                                    { "name": "贴片机6" },
-                                    { "name": "贴片机7" },
-                                    { "name": "贴片机8" }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
-
-            var option = {
-                tooltip: {
-                    trigger: 'item',
-                    triggerOn: 'mousemove'
-                },
-                series: [
-                    {
-                        type: 'tree',
-                        id: 0,
-                        name: 'tree1',
-                        data: [data],
-                        layout: 'orthogona',
-
-                        top: '2%',
-                        left: '8%',
-                        bottom: '2%',
-                        right: '20%',
-                        symbol: 'rect',                       // 矩形标记
-                        symbolSize: [180, 50], 
-                        initialTreeDepth: 10,
-                        itemStyle: {
-
-                            borderColor: '#008FD7',
-                            borderWidth: 1,
-                            shadowColor:'#E6E6E6'
-                        },
-                        lineStyle: {
-                            //width: 2,
-                            curveness: 0.5
-                        },
-
-                        label: {
-                            normal: {
-                                position: 'right',
-                                verticalAlign: 'middle',
-                                fontSize: 17,
-                                offset: [-180, 0],             // 文本偏移量
-                                color: '#2F4157',
-                                align: 'left'
-                            }
-                        },
-                        expandAndCollapse: true,
-                        animationDuration: 550,
-                        animationDurationUpdate: 750
-                    }
-                ]
-            };
-            myEchart.setOption(option);
-            var container = document.getElementById('myEchart');
-            //var container = document.getElementById('myEchart');
-            var allNode = 0;
-            var nodes = myEchart._chartsViews[0]._data._graphicEls;
-            for (var i = 0, count = nodes.length; i < count; i++) {
-                var node = nodes[i];
-                if (node === undefined)
-                    continue;
-                allNode++;
-            }
-            var height = window.innerHeight;
-            var currentHeight = 80 * allNode;
-            var newWidth = Math.max(currentHeight, height);
-            //container.style.width = window.innerWidth + 'px';
-            container.style.height = newWidth + 'px';
-            myEchart.resize();
-            
-            
-            myEchart.on('click', function (params) {
-                if (params.componentType === 'series') {
-                    // 点击到了 series 上
-                    if (!params.value) {
-                        // 点击的节点有子分支（可点开）
-                        var elesArr = Array.from(new Set(myEchart._chartsViews[0]._data._graphicEls));
-                        var height = 200; // 这里限制最小高
-                        var currentHeight = 100 * (elesArr.length - 1) || 100; // 每项10px
-                        var newHeight = Math.max(currentHeight, height);
-                        container.style.height = newHeight + 'px';
-                        myEchart.resize();
-                    }
+            var treeData;
+            $.ajax({
+                type: "POST",
+                url: "/LevelsOverview/GetData",
+                dataType: "json",
+                success: function (msg) {
+                    treeView(msg);
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
                 }
             });
+            function transData(a, idStr, pidStr, childrenStr)
+            {
+                var r = [], hash = {}, id = idStr, pid = pidStr, children = childrenStr, i = 0, j = 0, len = a.length;
+                for (; i < len; i++)
+                {
+                    hash[a[i][id]] = a[i];
+                    //console.log(hash);
+                }
+                for (; j < len; j++)
+                {
+                    var aVal = a[j], hashVP = hash[aVal[pid]];
+                    //console.log(aVal);
+                    console.log(hashVP);
+                    if (hashVP)
+                    {
+                        delete aVal.id
+                        delete aVal['id']
+                        !hashVP[children] && (hashVP[children] = []);
+                        hashVP[children].push(aVal);
+                    }
+                    else
+                    {
+                        r.push(aVal);
+                    }
+                }
+                return r;
+            }
+
+            function treeView(msg) {
+                var myEchart = echarts.init(document.getElementById('myEchart'));
+
+                var data = [{
+                    "name": "群组一",
+                    "children": [
+                        {
+                            "name": "南京",
+                            "children": [
+                                {
+                                    "name": "板卡厂",
+                                    "children": [
+                                        { "name": "设备1" },
+                                        { "name": "设备2" }
+                                    ]
+                                },
+                                {
+                                    "name": "机箱厂"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "昆山",
+                            "children": [
+                                { "name": "板卡厂" },
+                                { "name": "机箱厂" },
+                                { "name": "CTOS厂" }
+                            ]
+                        },
+                        {
+                            "name": "无锡",
+                            "children": [
+                                { "name": "CTOS厂" }
+                            ]
+                        },
+                        {
+                            "name": "南通",
+                            "children": [
+                                { "name": "板卡厂" },
+                                { "name": "CTOS厂" },
+                                { "name": "机箱厂" },
+                                {
+                                    "name": "焊接车间",
+                                    "children": [
+                                        { "name": "贴片机1" },
+                                        { "name": "贴片机2" },
+                                        { "name": "贴片机3" },
+                                        { "name": "贴片机4" },
+                                        { "name": "贴片机5" },
+                                        { "name": "贴片机6" },
+                                        { "name": "贴片机7" },
+                                        { "name": "贴片机8" }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }];
+
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        triggerOn: 'mousemove'
+                    },
+                    series: [
+                        {
+                            type: 'tree',
+                            id: 0,
+                            name: 'tree1',
+                            data: transData(msg, "id", "upper_id", "children"),
+                            layout: 'orthogona',
+
+                            top: '2%',
+                            left: '8%',
+                            bottom: '2%',
+                            right: '20%',
+                            symbol: 'rect',                       // 矩形标记
+                            symbolSize: [180, 50],
+                            initialTreeDepth: 10,
+                            itemStyle: {
+
+                                borderColor: '#008FD7',
+                                borderWidth: 1,
+                                shadowColor: '#E6E6E6'
+                            },
+                            lineStyle: {
+                                //width: 2,
+                                curveness: 0.5
+                            },
+
+                            label: {
+                                normal: {
+                                    position: 'right',
+                                    verticalAlign: 'middle',
+                                    fontSize: 17,
+                                    offset: [-180, 0],             // 文本偏移量
+                                    color: '#2F4157',
+                                    align: 'left'
+                                }
+                            },
+                            expandAndCollapse: true,
+                            animationDuration: 550,
+                            animationDurationUpdate: 750
+                        }
+                    ]
+                };
+                myEchart.setOption(option);
+                var container = document.getElementById('myEchart');
+                //var container = document.getElementById('myEchart');
+                var allNode = 0;
+                var nodes = myEchart._chartsViews[0]._data._graphicEls;
+                for (var i = 0, count = nodes.length; i < count; i++) {
+                    var node = nodes[i];
+                    if (node === undefined)
+                        continue;
+                    allNode++;
+                }
+                var height = window.innerHeight;
+                var currentHeight = 80 * allNode;
+                var newWidth = Math.max(currentHeight, height);
+                //container.style.width = window.innerWidth + 'px';
+                container.style.height = newWidth + 'px';
+                myEchart.resize();
+
+
+                myEchart.on('click', function (params) {
+                    if (params.componentType === 'series') {
+                        // 点击到了 series 上
+                        if (!params.value) {
+                            // 点击的节点有子分支（可点开）
+                            var elesArr = Array.from(new Set(myEchart._chartsViews[0]._data._graphicEls));
+                            var height = 200; // 这里限制最小高
+                            var currentHeight = 100 * (elesArr.length - 1) || 100; // 每项10px
+                            var newHeight = Math.max(currentHeight, height);
+                            container.style.height = newHeight + 'px';
+                            myEchart.resize();
+                        }
+                    }
+                });
+            }
+            
         });
 
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(3)').addClass('active');
-
             
         });
 
