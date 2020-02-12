@@ -21,7 +21,7 @@ namespace Model
         /// <summary>
         /// 班别
         /// </summary>
-        public bool shift { get; set; }
+        public int shift { get; set; }
         /// <summary>
         /// 标准数量
         /// </summary>

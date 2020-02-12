@@ -62,11 +62,16 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
-        public IActionResult Add([FromBody]wo_config wo)
+        /// <summary>
+        /// 确保数据类型一致
+        /// </summary>
+        /// <param name="work"></param>
+        /// <returns></returns>
+        public IActionResult Add([FromBody]wo_config work)
         {
-            wo.create_time = DateTime.UtcNow;
+            work.create_time = DateTime.UtcNow;
             url = url + "api/v1/configuration/work_order/wo_config";
-            var postData = JsonConvert.SerializeObject(wo);
+            var postData = JsonConvert.SerializeObject(work);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))

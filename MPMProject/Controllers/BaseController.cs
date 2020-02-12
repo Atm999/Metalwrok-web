@@ -50,6 +50,7 @@ namespace MPMProject.Controllers
                 req.Method = "POST";
                 req.Timeout = 80000;
                 req.ContentType = "application/json";
+                //req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 req.ContentLength = data.Length;
                 using (Stream reqStream = req.GetRequestStream())
@@ -89,6 +90,7 @@ namespace MPMProject.Controllers
                 req.Method = "Put";
                 req.Timeout = 80000;
                 req.ContentType = "application/json";
+                req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 req.ContentLength = data.Length;
                 using (Stream reqStream = req.GetRequestStream())

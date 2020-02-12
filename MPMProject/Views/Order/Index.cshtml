@@ -214,10 +214,10 @@
                 work_order: work_order,
                 part_num: part_num,
                 standard_num: standard_num,
-                shiftSelect: shiftSelect,
-                autoSelect: autoSelect,
-                wostatusSelect: wostatusSelect,
-                lineidSelect: lineidSelect,
+                shift: parseInt(shiftSelect),
+                auto:Boolean(autoSelect),
+                status:parseInt(wostatusSelect),
+                virtual_line_id: parseInt(lineidSelect),
                 standard_time: standard_time,
                 order_index:order_index
                 
@@ -265,19 +265,21 @@
 
         }
          function search() {
-            var create_time = $("#create_time").val();
+            var create_time = new Date(Date.parse($("#create_time").val()));
+            var end_time = new Date(Date.parse($("#end_time").val()));
             var wo = $("#wo").val();
-            var woSelect = $("#woSelect").val();
-             $('#table').bootstrapTable('filterBy', { create_time: create_time, work_order: wo, status:woSelect },
+             var woSelect = $("#woSelect").val();
+             $('#table').bootstrapTable('filterBy', { create_time: create_time, end_time: end_time, work_order: wo, status: woSelect },
                 {
                     //自定义刷选函数
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
                         var result2 = true;
                         var result3 = true;
-                        if (filters.create_time != "") 
-                        {
-                            result1 = filters.create_time == row.create_time;
+                        if ( new Date(Date.parse(row.create_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time){
+                            result1 = true;
+                        } else {
+                              result1 = false;
                         }
                         if (filters.work_order != "") 
                         {
