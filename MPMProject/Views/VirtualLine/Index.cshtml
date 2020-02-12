@@ -1,0 +1,356 @@
+﻿@{
+    @model Model.virtual_line
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
+    <script type='text/javascript'>
+          getOption();
+        $(document).ready(function () {
+            $("#machineSelects").select2(); 
+          //  $("#deptSelect").select2(); 
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+
+        $(function () {
+
+           $('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(3) ul li:nth-of-type(2)').addClass('active');
+
+            toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
+
+            $('#table').bootstrapTable({
+                url: '/VirtualLine/GetData',
+                method: 'get',
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                        field: 'no',
+                        title: '序号',
+                        formatter: function (value, row, index) {
+                            var options = $('#table').bootstrapTable('getOptions');
+                            return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        }
+                }, {
+                    field: 'name_en',
+                    title: '虚拟线（英）'
+                }, {
+                    field: 'name_tw',
+                    title: '虚拟线（繁中）'
+                }, {
+                    field: 'name_cn',
+                    title: '虚拟线（简中）'
+                }, {
+                    field: 'machine_name',
+                        title: '设备列表',
+                     formatter: function (value, row, index)
+                    {
+                        var machines = row.machines;
+                        var MList = new Array(machines.length);
+                        var i = 0;
+                        machines.forEach(v => {
+                            MList[i] = v.name_cn;
+                            i++;
+                        });
+                        return MList.toString();
+                 },
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter,
+                    events: operateEvents
+                }]
+            });
+        });
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+             result += "<a class='Binding m110' href='javascript:;'  title='设备绑定'  style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+             result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                document.getElementById("name_en").value = row.name_en;
+                document.getElementById("name_tw").value = row.name_tw;
+                document.getElementById("name_cn").value = row.name_cn;
+                document.getElementById("description").value = row.description;
+                $('#myEditModal').modal('show');
+            },
+            'click .remove': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $('#myDelModal').modal('show');
+
+            }, 'click .Binding': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $('#machineModal').modal('show');
+
+            }
+        };
+        function Delete() {
+           var id = $('#id').val();
+                var dept = {
+                     id: id
+                };
+                 $.ajax({
+                     type: "POST",
+                     url: "/VirtualLine/Delete",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             toastr.success('数据删除成功!');
+                             $('#myDelModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             toastr.error('执行失败!');
+                         }
+                     }, error: function (msg) {
+                         toastr.error('执行失败!');
+                     }
+                 });
+
+        }
+         function finish() {
+            var id = $('#id').val();
+            var name_en = $('#name_en').val();
+            var name_tw = $('#name_tw').val();
+            var name_cn = $('#name_cn').val();
+            var description = $('#description').val();
+            var dept = {
+                 id: id,
+                 name_en: name_en,
+                 name_tw:name_tw,
+                 name_cn: name_cn,
+                 description:description
+             };
+             if (id != 0) {
+                 $.ajax({
+                     type: "POST",
+                     url: "/VirtualLine/Update",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             toastr.success('数据更新成功!');
+                             $('#myEditModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             toastr.error('执行失败!');
+                         }
+                     }, error: function (msg) {
+                         toastr.error('执行失败!');
+                     }
+                 });
+             } else {
+                   $.ajax({
+                     type: "POST",
+                     url: "/VirtualLine/Add",
+                     data: JSON.stringify(dept),
+                     dataType: "json",
+                     contentType: "application/json;charset=utf-8",
+                     success: function (msg) {
+                         if (msg == "Success") {
+                             toastr.success( '数据新增成功!');
+                             $('#myEditModal').modal('hide');
+                             $('#table').bootstrapTable('refresh');
+                         } else {
+                             toastr.error('执行失败!');
+                         }
+                     }, error: function (msg) {
+                         toastr.error('执行失败!');
+                     }
+                 });
+
+             }
+
+        }
+        function clean() {
+            $('#myEditModal').modal('show');
+                document.getElementById("id").value = 0;
+                document.getElementById("name_en").value = "";
+                document.getElementById("name_tw").value ="";
+                document.getElementById("name_cn").value = "";
+                document.getElementById("description").value = "";
+        }
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/VirtualLine/Getmachine',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machineSelects").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                       // $("#deptSelect").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>工单配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>虚拟线列表</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <div style="padding:14px 0px">
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="clean()" data-toggle='modal'><span class="icon-plus"> 新增</span></button>
+                    </div>
+                </div>
+
+
+                <table class="table" id="table"></table>
+            </div>
+
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增/编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
+                            <div class="control-group">
+                                <label class="control-label">虚拟线名称（英）</label>
+                                <input class="span12" type="text" id="name_en" name="name_en" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">虚拟线名称（繁中）</label>
+                                <input class="span12" type="text" id="name_tw" name="name_tw" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">虚拟线名称（简中）</label>
+                                <input class="span12" type="text" id="name_cn" name="name_cn" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">描述</label>
+                                <input class="span12" type="text" id="description" name="description" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button onclick="finish()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" onclick="Delete()" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 设备模态框（Modal） -->
+            <div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增/编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="group_id" name="group_id" />
+                            <div class="control-group">
+                                <label class="control-label">虚拟线名称（英）</label>
+                                <input class="span12" type="text" id="linename" readonly="readonly" name="linename" />
+                            </div>
+                            <div class="from-group">
+                                <label class="control-label">设备名称</label>
+                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button onclick="finishP()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
