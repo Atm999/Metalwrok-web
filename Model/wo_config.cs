@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Model
+{
+   public class wo_config
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public int id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string work_order { get; set; } 
+        /// <summary>
+        /// 
+        /// </summary>
+        public string part_num { get; set; }
+        /// <summary>
+        /// 班别
+        /// </summary>
+        public int shift { get; set; }
+        /// <summary>
+        /// 标准数量
+        /// </summary>
+        public int standard_num { get; set; }
+        /// <summary>
+        /// 是否自动完结
+        /// </summary>
+        public bool auto { get; set; }
+        /// <summary>
+        /// 执行序号
+        /// </summary>
+        public int order_index { get; set; }
+        /// <summary>
+        /// 状态 0:创建 1:排产 2:执行中 3:完成
+        /// </summary>
+        public int status { get; set; }
+        /// <summary>
+        /// 标准时间 
+        /// </summary>
+        public string standard_time { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int virtual_line_id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+       public DateTime create_time { get; set; }
+
+    }
+}

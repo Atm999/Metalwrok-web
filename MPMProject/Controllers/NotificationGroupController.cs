@@ -9,9 +9,10 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class OrderController : BaseController
+    public class NotificationGroupController : BaseController
     {
         public string url = "http://api-mpm.wise-paas.cn/";
+        //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
         {
@@ -19,9 +20,9 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-             url = url + "api/v1/configuration/work_order/wo_config";
+            url = url + "api/v1/configuration/andon/notification_group";
             string result = GetUrl(url);
-            JObject jo= (JObject)JsonConvert.DeserializeObject(result);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -38,12 +39,11 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
-       
 
-        public IActionResult Update([FromBody]wo_config wo)
+        public IActionResult Update([FromBody]notification_group group)
         {
-            url = url + "api/v1/configuration/work_order/wo_config";
-            var postData = JsonConvert.SerializeObject(wo);
+            url = url + "api/v1/configuration/andon/notification_group";
+            var postData = JsonConvert.SerializeObject(group);
             string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -62,16 +62,10 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
-        /// <summary>
-        /// 确保数据类型一致
-        /// </summary>
-        /// <param name="work"></param>
-        /// <returns></returns>
-        public IActionResult Add([FromBody]wo_config work)
+        public IActionResult Add([FromBody]notification_group group)
         {
-            work.create_time = DateTime.UtcNow;
-            url = url + "api/v1/configuration/work_order/wo_config";
-            var postData = JsonConvert.SerializeObject(work);
+            url = url + "api/v1/configuration/andon/notification_group";
+            var postData = JsonConvert.SerializeObject(group);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -91,9 +85,9 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public IActionResult Delete([FromBody]wo_config wo)
+        public IActionResult Delete([FromBody]notification_group group)
         {
-            url = url + "api/v1/configuration/work_order/wo_config?id=" + wo.id.ToString();
+            url = url + "api/v1/configuration/andon/notification_group?id=" + group.id.ToString();
             string result = DeleteUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -113,9 +107,9 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public JsonResult Getline()
+        public JsonResult Getperson()
         {
-            var purl = url + "api/v1/configuration/work_order/virtual_line";
+            var purl = url + "api/v1/configuration/public/person";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
 
@@ -136,5 +130,27 @@ namespace MPMProject.Controllers
             return Json(jo["data"]);
         }
 
+        public IActionResult UpdatePerson([FromBody]notification_person person)
+        {
+            url = url + "/api/v1/configuration/andon/notification_group/";
+            var postData = JsonConvert.SerializeObject(person);
+            string result = PutUrl(url, postData);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
+        }
     }
 }

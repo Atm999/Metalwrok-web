@@ -99,8 +99,7 @@ namespace MPMProject.Controllers
         public IActionResult Add([FromBody]Person person)
         {
             url = url + "api/v1/configuration/public/person";
-            string postData = "{{\"id\":{0},\"user_name\":\"{1}\",\"id_num\":\"{2}\",\"user_level\":\"{3}\",\"email\":\"{4}\",\"wechart\":\"{5}\",\"mobile_phone\":\"{6}\",\"user_position\":\"{7}\",\"dept_id\":{8}}}";
-            postData = string.Format(postData,person.id, person.user_name, person.id_num, person.user_level, person.email, person.wechart,person.mobile_phone,person.user_position,person.dept_id);
+            var postData = JsonConvert.SerializeObject(person);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
