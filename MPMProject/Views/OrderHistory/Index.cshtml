@@ -1,7 +1,311 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    @model Model.wo_config
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+          getOption();
+        $(document).ready(function () {
+            $("#lineidSelect").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
 
-<h1>Index</h1>
+        $(function () {
+            $('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(3) ul li:nth-of-type(3)').addClass('active');
+            toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
+            $('#table').bootstrapTable({
+                url: '/OrderHistory/GetData',
+                method: 'get',
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                     field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#table').bootstrapTable('getOptions');
+                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                    }
+                }, {
+                    field: 'work_order',
+                    title: '工单'
+                }, {
+                    field: 'part_num',
+                    title: '机种'
+                }, {
+                    field: 'standard_num',
+                    title: '标准数量'
+                }, {
+                    field: 'virtual_Line.name_en',
+                        title: '虚拟线'
 
+                }, {
+                    field: 'shift',
+                        title: '班次',
+                      formatter: function (value, row, index)
+                    {
+                        var shift = row.shift;
+                          if (shift == 0) {
+                              return "--"
+                          } else if (shift == 1) {
+                              return "白班";
+                          } else {
+                              return "夜班";
+                          }
+
+                 },
+                }, {
+                    field: 'virtual_Line_log.start_time',
+                    title: '生产日期'
+                }, {
+                    field: 'virtual_Line_log.end_time',
+                    title: '结束日期'
+                }, {
+                    field: 'auto',
+                        title: '结束方式',
+                     formatter: function (value, row, index)
+                    {
+                        var auto = row.auto;
+                          if (auto == true) {
+                              return "自动"
+                          } else if (auto == false) {
+                              return "手动";
+                          } else {
+                              return "--";
+                          }
+
+                 },
+                }]
+            });
+        });
+         function search() {
+            var create_time = new Date(Date.parse($("#create_time").val()));
+            var end_time = new Date(Date.parse($("#end_time").val()));
+            var wo = $("#wo").val();
+             $('#table').bootstrapTable('filterBy', { create_time: create_time, end_time: end_time, work_order: wo},
+                {
+                    //自定义刷选函数
+                    'filterAlgorithm': function (row, filters) {
+                        var result1 = true;//定义一个返回结果
+                        var result2 = true;
+                        var result3 = true;
+                        if ( new Date(Date.parse(row.virtual_Line_log.start_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time){
+                            result1 = true;
+                        } else {
+                              result1 = false;
+                        }
+                        if (filters.work_order != "")
+                        {
+                            result2 = filters.work_order == row.work_order;
+                        }
+                       
+                        return result1 && result2 ;
+                    }
+                });
+        }
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/Order/Getline',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#lineidSelect").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>历史工单信息</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">结束日期（起）</label>
+                    </div>
+                    <div class="control-group">
+                        <div class='datetimepicker input-append' id='datetimepicker'>
+                            <input class='span9' type="text" id="create_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                            <span class='add-on' style="margin-top:12px">
+                                <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">结束日期（止）</label>
+                    </div>
+                    <div class="control-group">
+                        @*<label class="control-label">截至时间</label>*@
+                        <div class='datetimepicker input-append' id='datetimepicker'>
+                            <input class='span9' type="text" id="end_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                            <span class='add-on' style="margin-top:12px">
+                                <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">工单</label>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <input type="text" class="span11" id="wo" name="wo" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="search()" type="submit" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+
+               
+                <table class="table" id="table"></table>
+            </div>
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增/编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
+
+                            <div class="control-group">
+                                <label class="control-label">工单</label>
+                                <input class="span12" type="text" id="work_order" name="work_order" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">机种</label>
+                                <input class="span12" type="text" id="part_num" name="part_num" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">标准数量</label>
+                                <input class="span12" type="text" id="standard_num" name="standard_num" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">执行序号</label>
+                                <input class="span12" type="text" id="order_index" name="order_index" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">班次</label>
+                                <select class="select2 span12" id="shiftSelect" name="shiftSelect" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="1">白班</option>
+                                    <option value="2">夜班</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">结束方式</label>
+                                <select class="select2 span12" id="autoSelect" name="autoSelect" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="true">自动</option>
+                                    <option value="false">手动</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">工单状态</label>
+                                <select class="select2 span12" id="wostatusSelect" name="wostatusSelect" style="width:100%">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">创建</option>
+                                    <option value="1">排产</option>
+                                    <option value="2">执行中</option>
+                                    <option value="3">完成</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">虚拟线</label>
+                                <select class="select2 span12" id="lineidSelect" name="lineidSelect" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">标准工时</label>
+                                <input class="span12" type="text" id="standard_time" name="standard_time" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" onclick="finish()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" onclick="Delete()" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
