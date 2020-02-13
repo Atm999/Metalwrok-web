@@ -259,7 +259,7 @@
                 document.getElementById('unfix_end_time1').value = "";
 
                 var area_node_id = row.id;
-                //排产
+                //排休
                 $.ajax({
                     type: "POST",
                     url: "/LevelsConfig/GetSetting",
@@ -277,8 +277,7 @@
                                 document.getElementById('day_end_time').value = msg["shift"]["day"]["end"];
                                 document.getElementById('night_start_time').value = msg["shift"]["night"]["start"];
                                 document.getElementById('night_end_time').value = msg["shift"]["night"]["end"]; 
-                            }
-                                 
+                            }      
                         } 
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -303,6 +302,7 @@
                                 fixIndex = msg["fixBreak"]["rest"].length;
                                 for (var i = 1; i < msg["fixBreak"]["rest"].length; i++) {
                                     $("#fixAdd").append(
+                                        "<div id='fix" + (i + 1) + "'>" +
                                         "<div class='control-group'>" +
                                         "<h4>" + (i + 1) + "#</h4>" +
                                         "</div>" +
@@ -325,7 +325,9 @@
                                         "</span>" +
                                         "</div>" +
                                         "</div>" +
-                                        "<hr class= 'hr-top' style = 'margin-right:-14px' />"
+                                        "<button class='btn btn-danger' onclick='FixDivDel(" + (i + 1) + ")'>删除</button>" +
+                                        "<hr class= 'hr-top' style = 'margin-right:-14px' />" +
+                                        "</div>"
                                     );
                                 }
                             }
@@ -353,6 +355,7 @@
                                 unFixIndex = msg["fixBreak"]["rest"].length;
                                 for (var i = 1; i < msg["fixBreak"]["rest"].length; i++) {
                                     $("#unfixAdd").append(
+                                        "<div id='unfix" + (i + 1) + "'>" +
                                         "<div class='control-group'>" +
                                         "<h4>" + (i + 1) + "#</h4>" +
                                         "</div > " +
@@ -364,7 +367,6 @@
                                         "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-calendar'></i>" +
                                         "</span>" +
                                         "</div>" +
-                                        "</div >" +
                                         "<div class='control-group'>" +
                                         "<label class='control-label'>结束时间</label>" +
                                         "<div class='datetimepicker input-append' id='datetimepicker'>" +
@@ -374,7 +376,9 @@
                                         "</span>" +
                                         "</div>" +
                                         "</div>" +
-                                        "<hr class='hr-top' style='margin-right:-14px' />"
+                                        "<button class='btn btn-danger' onclick='UnFixDivDel(" + (i + 1) + ")'>删除</button>" +
+                                        "<hr class='hr-bottom' style='margin-right:-14px' />" +
+                                        "</div>"
                                     );
                                 }
                             }
@@ -477,6 +481,7 @@
         function addFixedBreak() {
             fixIndex++;
             $("#fixAdd").append(
+                "<div id='fix" + fixIndex+"'>" +
                 "<div class='control-group'>" +
                 "<h4>" + fixIndex+"#</h4>" +
                 "</div > " +
@@ -499,13 +504,20 @@
                 "</span>" +
                 "</div>" +
                 "</div>" +
-                "<hr class= 'hr-top' style = 'margin-right:-14px' />"
+                "<button class='btn btn-danger' onclick='FixDivDel(" + fixIndex + ")'>删除</button>" +
+                "<hr class= 'hr-top' style = 'margin-right:-14px' />" +
+                "</div>" 
             );
+        }
+        //属性设置-删除固定排休
+        function FixDivDel(id) {
+            $("#fix" + id + "").remove();
         }
         //属性设置-添加非固定排休
         function addUnFixedBreak() {
             unFixIndex++;
             $("#unfixAdd").append(
+                "<div id='unfix" + unFixIndex + "'>" +
                 "<div class='control-group'>" +
                 "<h4>" + unFixIndex + "#</h4>" +
                 "<label class= 'control-label'> 开始时间</label >" +
@@ -515,7 +527,6 @@
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-calendar'></i>" +
                 "</span>" +
                 "</div>" +
-                "</div >" +
                 "<div class='control-group'>" +
                 "<label class='control-label'>结束时间</label>" +
                 "<div class='datetimepicker input-append' id='datetimepicker'>" +
@@ -524,15 +535,24 @@
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-calendar'></i>" +
                 "</span>" +
                 "</div>" +
-                "</div>"
+                "</div>" +
+                "<button class='btn btn-danger' onclick='UnFixDivDel(" + unFixIndex + ")'>删除</button>" +
+                "<hr class= 'hr-top' style = 'margin-right:-14px' />" +
+                "</div>" 
             );
         }
+        //属性设置-删除非固定排休
+        function UnFixDivDel(id) {
+            $("#unfix" + id + "").remove();
+        }
+        UnFixDivDel
 
         function settingConfirm() {
-            var day_start_time = document.getElementsById("day_start_time");
-            var day_end_time = document.getElementsByName("day_end_time");
-            var night_start_time = document.getElementsByName("night_start_time");
-            var night_end_time = document.getElementsByName("night_end_time");
+            var area_node_id = $('#area_node_id').val();
+            var day_start_time = $('#day_start_time').val();
+            var day_end_time = $('#day_end_time').val();
+            var night_start_time = $('#night_start_time').val();
+            var night_end_time = $('#night_end_time').val();
 
             var fix_start_timeList = document.getElementsByName("fix_start_time");
             var fix_end_timeList = document.getElementsByName("fix_end_time");
@@ -548,21 +568,23 @@
                 fix_start_time.push(fix_start_timeList[i].value);
                 fix_end_time.push(fix_end_timeList[i].value);
             }
-
+            var fixStartTime = fix_start_time.join(',');
+            var fixEndTime = fix_end_time.join(',');
+            
+            
             for (var i = 0; i < unfix_start_timeList.length; i++) {
                 unfix_start_time.push(unfix_start_timeList[i].value);
                 unfix_end_time.push(unfix_end_timeList[i].value);
             }
-
-            var fixStartTime = fix_start_time.join(',');
-            var fixEndTime = fix_end_time.join(',');
             var unfixStartTime = unfix_start_time.join(',');
             var unfixEndTime = unfix_end_time.join(',');
+            
 
             $.ajax({
                 type: "POST",
                 url: "/LevelsConfig/UpdateSetting",
                 data: {
+                    area_node_id: area_node_id,
                     day_start_time: day_start_time,
                     day_end_time: day_end_time,
                     night_start_time: night_start_time,
@@ -570,8 +592,8 @@
                     fixStartTime: fixStartTime,
                     fixEndTime: fixEndTime,
                     unfixStartTime: unfixStartTime,
-                    unfixEndTime: unfixEndTime,
-                },
+                    unfixEndTime: unfixEndTime
+                },              
                 success: function (msg) {
                     if (msg == "Success") {
                         toastr.success('属性配置成功!');
@@ -579,7 +601,7 @@
                         $('#group').bootstrapTable('refresh');
                     }
                     else {
-                        toastr.success('属性配置失败!');
+                        toastr.error('属性配置失败!');
 
                     }
                 }, error: function (msg) {

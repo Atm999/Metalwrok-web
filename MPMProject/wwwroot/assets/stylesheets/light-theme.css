@@ -3662,14 +3662,17 @@ a:hover,a:focus {
   .btn-group.open .btn-warning.dropdown-toggle:hover, .btn.btn-warning:hover {
     background-color: #e48a07; }
 
-.btn-group.open .btn-danger.dropdown-toggle, .btn.btn-danger {
+.btn-group.open .btn-danger.dropdown-toggle {
   background-color: #2F4157; }
+.btn.btn-danger {
+    background-color: #BD362F;
+}
   .btn-group.open .btn-danger.dropdown-toggle:focus, .btn-group.open .btn-danger.dropdown-toggle:active, .btn-group.open .btn-danger.dropdown-toggle.active, .btn-group.open .btn-danger.dropdown-toggle.disabled, .btn-group.open .btn-danger.dropdown-toggle[disabled], .btn.btn-danger:focus, .btn.btn-danger:active, .btn.btn-danger.active, .btn.btn-danger.disabled, .btn.btn-danger[disabled] {
     background-color: #2F4157; }
   .btn-group.open .btn-danger.dropdown-toggle.disabled:hover, .btn-group.open .btn-danger.dropdown-toggle[disabled]:hover, .btn.btn-danger.disabled:hover, .btn.btn-danger[disabled]:hover {
     background-color: #2F4157; }
   .btn-group.open .btn-danger.dropdown-toggle:hover, .btn.btn-danger:hover {
-    background-color: #6d7c8d; }
+    background-color: #D2534D; }
 
 .btn-group.open .btn-success.dropdown-toggle, .btn.btn-success {
   background-color: #49bf67; }
