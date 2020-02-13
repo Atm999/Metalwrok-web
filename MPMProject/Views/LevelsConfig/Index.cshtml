@@ -50,10 +50,11 @@
                     title: '层级跳转',
                     formatter: levelFormatter
                 }]
-            });
-
+            });            
             //设备绑定中，已绑定的设备
             $('#machineList').bootstrapTable({
+                url: '/LevelsConfig/GetMachineNodeList',
+                method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
                 pagination: true,
@@ -64,36 +65,44 @@
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
                 columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#machineList').bootstrapTable('getOptions');
+                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                    }
+                }, {
                     field: 'id',
-                    title: '序号'
+                    title: 'id',
+                    visible: false
                 }, {
-                    field: 'machineName',
+                    field: 'area_node_id',
+                    title: 'area_node_id',
+                    visible: false
+                }, {
+                    field: 'name_cn',
                     title: '设备名称'
-                }],
-                data: [{
-                    id: 1,
-                    machineName: '设备001'
                 }, {
-                    id: 2,
-                    machineName: '设备002'
+                    field: 'description',
+                    title: '描述'
                 }, {
-                    id: 3,
-                    machineName: '设备003'
-                }, {
-                    id: 4,
-                    machineName: '设备004'
-                }, {
-                    id: 5,
-                    machineName: '设备005'
-                }, {
-                    id: 6,
-                    machineName: '设备006'
-                }, {
-                    id: 7,
-                    machineName: '设备007'
+                    field: 'actionEvent',
+                    title: '取消绑定',
+                    formatter: machineNodeActionFormatter,
+                    events: machineNodeOperateEvents
                 }]
             });
-
+            //所有未绑定的设备
+            $.ajax({
+                url: '/LevelsConfig/GetUnBindMachine',
+                type: "get",
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machineBind").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>'); 
+                    }
+                }
+            });
             //设备
             $('#machineAll').bootstrapTable({
                 theadClasses: "thead-blue",
@@ -390,11 +399,21 @@
             },
             //设备绑定
             "click #bindingGroup": function (e, value, row, index) {
-                document.getElementById("idGroup").value = row.id;
-                document.getElementById("cnGroup").value = row.name_cn;
-                document.getElementById("enGroup").value = row.name_en;
-                document.getElementById("twGroup").value = row.name_tw;
-                document.getElementById("descriptionGroup").value = row.description;
+                document.getElementById("machine_area_node_id").value = row.id;
+                $("#machineBind").empty();
+                var area_node_id = $("#machine_area_node_id").val();
+                $('#machineList').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineNodeList?area_node_id=" + area_node_id + "" });
+
+                $.ajax({
+                    url: '/LevelsConfig/GetUnBindMachine',
+                    type: "get",
+                    async: true,
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#machineBind").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        }
+                    }
+                });
             },
             //编辑
             "click #editGroup": function (e, value, row, index) {
@@ -545,8 +564,7 @@
         function UnFixDivDel(id) {
             $("#unfix" + id + "").remove();
         }
-        UnFixDivDel
-
+        //属性设置确认
         function settingConfirm() {
             var area_node_id = $('#area_node_id').val();
             var day_start_time = $('#day_start_time').val();
@@ -611,6 +629,71 @@
 
         }
 
+        //节点绑定的设备
+        function machineNodeActionFormatter(value, row, index) {
+            var result = "";
+            result += "<a id='deleteMachineNode' href='javascript:;' title='取消绑定' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+
+        window.machineNodeOperateEvents = {
+            //取消绑定
+            "click #deleteMachineNode": function (e, value, row, index) {
+                var id = row.id;
+                var area_node_id = row.area_node_id;
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/UpdateMachineNode",
+                    data: {
+                        id: id,
+                        area_node_id:0
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            $('#machineList').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineNodeList?area_node_id=" + area_node_id + "" });
+                        }
+                        else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            }
+        }
+        function MachineNodeBind() {
+            var area_node_id = $("#machine_area_node_id").val();
+            
+            var machineList = document.getElementById('machineBind').getElementsByTagName('option');
+            var machine = new Array();
+            for (var i = 0; i < machineList.length; i++) {
+                if (machineList[i].selected) {
+                    machine.push(machineList[i].value);
+                }
+            }
+            var Machine = machine.join(',');
+
+            $.ajax({
+                type: "POST",
+                url: "/LevelsConfig/UpdateMachineNode",
+                data: {
+                    id: 0,
+                    area_node_id: area_node_id,
+                    Machine: Machine
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('设备绑定成功!');
+                        $('#machineList').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineNodeList?area_node_id=" + area_node_id + "" });
+                    }
+                    else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+        }
         //设备操作栏的格式化
         function machineActionFormatter(value, row, index) {
             var id = value;
@@ -1048,18 +1131,9 @@
                         </h4>
                     </div>
                     <div class="modal-body">
+                        <input class='span12' type="hidden" id="machine_area_node_id" />
                         <div class="control-group">
                             <select class="select2 span12" id="machineBind" multiple="" style="width:100%">
-                                <option value="1">Machine011</option>
-                                <option value="2">Machine012</option>
-                                <option value="3">Machine013</option>
-                                <option value="4">Machine014</option>
-                                <option value="5">Machine015</option>
-                                <option value="6">Machine016</option>
-                                <option value="7">Machine017</option>
-                                <option value="8">Machine018</option>
-                                <option value="9">Machine019</option>
-                                <option value="10">Machine020</option>
                             </select>
                         </div>
                         <hr class="hr-top" style="margin-right:-14px" />
@@ -1074,7 +1148,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                             取消
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" onclick="MachineNodeBind()">
                             确认
                         </button>
                     </div>

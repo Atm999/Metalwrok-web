@@ -482,8 +482,147 @@ namespace MPMProject.Controllers
            
         }
         #endregion
-        #region 删除操作
-        //删除
+
+        //各节点下设备查询
+        public JsonResult GetMachineNodeList()
+        {
+            int area_node_id=Convert.ToInt32(Request.Query["area_node_id"]);
+            url = url + "api/v1/configuration/public/machine";
+            List<machine> machines = new List<machine>();
+            string result = GetUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+
+            if (Convert.ToInt32(jo["code"]) == 200)
+            {
+                var machineList = jo["data"].ToObject<IList<Model.machine>>();
+                //层级
+                var datMachine = (from p in machineList
+                                  where p.area_node_id == area_node_id
+                                       select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id }).ToList();
+                if (datMachine.Count > 0)
+                {
+                    for (int i=0;i<datMachine.Count;i++) {
+                        machine machineRes = new machine();
+                        machineRes.id = datMachine[i].id;
+                        machineRes.name_cn = datMachine[i].name_cn;
+                        machineRes.name_en = datMachine[i].name_en;
+                        machineRes.name_tw = datMachine[i].name_tw;
+                        machineRes.description = datMachine[i].description;
+                        machineRes.area_node_id = datMachine[i].area_node_id;
+                        machines.Add(machineRes);
+                    }  
+                }
+
+                return Json(machines);
+            }
+            else
+            {
+                return Json("Fail");
+            }
+
+        }
+
+        //各节点下设备绑定与解绑
+        public IActionResult UpdateMachineNode(int id,int area_node_id)
+        {
+            string machinePutUrl = url + "api/v1/configuration/public/machine";
+            //设备解绑
+            if (area_node_id == 0)
+            {
+                string machinePutData = "{{" +
+                                "\"id\":{0}," +
+                                "\"area_node_id\":{1}" +
+                                "}}";
+                machinePutData = string.Format(machinePutData, id, area_node_id);
+                string machinePutResult = PutUrl(machinePutUrl, machinePutData);
+                JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(machinePutResult);
+                if (Convert.ToInt32(joMachinePut["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }
+            else
+            {//设备绑定
+                string[] Machine = Convert.ToString(HttpContext.Request.Form["Machine"]).Split(',');
+                if (Machine.Length > 0 && Machine[0]!="")
+                {
+                    bool flag = true;
+                    for (int i=0;i< Machine.Length; i++) {
+                        string machinePutData = "{{" +
+                                "\"id\":{0}," +
+                                "\"area_node_id\":{1}" +
+                                "}}";
+                        machinePutData = string.Format(machinePutData, Convert.ToInt32(Machine[i]), area_node_id);
+                        string machinePutResult = PutUrl(machinePutUrl, machinePutData);
+                        JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(machinePutResult);
+                        if (Convert.ToInt32(joMachinePut["code"]) != 200)
+                        {
+                            flag=false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        return Json("Success");
+                    }
+                    else
+                    {
+                        return Json("Fail");
+                    }
+                }
+                else
+                {
+                    return Json("Success");
+                }
+                
+            }
+     
+        }
+        //查询所有未绑定的设备
+        public JsonResult GetUnBindMachine()
+        {
+            List<machine> machines = new List<machine>();
+            var UnBindUrl = url + "api/v1/configuration/public/machine";
+            var result1 = GetUrl(UnBindUrl);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+
+            if (Convert.ToInt32(jo["code"]) == 200)
+            {
+                var machineList = jo["data"].ToObject<IList<Model.machine>>();
+                //层级
+                var datMachine = (from p in machineList
+                                  where p.area_node_id == 0
+                                  orderby p.name_cn
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id }).ToList();
+                if (datMachine.Count > 0)
+                {
+                    for (int i = 0; i < datMachine.Count; i++)
+                    {
+                        machine machineRes = new machine();
+                        machineRes.id = datMachine[i].id;
+                        machineRes.name_cn = datMachine[i].name_cn;
+                        machineRes.name_en = datMachine[i].name_en;
+                        machineRes.name_tw = datMachine[i].name_tw;
+                        machineRes.description = datMachine[i].description;
+                        machineRes.area_node_id = datMachine[i].area_node_id;
+                        machines.Add(machineRes);
+                    }
+                }
+
+                return Json(machines);
+            }
+            else
+            {
+                return Json("Fail");
+            }
+            
+        }
+
+        #region 层级中数据删除
+        //层级中数据删除
         public IActionResult Delete(int id,string flag)
         {
             url = url + "api/v1/configuration/public/"+ flag + "?id="+ id + "";
