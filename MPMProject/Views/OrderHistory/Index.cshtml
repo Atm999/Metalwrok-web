@@ -106,11 +106,16 @@
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
                         var result2 = true;
-                        var result3 = true;
+                        
                         if ( new Date(Date.parse(row.virtual_Line_log.start_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time){
                             result1 = true;
                         } else {
-                              result1 = false;
+                            if (filters.create_time.toString() == "Invalid Date" || filters.end_time.toString() == "Invalid Date") {
+                                result1 = true;
+                            } else {
+                                result1 = false;
+                            }
+                             
                         }
                         if (filters.work_order != "")
                         {
