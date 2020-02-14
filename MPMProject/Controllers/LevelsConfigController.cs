@@ -83,17 +83,52 @@ namespace MPMProject.Controllers
                 return Json("Fail");
             }
         }
+        //获取层级
+        public IActionResult GetLevel()
+        {
+            var levelUrl = url + "api/v1/configuration/public/area_layer";
+            var result1 = GetUrl(levelUrl);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+
+            if (Convert.ToInt32(jo["code"]) == 200)
+            {
+                var levelList = jo["data"].ToObject<IList<Model.area_layer>>();
+                //层级
+                var datLevel = (from p in levelList
+                                  orderby p.id
+                                select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+
+                return Json(datLevel);
+            }
+            else
+            {
+                return Json("Fail");
+            }
+        }
         #endregion
         #region 群组操作
         //群组查询
-        public JsonResult GetGroup()
+        public JsonResult GetGroup(int area_layer_id=0)
         {
             url = url + "api/v1/configuration/public/area_node";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
-                return Json(jo["data"]);
+                if (area_layer_id > 0 || area_layer_id==-1)
+                {
+                    var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
+                    
+                    var datAreaNode = (from p in areaNodeList
+                                       where p.area_layer_id==area_layer_id
+                                    orderby p.name_cn
+                                       select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+
+                    return Json(datAreaNode);
+                }
+                else {
+                    return Json(jo["data"]);
+                }  
             }
             else
             {
@@ -611,7 +646,6 @@ namespace MPMProject.Controllers
                         machines.Add(machineRes);
                     }
                 }
-
                 return Json(machines);
             }
             else
@@ -619,6 +653,97 @@ namespace MPMProject.Controllers
                 return Json("Fail");
             }
             
+        }
+
+        //获取所有设备查询
+        public JsonResult GetMachineList()
+        {
+            string machineUrl = url + "api/v1/configuration/public/machine";
+            string machineResult = GetUrl(machineUrl);
+            JObject joMachine = (JObject)JsonConvert.DeserializeObject(machineResult);
+
+            string areaNodeUrl = url + "api/v1/configuration/public/area_node";
+            string areaNodeResult = GetUrl(areaNodeUrl);
+            JObject joAreaNode = (JObject)JsonConvert.DeserializeObject(areaNodeResult);
+
+            if (Convert.ToInt32(joMachine["code"]) == 200 && Convert.ToInt32(joAreaNode["code"]) == 200)
+            {
+                var machineList = joMachine["data"].ToObject<IList<Model.machine>>();
+                var areaNodeList = joAreaNode["data"].ToObject<IList<Model.area_node>>();
+
+                var datMachine = (from p in machineList
+                                  join q in areaNodeList
+                                  on p.area_node_id equals q.id
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id,q.area_layer_id }).ToList();
+
+                var datUnBindMachine = (from p in machineList
+                                  where p.area_node_id==0
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id, area_layer_id=-1 }).ToList();
+                return Json(datMachine.Union(datUnBindMachine));
+            }
+            else
+            {
+                return Json("Fail");
+            }
+
+        }
+
+        public IActionResult UpdateMachine(int id,int area_node_id,string name_cn, string name_tw, string name_en, string description) {
+            string machineUrl = url + "api/v1/configuration/public/machine";
+            //新增
+            if (id == 0)
+            {
+                if (area_node_id == -1) {
+                    area_node_id = 0;
+                }
+                string machinePostData = "{{" +
+                                "\"id\":{0}," +
+                                "\"area_node_id\":{1}," +
+                                "\"name_cn\":\"{2}\"," +
+                                "\"name_tw\":\"{3}\"," +
+                                "\"name_en\":\"{4}\"," +
+                                "\"description\":\"{5}\"" +
+                                "}}";
+                machinePostData = string.Format(machinePostData, id, area_node_id, name_cn, name_tw, name_en, description);
+                string machinePostResult = PostUrl(machineUrl, machinePostData);
+                JObject joMachinePost = (JObject)JsonConvert.DeserializeObject(machinePostResult);
+                if (Convert.ToInt32(joMachinePost["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }
+            else
+            {//修改
+                if (area_node_id == -1)
+                {
+                    area_node_id = 0;
+                }
+                string machinePutData = "{{" +
+                                "\"id\":{0}," +
+                                "\"area_node_id\":{1}," +
+                                "\"name_cn\":\"{2}\"," +
+                                "\"name_tw\":\"{3}\"," +
+                                "\"name_en\":\"{4}\"," +
+                                "\"description\":\"{5}\"" +
+                                "}}";
+                machinePutData = string.Format(machinePutData, id, area_node_id, name_cn, name_tw, name_en, description);
+                string machinePutResult = PutUrl(machineUrl, machinePutData);
+                JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(machinePutResult);
+                if (Convert.ToInt32(joMachinePut["code"]) != 200)
+                {
+                    return Json("Success");
+                }
+
+                else
+                {
+                    return Json("Fail");
+                }
+
+            }
         }
 
         #region 层级中数据删除
