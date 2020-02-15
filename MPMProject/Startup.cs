@@ -84,7 +84,7 @@ namespace MPMProject
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=LevelsConfig}/{action=Index}/{id?}");
             });
         }
     }
