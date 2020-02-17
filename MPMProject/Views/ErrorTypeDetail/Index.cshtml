@@ -55,7 +55,7 @@
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        return  index + 1;
                     }
                 }, {
                     field: 'typeName',
@@ -96,7 +96,8 @@
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                document.getElementById("firstTagSelects").value = row.error_type_id;
+                $("#firstTagSelects").attr('value', row.error_type_id);
+                $("#firstTagSelects").select2();
                 document.getElementById("name_en").value = row.name_en;
                 document.getElementById("name_tw").value = row.name_tw;
                 document.getElementById("name_cn").value = row.name_cn;

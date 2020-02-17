@@ -129,5 +129,46 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
+
+
+        //虚拟线下设备查询
+        public JsonResult GetMachineNodeList()
+        {
+            int area_node_id = Convert.ToInt32(Request.Query["area_node_id"]);
+            url = url + "api/v1/configuration/public/machine";
+            List<machine> machines = new List<machine>();
+            string result = GetUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+
+            if (Convert.ToInt32(jo["code"]) == 200)
+            {
+                var machineList = jo["data"].ToObject<IList<Model.machine>>();
+                //层级
+                var datMachine = (from p in machineList
+                                  where p.area_node_id == area_node_id
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id }).ToList();
+                if (datMachine.Count > 0)
+                {
+                    for (int i = 0; i < datMachine.Count; i++)
+                    {
+                        machine machineRes = new machine();
+                        machineRes.id = datMachine[i].id;
+                        machineRes.name_cn = datMachine[i].name_cn;
+                        machineRes.name_en = datMachine[i].name_en;
+                        machineRes.name_tw = datMachine[i].name_tw;
+                        machineRes.description = datMachine[i].description;
+                        machineRes.area_node_id = datMachine[i].area_node_id;
+                        machines.Add(machineRes);
+                    }
+                }
+
+                return Json(machines);
+            }
+            else
+            {
+                return Json("Fail");
+            }
+
+        }
     }
 }

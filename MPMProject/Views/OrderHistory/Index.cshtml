@@ -42,7 +42,7 @@
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        return  index + 1;
                     }
                 }, {
                     field: 'work_order',
@@ -103,7 +103,7 @@
              $('#table').bootstrapTable('filterBy', { create_time: create_time, end_time: end_time, work_order: wo},
                 {
                     //自定义刷选函数
-                    'filterAlgorithm': function (row, filters) {
+                    'filterAlgorithm': function (row, filters) {   
                         var result1 = true;//定义一个返回结果
                         var result2 = true;
                         

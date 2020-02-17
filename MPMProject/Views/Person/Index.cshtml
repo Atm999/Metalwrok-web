@@ -45,7 +45,7 @@
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        return  index + 1;
                     }
                 }, {
                     field: 'deptName',
@@ -90,7 +90,8 @@
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                document.getElementById("deptSelect").value = row.dept_id;
+                $("#deptSelect").attr('value', row.dept_id);
+                $("#deptSelect").select2();
                 document.getElementById("user_name").value = row.user_name;
                 document.getElementById("id_num").value = row.id_num;
                 document.getElementById("user_level").value = row.user_level;

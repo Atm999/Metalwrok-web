@@ -32,7 +32,7 @@
                 "showMethod": "fadeIn",//显示时的动画方式
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
-
+           
             $('#table').bootstrapTable({
                 url: '/VirtualLine/GetData',
                 method: 'get',
@@ -47,7 +47,7 @@
                         title: '序号',
                         formatter: function (value, row, index) {
                             var options = $('#table').bootstrapTable('getOptions');
-                            return options.pageSize * (options.pageNumber - 1) + index + 1;
+                            return  index + 1;
                         }
                 }, {
                     field: 'name_en',
@@ -84,7 +84,79 @@
                     events: operateEvents
                 }]
             });
+              //设备绑定中，已绑定的设备
+            $('#machineList').bootstrapTable({
+                url: '/LevelsConfig/GetMachineNodeList',
+                method: 'get',
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 12,//每页的记录行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#machineList').bootstrapTable('getOptions');
+                        return  index + 1;
+                    }
+                },  {
+                    field: 'name_cn',
+                        title: '设备名称'
+                     
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'actionEvent',
+                    title: '取消绑定',
+                    formatter: machineNodeActionFormatter,
+                    events: machineNodeOperateEvents
+                }]
+            });
         });
+
+       
+          /**
+         * 绑定设备
+         * 
+         * */
+        //绑定设备-解除绑定
+        function machineNodeActionFormatter(value, row, index) {
+            var result = "";
+            result += "<a id='deleteMachineNode' href='javascript:;' title='取消绑定' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+         //绑定设备-解除绑定操作
+        window.machineNodeOperateEvents = {
+            //取消绑定
+            "click #deleteMachineNode": function (e, value, row, index) {
+                var id = row.id;
+                var area_node_id = row.area_node_id;
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/UpdateMachineNode",
+                    data: {
+                        id: id,
+                        area_node_id:0
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            $('#machineList').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineNodeList?area_node_id=" + area_node_id + "" });
+                        }
+                        else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            }
+        }
         //操作栏的格式化
         function actionFormatter(value, row, index) {
             var id = value;
@@ -109,7 +181,12 @@
                 $('#myDelModal').modal('show');
 
             }, 'click .Binding': function (e, value, row, index) {
-                document.getElementById("id").value = row.id;
+              document.getElementById("group_id").value = row.id;
+                $("#machineBind").empty();
+                //var group_id = $("#group_id").val();
+                //$('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/Getmachine?group_id=" + group_id + "" });
+                ////所有未绑定的设备
+                //GetUnBindMachine()
                 $('#machineModal').modal('show');
 
             }
@@ -315,7 +392,7 @@
                 </div><!-- /.modal -->
             </div>
             <!-- 设备模态框（Modal） -->
-            <div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            @*<div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -344,6 +421,43 @@
                                 取消
                             </button>
                             <button onclick="finishP()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+            <!-- 设备绑定模态框（Modal） -->
+            <div class="modal fade" id="machineModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myBindLabel">
+                                设备绑定
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input class='span12' type="hidden" id="group_id" />
+                            <div class="control-group">
+                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%"></select>
+                            </div>
+                            <hr class="hr-top" style="margin-right:-14px" />
+                            <div class="control-group">
+                                <h4>已绑定的设备</h4>
+                            </div>
+                            <div class="control-group">
+                                <table class="table" id="machineList"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="MachineNodeBind()">
                                 确认
                             </button>
                         </div>
