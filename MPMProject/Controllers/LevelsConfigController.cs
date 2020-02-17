@@ -121,7 +121,7 @@ namespace MPMProject.Controllers
                     
                     var datAreaNode = (from p in areaNodeList
                                        where p.area_layer_id==area_layer_id
-                                    orderby p.name_cn
+                                       orderby p.name_cn
                                        select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
 
                     return Json(datAreaNode);
@@ -687,7 +687,7 @@ namespace MPMProject.Controllers
             }
 
         }
-
+        //设备新增与修改
         public IActionResult UpdateMachine(int id,int area_node_id,string name_cn, string name_tw, string name_en, string description) {
             string machineUrl = url + "api/v1/configuration/public/machine";
             //新增

@@ -8,14 +8,19 @@
             //$("#machinebind").select2();
             //$("#father").select2();
             //$("#content").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
 
+            var machine_id = getQueryVariable("machine_id");
+
             //设备
-            $('#machineList').bootstrapTable({
+            $('#machineTagList').bootstrapTable({
+                url: '/MachineBind/GetMachineTagList?machine_id=' + machine_id+'',
+                method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
                 pagination: true,
@@ -26,116 +31,200 @@
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
                 columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#machineTagList').bootstrapTable('getOptions');
+                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                    }
+                },{
                     field: 'id',
-                    title: '序号'
+                    title: '序号',
+                    visible:false
                 }, {
-                    field: 'tagCode',
-                    title: 'Tag编码'
+                    field: 'tag_type_id',
+                    title: 'tag_typeb_id',
+                    visible:false
                 }, {
-                    field: 'firstLevelTag',
+                    field: 'tag_type_sub_id',
+                    title: 'tag_type_sub_id',
+                    visible:false
+                }, {
+                    field: 'tag_type_name',
                     title: '一级标签'
                 }, {
-                    field: 'secondLevelTag',
+                    field: 'tag_type_sub_name',
                     title: '二级标签'
+                },{
+                    field: 'name',
+                    title: 'Tag点名称'
                 }, {
-                    field: 'descirption',
+                    field: 'description',
                     title: '描述'
-                }, {
-                    field: 'scadaId',
-                    title: 'SCADA_ID'
                 }, {
                     field: 'actionEvent',
                     title: '操作',
-                    formatter: machineActionFormatter
-                }],
-                data: [{
-                    id: 1,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 2,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 3,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 4,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 5,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 6,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
-                }, {
-                    id: 7,
-                    tagCode: 'ConstPoint\Y10-S1-CT',
-                    firstLevelTag: 'CircleTime',
-                    secondLevelTag: 'cycle_time',
-                    descirption: '设备001',
-                    scadaId: '设备001',
-                    actionEvent: machineActionFormatter
+                    formatter: machineActionFormatter,
+                    events: tagOperateEvents
                 }]
             });
 
         });
-
+        //获取url中的参数
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return (false);
+        }
 
         //设备操作栏的格式化
         function machineActionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a href='javascript:;' onclick=\"Edit('" + 1 + "')\" title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a href='javascript:;' onclick=\"Delete('" + 1 + "')\" title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a id='TagEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#myAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a id='TagDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
+        window.tagOperateEvents = {
+            "click #TagEdit": function (e, value, row, index) {
+                document.getElementById('myAddEditLabel').innerText = '编辑';
+                document.getElementById("tagId").value = row.id;
+                var name = row.name.split(':');
+                document.getElementById("scadaId").value = name[0];
+                document.getElementById("name").value = name[1];
+                document.getElementById("tagDescription").value = row.description;
+                $('#tagType').empty();
+                GetTagTypeName("tagType");
+                $('#tagTypeSub').empty();
+                $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');
 
+                var itemNameSelect = $("#tagType").select2();
+                console.log(itemNameSelect);
+            },
+            "click #TagDelete": function (e, value, row, index) {
+                document.getElementById('deleteId').value = row.id;
+                document.getElementById('deleteFlag').value = "tag";
+            }
+
+        }
+        //获取父级名称 area_layer
+        function GetTagTypeName(tagTypeName) {
+            $.ajax({
+                url: '/MachineBind/GetTagTypeList',
+                type: "get",
+                async: true,
+                success: function (data) {
+                    if (tagTypeName == 'tagType') {
+                        $("#" + tagTypeName + "").append('<option  value=-1>-请选择-</option>');
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        $("#" + tagTypeName + "").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
 
         //新增
         function Add() {
             document.getElementById('myAddEditLabel').innerText = '添加';
+            document.getElementById("tagId").value = 0;
+            document.getElementById("scadaId").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("tagDescription").value = "";
+            $('#tagType').empty();
+            GetTagTypeName("tagType");
+            $('#tagTypeSub').empty();
+            $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');
         }
-        //设备绑定
-        function Binding() {
+        //设备新增修改动作的提交
+        function machineConfirm() {
+            var id = $('#tagId').val();
+            var machine_id = $('#machineId').val();
+            var tag_type_id = $('#tagType').find("option:selected").val();
+            var tag_type_sub_id = $('#tagTypeSub').find("option:selected").val();
+
+            var Name = new Array();
+            Name.push($('#scadaId').val());
+            Name.push($('#name').val());
+            var name = Name.join(':');
+
+            var description = $('#tagDescription').val();
+            
+
+            $.ajax({
+                type: "POST",
+                url: "/MachineBind/UpdateTagInfo",
+                data: {
+                    id: id,
+                    machine_id: machine_id,
+                    tag_type_id: tag_type_id,
+                    tag_type_sub_id: tag_type_sub_id,
+                    name: name,
+                    description: description
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        if (parseInt(id) > 0) {
+                            toastr.success('修改Tag点成功!');
+                        } else {
+                            toastr.success('新增Tag点成功!');
+                        }
+                        $('#myAddEditModal').modal('hide');
+                        $('#machineTagList').bootstrapTable('refresh');
+
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
 
         }
-        //编辑
-        function Edit() {
-            document.getElementById('myAddEditLabel').innerText = '编辑';
-
+        //父级名称切换后父级内容变化(获取父级名称下的内容 area_node)
+        function GetTagSubFunc(value) {
+            $("#tagTypeSub").empty();
+            $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');
+            $.ajax({
+                url: '/MachineBind/GetTagTypeSub',
+                type: "Post",
+                data: {
+                    tag_type_id: value,
+                },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#tagTypeSub").append('<option value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
         }
-        //删除
-        function Delete(a) {
-            document.getElementById('deleteId').value = a;
+        //删除（共用）
+        function Delete() {
+            var id = $('#deleteId').val();
+            var flag = $('#deleteFlag').val();
+            $.ajax({
+                type: "POST",
+                url: "/LevelsConfig/Delete",
+                data: {
+                    id: id,
+                    flag: flag
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('删除数据成功!');
+                        $('#myDelModal').modal('hide');
+                        $('#machineTagList').bootstrapTable('refresh');
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
         }
 
     </script>
@@ -160,15 +249,17 @@
             <div class='box-content box-padding'>
 
                 <div class="form-inline" style="position:relative">
-                    <label class="control-label" style="font-size: 18px">
-                        <span style="font-size: 18px;font-weight: bold;">设备名称：</span>设备001
-                    </label>
-                    <label class="control-label" style="font-size: 18px;">
-                        <span style="font-size: 18px;font-weight: bold;">描述：</span>设备001
-                    </label>
+                    <div class="control-label" style="font-size: 18px">
+                        <span style="font-size: 18px;font-weight: bold;">设备名称：</span>
+                        <span id="name_cn" style="padding:10px">@ViewBag.name_cn</span>
+                        
+                    </div>
+                    <div class="control-label" style="font-size: 18px;">
+                        <span style="font-size: 18px;font-weight: bold;">描述：</span>
+                        <span id="description" style="padding:10px">@ViewBag.description</span>
+                    </div>
                     <div style="font-size:18px;position:absolute;right:0px">
-                        <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' 
-                                onclick="window.location.href = '/LevelsConfig/Index?tab=1'"><span class="icon-mail-reply"> 返回</span>
+                        <button class="btn btn-primary" onclick="window.location.href = '/LevelsConfig/Index?tab=1'"><span class="icon-mail-reply"> 返回</span>
                         </button>
                     </div>
                 </div>
@@ -179,7 +270,7 @@
                         <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 添加</span></button>
                     </div>
                 </div>
-                <table class="table" id="machineList"></table>
+                <table class="table" id="machineTagList"></table>
 
             </div>
         </div>
@@ -198,45 +289,42 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        <div class="control-group">
-                            <label class="control-label">Tag标签</label>
-                            <input class="span12" type="text" id="Tag" />
-                        </div>
+                        <input class="span12" type="hidden" id="tagId" />
+                        <input class="span12" type="hidden" id="machineId" value="@ViewBag.machine_id" />
                         <div class="control-group">
                             <label class="control-label">一级标签</label>
                         </div>
                         <div class="control-group" style="margin-bottom:20px;">
-                            <select class="select2 span12" id="firstLevelTag" style="width:100%;">
-                                <option value="1">CircleTime</option>
-                                <option value="2">Error</option>
-                                <option value="3">LightTower</option>
-                                <option value="4">Other</option>
-                                <option value="5">ProductionSchedule</option>
-                            </select>
+                            <select class="select2 span12" id="tagType" style="width:100%;" onchange="GetTagSubFunc(this.options[this.options.selectedIndex].value)"></select>
                         </div>
                         <div class="control-group">
                             <label class="control-label">二级标签</label>
                         </div>
                         <div class="control-group" style="margin-bottom:20px;">
-                            <select class="select2 span12" id="secondLevelTag" style="width:100%;">
-                                <option value="1">cycle_time</option>
-                                <option value="2">machine_time_error</option>
-                                <option value="3">quality_error</option>
-                                <option value="4">material_error</option>
-                                <option value="5">equipment_fixture_error</option>
+                            <select class="select2 span12" id="tagTypeSub" style="width:100%;">
+                                <option value="-1">-请选择-</option>
                             </select>
                         </div>
-
                         <div class="control-group">
-                            <label class="control-label">SCADA_ID</label>
-                            <input class="span12" type="text" id="scadaId" />
+                            <label class="control-label">Tag点名称(SCADA_ID:名称)</label>
+                            <div style="border: 2px dashed #b0adad;padding: 4px;">
+                                <label class="control-label">SCADA_ID：</label>
+                                <input class="span12" type="text" id="scadaId" />
+                                <label class="control-label">名称：</label>
+                                <input class="span12" type="text" id="name" />
+                            </div>
+
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">描述</label>
+                            <input class="span12" type="text" id="tagDescription" />
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                             取消
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" onclick="machineConfirm()">
                             确认
                         </button>
                     </div>
@@ -258,12 +346,13 @@
                     <div class="modal-body">
                         <div>是否确认删除该条记录？</div>
                         <input type="hidden" id="deleteId" />
+                        <input type="hidden" id="deleteFlag" />
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                             否
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" onclick="Delete()">
                             是
                         </button>
                     </div>

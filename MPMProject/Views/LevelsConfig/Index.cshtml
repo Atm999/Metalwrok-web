@@ -7,7 +7,6 @@
         var unFixIndex = 1;//非固定排休数
         $(document).ready(function () {
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
-
         });
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
@@ -691,13 +690,18 @@
         //设备操作栏的格式化
         function machineActionFormatter(value, row, index) {
             var result = "";
-            result += "<a href='/MachineBind/Index' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
+            result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
             result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
         //Tag点绑定，设备编辑，设备删除
         window.machineOperateEvents = {
+            //Tag点绑定
+            "click #tagBind": function (e, value, row, index) {
+                window.location.href = '/MachineBind/Index?machine_id=' + row.id + '&machine_name_cn=' + row.name_cn + '&machine_description='+row.description+'';
+            },
+
             //设备编辑
             "click #machineEdit": function (e, value, row, index) {
                 document.getElementById("idMachine").value = row.id;
