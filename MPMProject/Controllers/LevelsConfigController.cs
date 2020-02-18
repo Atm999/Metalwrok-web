@@ -84,21 +84,34 @@ namespace MPMProject.Controllers
             }
         }
         //获取层级
-        public IActionResult GetLevel()
+        public IActionResult GetLevel(string urlPara,int area_layer_id)
         {
-            var levelUrl = url + "api/v1/configuration/public/area_layer";
+            var levelUrl = url + "api/v1/configuration/public/"+ urlPara + "";
             var result1 = GetUrl(levelUrl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
 
             if (Convert.ToInt32(jo["code"]) == 200)
             {
-                var levelList = jo["data"].ToObject<IList<Model.area_layer>>();
-                //层级
-                var datLevel = (from p in levelList
-                                  orderby p.id
-                                select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+                if (urlPara == "area_layer") {
+                    var levelList = jo["data"].ToObject<IList<Model.area_layer>>();
+                    //层级
+                    var datLevel = (from p in levelList
+                                    orderby p.id
+                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
 
-                return Json(datLevel);
+                    return Json(datLevel);
+                }
+                else {
+                    var levelList = jo["data"].ToObject<IList<Model.area_node>>();
+                    //层级
+                    var datLevel = (from p in levelList
+                                    where p.area_layer_id== area_layer_id
+                                    orderby p.id
+                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+
+                    return Json(datLevel);
+                }
+                
             }
             else
             {
@@ -107,28 +120,44 @@ namespace MPMProject.Controllers
         }
         #endregion
         #region 群组操作
-        //群组查询
-        public JsonResult GetGroup(int area_layer_id=0)
+        //群组查询，area_layer_id=1表示默认加载群组数据
+        public JsonResult GetGroup(int area_layer_id=1)
         {
+            if (!string.IsNullOrEmpty(Request.Query["area_layer_id"]))
+            {
+                area_layer_id = Convert.ToInt32(Request.Query["area_layer_id"]);
+            }
+
             url = url + "api/v1/configuration/public/area_node";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
-                if (area_layer_id > 0 || area_layer_id==-1)
-                {
-                    var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
+                //当已有数据（area_layer_id > 0）或选择“-请选择-”（area_layer_id==-1）时
+                var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
                     
-                    var datAreaNode = (from p in areaNodeList
-                                       where p.area_layer_id==area_layer_id
-                                       orderby p.name_cn
-                                       select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+                var datAreaNode = (from p in areaNodeList
+                                    where p.area_layer_id==area_layer_id
+                                    orderby p.name_cn
+                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id,p.area_layer_id }).ToList();
 
-                    return Json(datAreaNode);
-                }
-                else {
-                    return Json(jo["data"]);
-                }  
+                return Json(datAreaNode);
+
+                //if (area_layer_id > 0 || area_layer_id == -1)
+                //{
+                //    var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
+
+                //    var datAreaNode = (from p in areaNodeList
+                //                       where p.area_layer_id == area_layer_id
+                //                       orderby p.name_cn
+                //                       select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description }).ToList();
+
+                //    return Json(datAreaNode);
+                //}
+                //else
+                //{
+                //    return Json(jo["data"]);
+                //}
             }
             else
             {
@@ -149,7 +178,7 @@ namespace MPMProject.Controllers
                 "\"area_layer_id\":{5}" +
                 "}}";
             //对于群组来说，upper_id和area_layer_id均固定
-            postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description, 0,1);
+            postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description,area_Node.upper_id, area_Node.area_layer_id);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
@@ -175,7 +204,7 @@ namespace MPMProject.Controllers
                 "\"area_layer_id\":{6}" +
                 "}}";
             //对于群组来说，upper_id和area_node_id均固定
-            postData = string.Format(postData, area_Node.id, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description,0,1);
+            postData = string.Format(postData, area_Node.id, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description, area_Node.upper_id, area_Node.area_layer_id);
             string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
@@ -733,7 +762,7 @@ namespace MPMProject.Controllers
                 machinePutData = string.Format(machinePutData, id, area_node_id, name_cn, name_tw, name_en, description);
                 string machinePutResult = PutUrl(machineUrl, machinePutData);
                 JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(machinePutResult);
-                if (Convert.ToInt32(joMachinePut["code"]) != 200)
+                if (Convert.ToInt32(joMachinePut["code"]) == 200)
                 {
                     return Json("Success");
                 }

@@ -15,6 +15,9 @@
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
 
+            //获取选项
+            GetTagTypeName("tagType","tag_type",0);
+
             var machine_id = getQueryVariable("machine_id");
 
             //设备
@@ -97,13 +100,11 @@
                 document.getElementById("scadaId").value = name[0];
                 document.getElementById("name").value = name[1];
                 document.getElementById("tagDescription").value = row.description;
-                $('#tagType').empty();
-                GetTagTypeName("tagType");
-                $('#tagTypeSub').empty();
-                $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');
 
-                var itemNameSelect = $("#tagType").select2();
-                console.log(itemNameSelect);
+                $("#tagType").val('' + row.tag_type_id + '').select2();
+                $("#tagTypeSub").empty();
+                GetTagTypeName("tagTypeSub", "tag_type_sub", row.tag_type_id);
+                $("#tagTypeSub").val('' + row.tag_type_sub_id + '').select2();
             },
             "click #TagDelete": function (e, value, row, index) {
                 document.getElementById('deleteId').value = row.id;
@@ -112,11 +113,14 @@
 
         }
         //获取父级名称 area_layer
-        function GetTagTypeName(tagTypeName) {
+        function GetTagTypeName(tagTypeName,urlPara,tag_type_id) {
             $.ajax({
+                type: "POST",
                 url: '/MachineBind/GetTagTypeList',
-                type: "get",
-                async: true,
+                data: {
+                    urlPara: urlPara,
+                    tag_type_id: tag_type_id
+                },
                 success: function (data) {
                     if (tagTypeName == 'tagType') {
                         $("#" + tagTypeName + "").append('<option  value=-1>-请选择-</option>');
@@ -135,8 +139,9 @@
             document.getElementById("scadaId").value = "";
             document.getElementById("name").value = "";
             document.getElementById("tagDescription").value = "";
+            //获取选项
             $('#tagType').empty();
-            GetTagTypeName("tagType");
+            GetTagTypeName("tagType","tag_type",0);
             $('#tagTypeSub').empty();
             $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');
         }
@@ -151,10 +156,8 @@
             Name.push($('#scadaId').val());
             Name.push($('#name').val());
             var name = Name.join(':');
-
             var description = $('#tagDescription').val();
             
-
             $.ajax({
                 type: "POST",
                 url: "/MachineBind/UpdateTagInfo",
@@ -185,7 +188,7 @@
             });
 
         }
-        //父级名称切换后父级内容变化(获取父级名称下的内容 area_node)
+        //父级名称切换后父级内容变化(获取父级名称下的内容)
         function GetTagSubFunc(value) {
             $("#tagTypeSub").empty();
             $("#tagTypeSub").append('<option  value=-1>-请选择-</option>');

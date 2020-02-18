@@ -66,21 +66,34 @@ namespace MPMProject.Controllers
         }
 
         //查询TagType
-        public JsonResult GetTagTypeList()
+        public JsonResult GetTagTypeList(string urlPara,int tag_type_id)
         {
             //tag_type
-            string tagTypeUrl = url + "api/v1/configuration/public/tag_type";
+            string tagTypeUrl = url + "api/v1/configuration/public/"+ urlPara + "";
             string tagTypeResult = GetUrl(tagTypeUrl);
             JObject tagTypeJo = (JObject)JsonConvert.DeserializeObject(tagTypeResult);
 
             if (Convert.ToInt32(tagTypeJo["code"]) == 200)
             {
-                var tagTypeList = tagTypeJo["data"].ToObject<IList<Model.tag_type>>();
+                if (urlPara == "tag_type")
+                {
+                    var tagTypeList = tagTypeJo["data"].ToObject<IList<Model.tag_type>>();
 
-                var datTagType = (from p in tagTypeList
-                                  orderby p.name_cn
-                                  select new { p.id, p.name_cn }).ToList();
-                return Json(datTagType);
+                    var datTagType = (from p in tagTypeList
+                                      orderby p.name_cn
+                                      select new { p.id, p.name_cn }).ToList();
+                    return Json(datTagType);
+                }
+                else {
+                    var tagTypeList = tagTypeJo["data"].ToObject<IList<Model.tag_type_sub>>();
+
+                    var datTagType = (from p in tagTypeList
+                                      where p.tag_type_id== tag_type_id
+                                      orderby p.name_cn
+                                      select new { p.id, p.name_cn }).ToList();
+                    return Json(datTagType);
+                }
+                
             }
             else
             {
