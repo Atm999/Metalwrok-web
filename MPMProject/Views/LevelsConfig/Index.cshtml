@@ -7,12 +7,13 @@
         var unFixIndex = 1;//非固定排休数
         $(document).ready(function () {
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
-
         });
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
-
+            //父级名称下拉框
+            GetFatherName("machineFatherSearch", "area_layer", 0);
+            GetFatherName("machineFatherAdd", "area_layer", 0);
             //群组
             $('#group').bootstrapTable({
                 url: '/LevelsConfig/GetGroup',
@@ -145,10 +146,7 @@
                     title: '层级跳转',
                     formatter: machineLevelFormatter
                 }]
-            });
-            //父级名称下拉框
-            GetFatherName("machineFatherSearch");
-
+            });            
         });
 
         //添加层级
@@ -364,6 +362,7 @@
                 document.getElementById("enGroup").value = row.name_en;
                 document.getElementById("twGroup").value = row.name_tw;
                 document.getElementById("descriptionGroup").value = row.description;
+                $("#modal_upper_id").val('' + row.upper_id + '').select2();
             },
             //删除
             'click #deleteGroup': function (e, value, row, index) {
@@ -375,6 +374,16 @@
          * 群组
          * 
          * */
+        //upper_id和area_layer_id赋值
+        function changeGroup() {
+            document.getElementById("modal_area_layer_id").value = 1;
+            document.getElementById("modal_upper_id").value = 0;
+            //修改模态框中标签名称，使之与层级名称一致
+            document.getElementById("enLabel").innerHTML = "群组（英文）";
+            document.getElementById("cnLabel").innerHTML = "群组（简中）";
+            document.getElementById("twLabel").innerHTML = "群组（繁体）";
+            document.getElementById("descriptionLabel").innerHTML = "群组（描述）";
+        }
         //群组新增
         function AddGroup() {
             document.getElementById('groupAddEditLabel').innerText = '新增';
@@ -391,6 +400,9 @@
             var name_tw = $('#twGroup').val();
             var name_cn = $('#cnGroup').val();
             var description = $('#descriptionGroup').val();
+            var upper_id = $("#modal_upper_id").find("option:selected").val();
+            var area_layer_id = $('#modal_area_layer_id').val();
+
             if (id != 0) {
                 $.ajax({
                     type: "POST",
@@ -400,13 +412,16 @@
                         name_en: name_en,
                         name_tw: name_tw,
                         name_cn: name_cn,
-                        description: description
+                        description: description,
+                        upper_id: upper_id,
+                        area_layer_id: area_layer_id
                     },
                     success: function (msg) {
                         if (msg == "Success") {
-                            toastr.success('数据新增成功!');
+                            toastr.success('数据修改成功!');
                             $('#groupAddEditModal').modal('hide');
                             $('#group').bootstrapTable('refresh');
+                            $('#levelTable').bootstrapTable('refresh');
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -423,13 +438,16 @@
                         name_en: name_en,
                         name_tw: name_tw,
                         name_cn: name_cn,
-                        description: description
+                        description: description,
+                        upper_id: upper_id,
+                        area_layer_id: area_layer_id
                     },
                     success: function (msg) {
                         if (msg == "Success") {
                             toastr.success('数据新增成功!');
                             $('#groupAddEditModal').modal('hide');
                             $('#group').bootstrapTable('refresh');
+                            $('#levelTable').bootstrapTable('refresh');
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -691,13 +709,18 @@
         //设备操作栏的格式化
         function machineActionFormatter(value, row, index) {
             var result = "";
-            result += "<a href='/MachineBind/Index' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
+            result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
             result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
         //Tag点绑定，设备编辑，设备删除
         window.machineOperateEvents = {
+            //Tag点绑定
+            "click #tagBind": function (e, value, row, index) {
+                window.location.href = '/MachineBind/Index?machine_id=' + row.id + '&machine_name_cn=' + row.name_cn + '&machine_description='+row.description+'';
+            },
+
             //设备编辑
             "click #machineEdit": function (e, value, row, index) {
                 document.getElementById("idMachine").value = row.id;
@@ -706,17 +729,12 @@
                 document.getElementById("enMachine").value = row.name_en;
                 document.getElementById("twMachine").value = row.name_tw;
                 document.getElementById("descriptionMachine").value = row.description;
-                $("#machineFatherAdd").empty();
-                //父级名称下拉框
-                GetFatherName("machineFatherAdd");
-                GetLevelNodeFunc(row.area_layer_id, "machineFatherContentAdd");
-                console.log("更新前");
-                $("#machineFatherContentAdd").val("" + row.area_node_id + "").select2();
-                var area_layer_id = $("#machineFatherAdd").find("option:selected").val();
-                var area_node_id = $("#machineFatherContentAdd").find("option:selected").val();
-                console.log("更新后");
-                console.log(area_layer_id);
-                console.log(area_node_id);
+
+                $("#machineFatherAdd").val('' + row.area_layer_id + '').select2();
+                $("#machineFatherContentAdd").empty();
+                GetFatherName("machineFatherContentAdd", "area_node", row.area_layer_id);
+                $("#machineFatherContentAdd").val('' + row.area_node_id + '').select2();
+
             },
             //设备删除
             "click #machineDelete": function (e, value, row, index) {
@@ -777,11 +795,14 @@
             }
         }
         //获取父级名称 area_layer
-        function GetFatherName(machineFatherName) {
+        function GetFatherName(machineFatherName, urlPara, area_layer_id) {
             $.ajax({
+                type: "POST",
                 url: '/LevelsConfig/GetLevel',
-                type: "get",
-                async: true,
+                data: {
+                    urlPara: urlPara,
+                    area_layer_id: area_layer_id
+                },
                 success: function (data) {
                     if (machineFatherName == 'machineFatherAdd') {
                         $("#" + machineFatherName + "").append('<option  value=-1>-请选择-</option>');
@@ -817,7 +838,11 @@
             document.getElementById("twMachine").value = "";
             document.getElementById("cnMachine").value = "";
             document.getElementById("descriptionMachine").value = "";
-            GetFatherName("machineFatherAdd");
+            //获取选项
+            $('#machineFatherAdd').empty();
+            GetFatherName("machineFatherAdd", "area_layer", 0);
+            $('#machineFatherContentAdd').empty();
+            $("#machineFatherContentAdd").append('<option  value=-1>-请选择-</option>');
         }
         //设备新增修改动作的提交
         function machineConfirm() {
@@ -861,6 +886,114 @@
 
         }
 
+        //中间层级切换
+        function changeLevel(area_layer_upper_id, area_layer_id) {
+            //给新增修改模态框中的upper_id和area_layer_id赋值
+            document.getElementById("modal_area_layer_id").value = area_layer_id;
+            //群组下的层级增加层级内容下拉框
+            document.getElementById("modalFatherSelect").style.display = "block";
+            if (area_layer_upper_id == 1) {
+                document.getElementById("fatherLevelName").innerHTML = "群组";
+            }
+            else {
+                document.getElementById("fatherLevelName").innerHTML = document.getElementById("" + area_layer_upper_id + "").innerHTML;
+            }
+            //修改下拉框中的值
+            $("#modal_upper_id").empty();
+            $("#modal_upper_id").append('<option  value=-1>-请选择-</option>');
+            $.ajax({
+                url: '/LevelsConfig/GetGroup',
+                type: "Post",
+                data: {
+                    area_layer_id: area_layer_upper_id,
+                },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#modal_upper_id").append('<option value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+
+            //修改模态框中标签名称，使之与层级名称一致   
+            document.getElementById("enLabel").innerHTML = document.getElementById("" + area_layer_id+"").innerHTML+"（英文）";
+            document.getElementById("cnLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（简中）";
+            document.getElementById("twLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（繁体）";
+            document.getElementById("descriptionLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（描述）";
+            //中间层级表格数据添加
+            $('#levelTable').bootstrapTable({
+                url: '/LevelsConfig/GetGroup?area_layer_id='+area_layer_id+'',
+                method: 'get',
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 12,//每页的记录行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#levelTable').bootstrapTable('getOptions');
+                        return index + 1;
+                    }
+                }, {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                }, {
+                    field: 'name_cn',
+                    title: '名称'
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: groupActionFormatter,
+                    events: groupOperateEvents
+                }, {
+                    field: 'level',
+                    title: '层级跳转',
+                    formatter: levelFormatter
+                }]
+            }); 
+            //中间层级切换时刷新表格
+            $('#levelTable').bootstrapTable('refresh', { url: "/LevelsConfig/GetGroup?area_layer_id=" + area_layer_id + "" });
+            //每次切换后先将下拉框数据清空然后再加载
+            $("#levelSelect").empty();   
+            //查询数据
+            $.ajax({
+                url: '/LevelsConfig/GetGroup',
+                type: "Post",
+                data: {
+                    area_layer_id: area_layer_upper_id,
+                },
+                success: function (data) {
+                    $("#levelSelect").append('<option  value=-1>-请选择-</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#levelSelect").append('<option value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+
+        }
+        //中间层级查询
+        function levelSearch() {
+            //名称
+            var id = $("#levelSelect").find("option:selected").val();
+            //筛选
+            if (id == -1) {
+                $('#levelTable').bootstrapTable('filterBy', {});
+            } else {
+                
+                $('#levelTable').bootstrapTable('filterBy', {
+                    upper_id: parseInt(id)
+                });
+            }
+        }
 
         //群组跳转
         function levelFormatter(value, row, index) {
@@ -917,6 +1050,7 @@
                         toastr.success('删除数据成功!');
                         $('#myDelModal').modal('hide');
                         $('#group').bootstrapTable('refresh');
+                        $('#levelTable').bootstrapTable('refresh');
                     } else {
                         toastr.error('执行失败!');
                     }
@@ -948,7 +1082,7 @@
                     <ul class='nav nav-tabs'>
                         <!--群组-->
                         <li class='@if (ViewBag.tab==1) {<text></text> }else{<text>active</text>}'>
-                            <a data-toggle='tab' href='#tab1'>
+                            <a data-toggle='tab' href='#tab1' onclick="changeGroup()">
                                 <i class='icon-home'></i>
                                 群组
                             </a>
@@ -959,8 +1093,8 @@
                             for (var i=1;i< ViewBag.Layer.Count; i++)
                             {
                                 <li>
-                                    <a data-toggle="tab" href="#tab3">
-                                        @ViewBag.Layer[i].name_cn
+                                    <a data-toggle="tab" href="#tab3" onclick="changeLevel(@ViewBag.Layer[i-1].id,@ViewBag.Layer[i].id)">
+                                        <span id="@ViewBag.Layer[i].id">@ViewBag.Layer[i].name_cn</span>
                                         <i class="icon-chevron-right"></i>
                                     </a>
                                 </li>
@@ -996,26 +1130,22 @@
                         </div>
                         <!--各层级-->
                         <div class='tab-pane' id='tab3'>
-                            <form class="form-inline">
+                            <div class="form-inline">
                                 <div class="form-group">
-                                    <label class="control-label">群组</label>
+                                    <label class="control-label">名称</label>
                                 </div>
                                 <div class="form-group">
-                                    <select class="select2" id="city">
-                                        <option value="0">-请选择-</option>
-                                        <option value="1">Group1</option>
-                                        <option value="2">Group2</option>
-                                        <option value="3">Group3</option>
+                                    <select class="select2" id="levelSelect">
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                                    <button type="submit" class="btn btn-primary" onclick="levelSearch()"><span class="icon-search"> 查询</span></button>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-primary" data-toggle='modal' data-target='#myAddEditModal' onclick="Add()"><span class="icon-plus"> 新增</span></button>
+                                    <button class="btn btn-primary" data-toggle='modal' data-target='#groupAddEditModal' onclick="AddGroup()"><span class="icon-plus"> 新增</span></button>
                                 </div>
-                            </form>
-                            <table class="table" id="cityTable"></table>
+                            </div>
+                            <table class="table" id="levelTable"></table>
                         </div>
                         <!--设备-->
                         <div class='@if (ViewBag.tab==1) {<text>tab-pane active</text> }else{<text>tab-pane</text> }' id='tab2' >
@@ -1111,20 +1241,31 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" class="span12" id="idGroup" name="idGroup" />
+                        <input type="hidden" class="span12" id="modal_area_layer_id" value="1" />
+
+                        <div id="modalFatherSelect" style="display: block;padding-bottom: 10px;">
+                            <div class="form-group">
+                                <label class="control-label" id="fatherLevelName"></label>
+                            </div>
+                            <div class="form-group">
+                                <select class="select2" id="modal_upper_id" style="width:100%">
+                                </select>
+                            </div>
+                        </div>
                         <div class="control-group">
-                            <label class="control-label">群组（英）</label>
+                            <label class="control-label" id="enLabel">群组（英）</label>
                             <input class="span12" type="text" id="enGroup" />
                         </div>
                         <div class="control-group">
-                            <label class="control-label">群组（简中）</label>
+                            <label class="control-label" id="cnLabel">群组（简中）</label>
                             <input class="span12" type="text" id="cnGroup" />
                         </div>
                         <div class="control-group">
-                            <label class="control-label">群组（繁中）</label>
+                            <label class="control-label" id="twLabel">群组（繁中）</label>
                             <input class="span12" type="text" id="twGroup" />
                         </div>
                         <div class="control-group">
-                            <label class="control-label">描述</label>
+                            <label class="control-label" id="descriptionLabel">群组（描述）</label>
                             <input class="span12" type="text" id="descriptionGroup" />
                         </div>
                     </div>
@@ -1342,9 +1483,7 @@
                         </div>
                         <div class="control-group">
                             <select class="select2 span12" id="machineFatherAdd" onchange="GetLevelNodeFunc(this.options[this.options.selectedIndex].value,'machineFatherContentAdd')" style="width:100%">
-                                <option value="1">-请选择1-</option>
-                                <option value="2">-请选择2-</option>
-                                <option value="3">-请选择3-</option>
+                                
                             </select>
                         </div>
                         <div class="control-group">
@@ -1383,7 +1522,6 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
         </div>
-
         <!-- 公用删除模态框（Modal） -->
         <div class="modal fade" id="myDelModal" style="display:none">
             <div class="modal-dialog">
