@@ -70,7 +70,17 @@
                     title: '接单人'
                 },{
                     field: 'start_time',
-                    title: '发生时间'
+                        title: '发生时间',
+                     formatter: function (value, row, index)
+                    {
+                        var start_time = row.start_time.toString();
+                          if (start_time == "0001-01-01T08:00:00+08:00") {
+                              return "--"
+                          }  else {
+                              return  row.start_time;
+                          }
+                      
+                 },
                 }, {
                     field: 'actionEvent',
                     title: '接单',

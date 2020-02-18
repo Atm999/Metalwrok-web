@@ -1,31 +1,22 @@
 ﻿@{
-    @model Model.error_log
+    @model Model.machinelease
 }
 <!DOCTYPE html>
 <html>
 <head>
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
-    <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
     <script type='text/javascript'>
-        getOption();
-        getOptionError();
-        getOptionErrorDetail();
+         getOption();
         $(document).ready(function () {
+            $("#machine_id").select2();
             $("#machine_name").select2();
-            $("#error_type_name").select2();
-            $("#error_type_detail_name").select2();
-             $("#error_name").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
-
         $(function () {
-           $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(7)').addClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(7)').removeClass('active');
-
+         $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(8)').addClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -39,7 +30,7 @@
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
             $('#table').bootstrapTable({
-                url: '/ErrorMaintenance/GetData',
+                url: '/machinelease/GetData',
                 method: 'get',
                 theadClasses: "thead-blue",
                 pagination: true,
@@ -48,33 +39,24 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
-                    field: 'no',
+                     field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return index + 1;
+                        return  index + 1;
                     }
                 }, {
-                    field: 'error_type_name',
-                    title: '异常名称'
+                    field: 'machine.name_cn',
+                    title: '设备名称'
                 }, {
-                    field: 'machine_name',
-                    title: '设备名'
+                    field: 'unit_price',
+                    title: '租赁价格'
                 }, {
-                    field: 'work_order',
-                    title: '工单'
+                    field: 'total_price',
+                    title: '预存金额'
                 }, {
-                    field: 'part_number',
-                    title: '机种'
-                }, {
-                    field: 'responsible_name',
-                    title: '责任人'
-                }, {
-                    field: 'error_type_detail_name',
-                    title: '异常代码说明'
-                },{
                     field: 'start_time',
-                    title: '发生时间',
+                    title: '租赁开始时间',
                      formatter: function (value, row, index)
                     {
                         var start_time = row.start_time.toString();
@@ -85,16 +67,18 @@
                           }
                       
                  },
-                },{
-                    field: 'release_time',
-                        title: '解除时间',
-                       formatter: function (value, row, index)
+                }, {
+                    field: 'type',
+                        title: '计算模式',
+                      formatter: function (value, row, index)
                     {
-                        var release_time = row.release_time.toString();
-                          if (release_time == "0001-01-01T08:00:00+08:00") {
-                              return "--"
-                          }  else {
-                              return  row.release_time;
+                        var type = row.type;
+                          if (type == 0) {
+                              return "按月计费"
+                          } else if (type == 1) {
+                              return "余额计费";
+                          } else {
+                              return "--";
                           }
                       
                  },
@@ -113,35 +97,45 @@
             var id = value;
             var result = "";
             result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-             // result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                 document.getElementById("error_config_id").value = row.error_config_id;
-                document.getElementById("error_type_name").value = row.error_type_name;
-                document.getElementById("error_type_detail_name").value = row.error_type_detail_name;
-                document.getElementById("defectives_count").value = row.defectives_count;
-                document.getElementById("description").value = row.description;
+                $("#machine_id").attr('value', row.machine_id);
+                $("#machine_id").select2();
+                document.getElementById("unit_price").value = row.unit_price;
+                document.getElementById("type").value = row.type;
+                 document.getElementById("total_price").value = row.total_price;
                 $('#myEditModal').modal('show');
             },
-             'click .remove': function (e, value, row, index) {
+            'click .remove': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
                 $('#myDelModal').modal('show');
 
             }
         };
-         function Delete() {
+
+        function clean() {
+            $('#myEditModal').modal('show');
+            document.getElementById("id").value = 0;
+            document.getElementById("machine_id").value = 0;
+            document.getElementById("unit_price").value = 0;
+            document.getElementById("type").value = -1;
+            document.getElementById("total_price").value = 0;
+        }
+
+        function Delete() {
             var id = $('#id').val();
-            var error = {
+            var lease = {
                 id: id
             };
             $.ajax({
                 type: "POST",
-                url: "/ErrorMaintenance/Delete",
-                data: JSON.stringify(error),
+                url: "/machinelease/Delete",
+                data: JSON.stringify(lease),
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
                 success: function (msg) {
@@ -160,24 +154,22 @@
         }
         function finish() {
             var id = $('#id').val();
-            var error_config_id = $('#error_config_id').val();
-            var error_type_name = $('#error_type_name').val();
-            var error_type_detail_name = $('#error_type_detail_name').val();
-            var defectives_count = $('#defectives_count').val();
-            var description = $('#description').val();
-            var dept = {
+            var machine_id =$('#machine_id').val();
+            var unit_price = $('#unit_price').val();
+            var type =$('#type').val();
+            var total_price = $('#total_price').val();
+            var lease = {
                 id: id,
-                error_config_id:error_config_id,
-                error_type_name: error_type_name,
-                error_type_detail_name: error_type_detail_name,
-                defectives_count: defectives_count,
-                description:description
+                machine_id: machine_id,
+                unit_price: parseInt(unit_price),
+                type:parseInt(type),
+                total_price:total_price
             };
-
+            if (id != 0) {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorMaintenance/Update",
-                    data: JSON.stringify(dept),
+                    url: "/machinelease/Update",
+                    data: JSON.stringify(lease),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
@@ -186,87 +178,66 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            toastr.error('执行失败!');
+                           toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                         toastr.error('执行失败!');
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/machinelease/Add",
+                    data: JSON.stringify(lease),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据新增成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                             toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
                 });
 
-        }
-        function clean() {
-            document.getElementById("id").value = 0;
-            document.getElementById("error_type_name").value = "";
-            document.getElementById("error_type_detail_name").value = "";
-            document.getElementById("defectives_count").value = 0;
-             document.getElementById("description").value = "";
-            $('#myEditModal').modal('show');
+            }
 
         }
+
+
         function search() {
-             var error_name = $("#error_name option:checked").text();
-             var wo = $("#wo").val();
-             var machine_name = $("#machine_name option:checked").text();
-             $('#table').bootstrapTable('filterBy', { error_type_name: error_name, work_order: wo,machine_name:machine_name },
+            var machine_name = $("#machine_name").val();
+             $('#table').bootstrapTable('filterBy', { machine_name: machine_name  },
                 {
                     //自定义刷选函数
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
-                        var result2 = true;//定义一个返回结果
-                        var result3 = true;//定义一个返回结果
-                        if (filters.error_type_name != "请选择") //如果user_name不为空，则进行判断，否则不管
+                        if (filters.machine_name != "") //如果user_name不为空，则进行判断，否则不管
                         {
-                            result1 = filters.error_type_name == row.error_type_name;
+                            result1 = filters.machine_name == row.machine_id;
                         }
-                        if (filters.work_order != "") 
-                        {
-                            result2 = filters.work_order == row.work_order;
-                        }
-                         if (filters.machine_name != "请选择") //如果user_name不为空，则进行判断，否则不管
-                        {
-                            result3 = filters.machine_name == row.machine_name;
-                        }
-                        return result1 && result2 && result3;
+                        return result1;
                     }
                 });
         }
         function getOption() {
             $.ajax({
                 type: "get",
-                url: '/ErrorMaintenance/Getmachine',
+                url: '/machinelease/Getmachine',
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         $("#machine_name").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                         $("#machine_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
         }
-        function getOptionError() {
-            $.ajax({
-                type: "get",
-                url: '/ErrorMaintenance/Geterror',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#error_type_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
-                         $("#error_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
-                    }
-                }
-            });
-        }
-        function getOptionErrorDetail() {
-            $.ajax({
-                type: "get",
-                url: '/ErrorMaintenance/Geterrordetail',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#error_type_detail_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
-                    }
-                }
-            });
-        }
+
     </script>
 </head>
 <body>
@@ -274,9 +245,9 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a href="#" style="color:#008FD7;font-weight:600"><span>异常处理</span></a>
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>异常信息维护</span>
+                    <span>设备租赁价格</span>
                 </div>
 
 
@@ -288,14 +259,6 @@
             <div class="box-content box-padding">
                 <form class="form-inline">
                     <div class="form-group">
-                        <label class="sr-only" for="name">异常名称</label>
-                    </div>
-                    <div class="form-group">
-                        <select class="select2" id="error_name">
-                            <option value="">请选择</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label class="sr-only" for="name">设备名称</label>
                     </div>
                     <div class="form-group">
@@ -303,15 +266,8 @@
                             <option value="">请选择</option>
                         </select>
                     </div>
-
                     <div class="form-group">
-                        <label class="sr-only" for="name">工单</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="wo" name="wo" class="span11" />
-                    </div>
-                    <div class="form-group">
-                        <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                        <button onclick="search()" type="submit" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
                     </div>
                 </form>
 
@@ -321,11 +277,17 @@
     <div class='row-fluid'>
         <div class='span12 box bordered-box'>
             <div class="box-content box-padding">
+
+                <div style="padding:14px 0px">
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="clean()" data-toggle='modal'><span class="icon-plus"> 新增</span></button>
+                    </div>
+                </div>
+
                 <table class="table" id="table"></table>
             </div>
-
             <!-- 编辑模态框（Modal） -->
-            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+            <div class="modal fade" id="myEditModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -333,38 +295,39 @@
                                 &times;
                             </button>
                             <h4 class="modal-title" id="myModalLabel">
-                                维护异常信息
+                                新增/编辑
                             </h4>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
-                            <input type="hidden" class="span12" id="error_config_id" name="error_config_id" />
                             <div class="control-group">
-                                <label class="control-label">异常类别名称</label>
-                                <select class="select2 span12" id="error_type_name" style="width:100%">
+                                <label class="control-label">设备编码</label>
+                                <select class="select2 span12" id="machine_id" name="machine_id" style="width:100%">
                                     <option value="0">请选择</option>
                                 </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">异常代码说明</label>
-                                <select class="select2 span12" id="error_type_detail_name" style="width:100%">
-                                    <option value="0">请选择</option>
+                                <label class="control-label">预存费用</label>
+                                <input class="span12" type="text" id="total_price" name="total_price" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">计算模式</label>
+                                <select class="select2 span12" id="type" name="type" style="width:100%">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">按月计费</option>
+                                    <option value="1">余额计费</option>
                                 </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">不良数量</label>
-                                <input class="span12" type="text" id="defectives_count" name="defectives_count" />
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">发生问题描述</label>
-                                <input class="span12" type="text" id="description" name="description" />
+                                <label class="control-label">租赁单价/小时</label>
+                                <input class="span12" type="text" id="unit_price" name="unit_price" />
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 取消
                             </button>
-                            <button onclick="finish()" class="btn btn-primary">
+                            <button type="button" onclick="finish()" class="btn btn-primary">
                                 确认
                             </button>
                         </div>
@@ -372,7 +335,7 @@
                 </div><!-- /.modal -->
             </div>
             <!-- 删除模态框（Modal） -->
-            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

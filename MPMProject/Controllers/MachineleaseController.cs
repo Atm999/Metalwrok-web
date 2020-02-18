@@ -7,20 +7,18 @@ using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-
 namespace MPMProject.Controllers
 {
-    public class ErrorMaintenanceController : BaseController
+    public class MachineleaseController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/"; 
-
+        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
         }
         public JsonResult GetData()
-        {//
-            url = url + "api/v1/configuration/andon/error_log?status=3";
+        {
+            url = url + "api/v1/configuration/oee/machine_lease_detail";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -38,50 +36,6 @@ namespace MPMProject.Controllers
                     break;
             }
             return Json(jo["data"]);
-        }
-
-        public IActionResult Update([FromBody]error_log log)
-        {
-            url = url + "api/v1/configuration/andon/error_log" ;
-            var postData = JsonConvert.SerializeObject(log);
-            string result = PutUrl(url, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json("Success");
-        }
-        public IActionResult Delete([FromBody]machinelease lease)
-        {
-            url = url + "api/v1/configuration/andon/error_log?id=" + lease.id.ToString();
-            string result = DeleteUrl(url);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json("Success");
         }
 
         public JsonResult Getmachine()
@@ -105,15 +59,17 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
-        public JsonResult Geterror()
+
+        public IActionResult Update([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/andon/error_type";
-            string result = GetUrl(url);
+            url = url + "api/v1/configuration/oee/machine_lease";
+            var postData = JsonConvert.SerializeObject(lease);
+            string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
-                    Json(jo["data"]);
+                    Json("Success");
                     break;
                 case 400:
                     break;
@@ -124,17 +80,20 @@ namespace MPMProject.Controllers
                 default:
                     break;
             }
-            return Json(jo["data"]);
+            return Json("Success");
         }
-        public JsonResult Geterrordetail()
+        public IActionResult Add([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/andon/error_type_detail";
-            string result = GetUrl(url);
+            url = url + "api/v1/configuration/oee/machine_lease";
+            var time = DateTime.UtcNow;
+            lease.start_time = time;
+            var postData = JsonConvert.SerializeObject(lease);
+            string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
-                    Json(jo["data"]);
+                    Json("Success");
                     break;
                 case 400:
                     break;
@@ -145,7 +104,29 @@ namespace MPMProject.Controllers
                 default:
                     break;
             }
-            return Json(jo["data"]);
+            return Json("Success");
+        }
+
+        public IActionResult Delete([FromBody]machinelease lease)
+        {
+            url = url + "api/v1/configuration/oee/machine_lease?id=" + lease.id.ToString();
+            string result = DeleteUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json("Success");
         }
     }
 }
