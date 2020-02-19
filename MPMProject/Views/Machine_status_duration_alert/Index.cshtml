@@ -1,0 +1,419 @@
+﻿@{
+    @model Model.machine_status_duration_alert
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
+    <script type='text/javascript'>
+        getOption();
+        getOptiongroup();
+        $(document).ready(function () {
+            $("#machine").select2();
+            $("#machine_id").select2();
+            $("#notice_group_id").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+
+        });
+
+        $(function () {
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4)').addClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(4)').removeClass('active');
+            toastr.options = {
+                "closeButton": true,//显示关闭按钮
+                "positionClass": "toast-bottom-right",//弹出的位置
+                "showDuration": "300",//显示的时间
+                "hideDuration": "1000",//消失的时间
+                "timeOut": "5000",//停留的时间
+                "extendedTimeOut": "1000",//控制时间
+                "showEasing": "swing",//显示时的动画缓冲方式
+                "hideEasing": "linear",//消失时的动画缓冲方式
+                "showMethod": "fadeIn",//显示时的动画方式
+                "hideMethod": "fadeOut"//消失时的动画方式
+            };
+            $('#table').bootstrapTable({
+                url: '/machine_status_duration_alert/GetData',
+                method: 'get',
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#table').bootstrapTable('getOptions');
+                        return index + 1;
+                    }
+                }, {
+                    field: 'machine.name_cn',
+                    title: '设备名'
+                }, {
+                    field: 'machine_status',
+                    title: '状态'
+                }, {
+                    field: 'notice_type',
+                        title: '通知方式',
+                     formatter: function (value, row, index)
+                    {
+                        var notice_type = row.notice_type;
+                         if (notice_type == 0) {
+                             return "微信"
+                         } else if (notice_type == 1) {
+                             return "邮件";
+                         } else if (notice_type == 2) {
+                             return "微信&邮件";
+                         } else {
+                             return "--";
+                         }
+                      
+                 },
+                }, {
+                    field: 'duration',
+                    title: '持续时间',
+                }, {
+                    field: 'notice_group.name_cn',
+                    title: '通知群组'
+                }, {
+                    field: 'enable',
+                        title: '启用',
+                      formatter: function (value, row, index)
+                    {
+                        var enable = row.enable;
+                          if (enable == true) {
+                              return "是"
+                          } else if (enable == false) {
+                              return "否";
+                          } else {
+                              return "--";
+                          }
+                      
+                 },
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter,
+                    events: operateEvents
+                }]
+            });
+        });
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $("#machine_id").attr('value', row.machine_id);
+                $("#machine_id").select2();
+                $("#machine_status").attr('value', row.machine_status);
+                $("#machine_status").select2();
+                document.getElementById("duration").value = row.duration;
+                $("#notice_type").attr('value', row.notice_type);
+                $("#notice_type").select2();
+                $("#enable").attr('value', row.enable);
+                $("#enable").select2();
+                $("#notice_group_id").attr('value', row.notice_group_id);
+                $("#notice_group_id").select2();
+
+                $('#myEditModal').modal('show');
+            },
+            'click .remove': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $('#myDelModal').modal('show');
+            }
+        };
+        function clean() {
+            $('#myEditModal').modal('show');
+            document.getElementById("id").value = 0;
+            document.getElementById("machine_id").value = 0;
+             document.getElementById("duration").value = 0;
+            document.getElementById("machine_status").value ="";
+            document.getElementById("notice_type").value = 0;
+            document.getElementById("enable").value = 0;
+            document.getElementById("notice_group_id").value = 0;
+
+        }
+        function Delete() {
+            var id = $('#id').val();
+            var person = {
+                id: id
+            };
+            $.ajax({
+                type: "POST",
+                url: "/machine_status_duration_alert/Delete",
+                data: JSON.stringify(person),
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('数据删除成功!');
+                        $('#myDelModal').modal('hide');
+                        $('#table').bootstrapTable('refresh');
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+
+        }
+        function finish() {
+            var id = $('#id').val();
+            var machine_id = $('#machine_id').val();
+            var machine_status = $('#machine_status').val();
+            var duration = $('#duration').val();
+            var notice_type = $('#notice_type').val();
+            var enable = $('#enable').val();
+            var notice_group_id = $('#notice_group_id').val();
+
+            var ec = {
+                id: id,
+                machine_id: parseInt(machine_id),
+                machine_status: machine_status,
+                duration:parseInt(duration),
+                notice_type: parseInt(notice_type),
+                enable: eval(enable),
+                notice_group_id: parseInt(notice_group_id),
+            };
+            if (id != 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/machine_status_duration_alert/Update",
+                    data: JSON.stringify(ec),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据更新成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/machine_status_duration_alert/Add",
+                    data: JSON.stringify(ec),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据新增成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            }
+        }
+        function search() {
+            var machine_id = $("#machine").val();
+            $('#table').bootstrapTable('filterBy', { machine_id: machine_id },
+                {
+                    //自定义刷选函数
+                    'filterAlgorithm': function (row, filters) {
+                        var result1 = true;//定义一个返回结果
+                        if (filters.machine_id != 0) //如果user_name不为空，则进行判断，否则不管
+                        {
+                            result1 = filters.machine_id == row.machine_id;
+                        }
+                        return result1;
+                    }
+                });
+        }
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/machine_status_duration_alert/Getmachine',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machine").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#machine_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+        function getOptiongroup() {
+            $.ajax({
+                type: "get",
+                url: '/machine_status_duration_alert/Getgroup',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#notice_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>预警配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>机台状态持续时间预警</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+
+                    <div class="form-group">
+                        <label class="sr-only" for="name">设备</label>
+                    </div>
+
+                    <div class="form-group">
+                        <select class="select2" id="machine">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="search()" type="submit" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+
+                <div style="padding:14px 0px">
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="clean()" data-toggle='modal'><span class="icon-plus"> 新增</span></button>
+                    </div>
+                </div>
+
+                <table class="table" id="table"></table>
+            </div>
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增/编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
+                            <div class="control-group">
+                                <label class="control-label">设备名</label>
+                                <select class="select2 span12" id="machine_id" name="machine_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">状态</label>
+                                <select class="select2 span12" id="machine_status" name="machine_status" style="width:100%">
+                                    <option value="Run">Run</option>
+                                    <option value="Error">Error</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">持续时间</label>
+                                <input class="span12" type="text" id="duration" name="duration" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">通知方式</label>
+                                <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">微信</option>
+                                    <option value="1">邮件</option>
+                                    <option value="2">微信&邮件</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">通知群组</label>
+                                <select class="select2 span12" id="notice_group_id" name="notice_group_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">是否启用</label>
+                                <select class="select2 span12" id="enable" name="enable" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="true">是</option>
+                                    <option value="false">否</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    取消
+                                </button>
+                                <button type="button" onclick="finish()" class="btn btn-primary">
+                                    确认
+                                </button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" onclick="Delete()" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
