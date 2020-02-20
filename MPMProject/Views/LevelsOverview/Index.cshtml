@@ -63,7 +63,7 @@
                             bottom: '2%',
                             right: '20%',
                             symbol: 'rect',                       // 矩形标记
-                            symbolSize: [180, 50],
+                            symbolSize: [140, 50],
                             initialTreeDepth: 10,
                             itemStyle: {
 
@@ -81,7 +81,7 @@
                                     position: 'right',
                                     verticalAlign: 'middle',
                                     fontSize: 17,
-                                    offset: [-180, 0],             // 文本偏移量
+                                    offset: [-140, 0],             // 文本偏移量
                                     color: '#2F4157',
                                     align: 'left'
                                 }
@@ -106,7 +106,7 @@
                 var height = window.innerHeight;
                 var currentHeight = 80 * allNode;
                 var newWidth = Math.max(currentHeight, height);
-                //container.style.width = window.innerWidth + 'px';
+                container.style.width = window.innerWidth-60 + 'px';
                 container.style.height = newWidth + 'px';
                 myEchart.resize();
 

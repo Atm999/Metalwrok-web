@@ -49,10 +49,6 @@
                     title: '操作',
                     formatter: groupActionFormatter,
                     events: groupOperateEvents
-                }, {
-                    field: 'level',
-                    title: '层级跳转',
-                    formatter: levelFormatter
                 }]
             });        
             //设备绑定中，已绑定的设备
@@ -98,6 +94,46 @@
             });
             //所有未绑定的设备
             GetUnBindMachine();
+            //中间层级表格数据添加
+            $('#levelTable').bootstrapTable({
+                url: '/LevelsConfig/GetGroup?area_layer_id=1',
+                method: 'get',
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 12,//每页的记录行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#levelTable').bootstrapTable('getOptions');
+                        return index + 1;
+                    }
+                }, {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                }, {
+                    field: 'area_node_name',
+                    title: '父级'
+                }, {
+                    field: 'name_cn',
+                    title: '名称'
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: groupActionFormatter,
+                    events: groupOperateEvents
+                }]
+            }); 
             //所有设备
             $('#machineAll').bootstrapTable({
                 url: '/LevelsConfig/GetMachineList',
@@ -130,6 +166,9 @@
                     field: 'area_node_id',
                     title: 'area_node_id',
                     visible: false
+                },{
+                    field: 'area_node_name',
+                    title: '父级'
                 }, {
                     field: 'name_cn',
                     title: '设备名称'
@@ -141,10 +180,6 @@
                     title: '操作',
                     formatter: machineActionFormatter,
                     events: machineOperateEvents
-                }, {
-                    field: 'level',
-                    title: '层级跳转',
-                    formatter: machineLevelFormatter
                 }]
             });            
         });
@@ -383,6 +418,8 @@
             document.getElementById("cnLabel").innerHTML = "群组（简中）";
             document.getElementById("twLabel").innerHTML = "群组（繁体）";
             document.getElementById("descriptionLabel").innerHTML = "群组（描述）";
+            //群组下的层级增加层级内容下拉框
+            document.getElementById("modalFatherSelect").style.display = "none";
         }
         //群组新增
         function AddGroup() {
@@ -760,7 +797,7 @@
                         
                     $('#machineAll').bootstrapTable('filterBy', {
                         name_cn: machine_name
-                    });
+                    }, { 'silent': true });
                 }
             }
             else {
@@ -794,6 +831,13 @@
                 }
             }
         }
+        //当切换到设备页后，自动刷新设备的table
+        function machineRefresh() {
+            $('#machineAll').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineList" });
+            //父级名称下拉框
+            GetFatherName("machineFatherSearch", "area_layer", 0);
+            document.getElementById("machineName").value = "";
+        }
         //获取父级名称 area_layer
         function GetFatherName(machineFatherName, urlPara, area_layer_id) {
             $.ajax({
@@ -804,6 +848,10 @@
                     area_layer_id: area_layer_id
                 },
                 success: function (data) {
+                    $("#machineFatherSearch").empty();
+                    $("#machineFatherSearch").append('<option  value=-1>-请选择-</option>');
+                    $("#machineFatherContentSearch").empty();
+                    $("#machineFatherContentSearch").append('<option  value=-1>-请选择-</option>');
                     if (machineFatherName == 'machineFatherAdd') {
                         $("#" + machineFatherName + "").append('<option  value=-1>-请选择-</option>');
                     }
@@ -919,47 +967,8 @@
             document.getElementById("cnLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（简中）";
             document.getElementById("twLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（繁体）";
             document.getElementById("descriptionLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（描述）";
-            //中间层级表格数据添加
-            $('#levelTable').bootstrapTable({
-                url: '/LevelsConfig/GetGroup?area_layer_id='+area_layer_id+'',
-                method: 'get',
-                theadClasses: "thead-blue",
-                striped: true,  //表格显示条纹，默认为false
-                pagination: true,
-                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
-                pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 12,//每页的记录行数（*）
-                undefinedText: '---', //当数据为 undefined 时显示的字符
-                paginationDetailHAlign: 'left',
-                toolbarAlign: 'right',
-                columns: [{
-                    field: 'no',
-                    title: '序号',
-                    formatter: function (value, row, index) {
-                        var options = $('#levelTable').bootstrapTable('getOptions');
-                        return index + 1;
-                    }
-                }, {
-                    field: 'id',
-                    title: 'id',
-                    visible: false
-                }, {
-                    field: 'name_cn',
-                    title: '名称'
-                }, {
-                    field: 'description',
-                    title: '描述'
-                }, {
-                    field: 'actionEvent',
-                    title: '操作',
-                    formatter: groupActionFormatter,
-                    events: groupOperateEvents
-                }, {
-                    field: 'level',
-                    title: '层级跳转',
-                    formatter: levelFormatter
-                }]
-            }); 
+
+            $('#levelTable').bootstrapTable('filterBy', {});
             //中间层级切换时刷新表格
             $('#levelTable').bootstrapTable('refresh', { url: "/LevelsConfig/GetGroup?area_layer_id=" + area_layer_id + "" });
             //每次切换后先将下拉框数据清空然后再加载
@@ -995,44 +1004,6 @@
             }
         }
 
-        //群组跳转
-        function levelFormatter(value, row, index) {
-            var id = value;
-            var result = "";
-            result += "<a href='javascript:;'><span style='color:#C8C8C8'>上一级</span></a>";
-            result += "丨";
-            result += "<a data-toggle='tab' href='#tab2' onclick=\"JumpToDown()\"><span>下一级</span></a>";
-            return result;
-        }
-        //层级跳转
-        function centerLevelFormatter(value, row, index) {
-            var id = value;
-            var result = "";
-            result += "<a data-toggle='tab' href='#tab1' onclick=\"JumpToUp()\"><span>上一级</span></a>";
-            result += "丨";
-            result += "<a data-toggle='tab' href='#tab2' onclick=\"JumpToDown()\"><span>下一级</span></a>";
-            return result;
-        }
-        //设备跳转
-        function machineLevelFormatter(value, row, index) {
-            var id = value;
-            var result = "";
-            result += "<a data-toggle='tab' href='#tab1' onclick=\"JumpToUp()\"><span>上一级</span></a>";
-            result += "丨";
-            result += "<a href='javascript:;'><span  style='color:#C8C8C8'>下一级</span></a>";
-            return result;
-        }
-
-        //层级跳转（下一级）
-        function JumpToDown() {
-            $('#tabAll ul li').removeClass('active');
-            $('#tabAll ul li:nth-of-type(3)').addClass('active');
-        }
-        //层级跳转（上一级）
-        function JumpToUp() {
-            $('#tabAll ul li').removeClass('active');
-            $('#tabAll ul li:nth-of-type(1)').addClass('active');
-        }
          
         //删除（共用）
         function Delete() {
@@ -1104,7 +1075,7 @@
                         <!--设备-->
                         <li class='@if (ViewBag.tab==1) {<text>active</text> }'>
 
-                            <a data-toggle='tab' href='#tab2'>
+                            <a data-toggle='tab' href='#tab2' onclick="machineRefresh()">
 
                                 <i class='icon-desktop'></i>
                                 设备

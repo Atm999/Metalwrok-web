@@ -51,6 +51,7 @@ namespace MPMProject.Controllers
                                    select new { name = p.name_cn, p.id, p.upper_id }).ToList();
                 //设备
                 var datMachine = (from q in machineList
+                                  where q.area_node_id !=0
                                   select new { name = q.name_cn, id, upper_id = q.area_node_id }).ToList();
                 var dat = final.Union(datAreaNode).Union(datMachine).ToList();
                 return Json(dat);
