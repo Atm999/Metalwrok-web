@@ -135,12 +135,20 @@ namespace MPMProject.Controllers
             {
                 //当已有数据（area_layer_id > 0）或选择“-请选择-”（area_layer_id==-1）时
                 var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
-                    
-                var datAreaNode = (from p in areaNodeList
-                                    where p.area_layer_id==area_layer_id
-                                    orderby p.name_cn
-                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id,p.area_layer_id }).ToList();
+                var areaNodeFatherList = jo["data"].ToObject<IList<Model.area_node>>();
 
+                var datAreaNode1 = (from p in areaNodeList
+                                    where p.area_layer_id==area_layer_id
+                                    where p.upper_id==0
+                                    orderby p.name_cn
+                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id,p.area_layer_id, area_node_name = "-" }).ToList();
+                var datAreaNode2 = (from p in areaNodeList
+                                   join q in areaNodeFatherList
+                                   on p.upper_id equals q.id
+                                   where p.area_layer_id == area_layer_id
+                                   orderby p.name_cn
+                                   select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.upper_id, p.area_layer_id, area_node_name = q.name_cn }).ToList();
+                var datAreaNode = datAreaNode1.Union(datAreaNode2);
                 return Json(datAreaNode);
 
                 //if (area_layer_id > 0 || area_layer_id == -1)
@@ -703,11 +711,11 @@ namespace MPMProject.Controllers
                 var datMachine = (from p in machineList
                                   join q in areaNodeList
                                   on p.area_node_id equals q.id
-                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id,q.area_layer_id }).ToList();
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id,area_node_name=q.name_cn,q.area_layer_id }).ToList();
 
                 var datUnBindMachine = (from p in machineList
                                   where p.area_node_id==0
-                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id, area_layer_id=-1 }).ToList();
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id, area_node_name="-", area_layer_id =-1 }).ToList();
                 return Json(datMachine.Union(datUnBindMachine));
             }
             else
