@@ -1,5 +1,5 @@
 ﻿@{
-    @model Model.error_config
+    @model Model.work_order_alert
 }
 <!DOCTYPE html>
 <html>
@@ -8,18 +8,12 @@
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
     <script type='text/javascript'>
-        getOption();
-        getOptionperson();
-        getOptiontagsub();
-        getOptiongroup();
+          getOption();
+          getOptiongroup();
         $(document).ready(function () {
-            $("#machine").select2();
-            $("#machine_id").select2();
-            $("#response_person_id").select2();
-            $("#tag_type_sub_id").select2();
-            $("#level1_notification_group_id").select2();
-            $("#level2_notification_group_id").select2();
-            $("#level3_notification_group_id").select2();
+            $("#virtual_line_id").select2();
+            $("#virtual_line").select2();
+            $("#notice_group_id").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
 
         });
@@ -42,7 +36,7 @@
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
             $('#table').bootstrapTable({
-                url: '/ErrorConfig/GetData',
+                url: '/Workorderalert/GetData',
                 method: 'get',
                 theadClasses: "thead-blue",
                 pagination: true,
@@ -58,14 +52,30 @@
                         return index + 1;
                     }
                 }, {
-                    field: 'machine.name_cn',
-                    title: '设备名'
+                    field: 'virtual_line.name_cn',
+                    title: '虚拟线'
                 }, {
-                    field: 'type.name_cn',
-                    title: '异常名称'
+                    field: 'alert_type',
+                        title: '预警类型',
+                      formatter: function (value, row, index)
+                    {
+                        var alert_type = row.alert_type;
+                          if (alert_type == 0) {
+                              return "瓶颈站"
+                          } else if (alert_type == 1) {
+                              return "工单完成";
+                          } else if (alert_type == 2) {
+                              return "逾期未完成";
+                          } else if (alert_type == 3) {
+                              return "工单完成";
+                         } else {
+                             return "--";
+                         }
+
+                 },
                 }, {
                     field: 'notice_type',
-                    title: '通知方式',
+                        title: '通知方式',
                      formatter: function (value, row, index)
                     {
                         var notice_type = row.notice_type;
@@ -78,17 +88,26 @@
                          } else {
                              return "--";
                          }
-                      
+
                  },
                 }, {
-                    field: 'timeout_setting',
-                    title: '超时处理（分钟）'
-                }, {
-                    field: 'response_person.user_name',
-                    title: '责任人员'
-                }, {
-                    field: 'level1_notification_group.name_cn',
+                    field: 'notice_group.name_cn',
                     title: '通知群组'
+                }, {
+                    field: 'enable',
+                        title: '启用',
+                      formatter: function (value, row, index)
+                    {
+                        var enable = row.enable;
+                          if (enable == true) {
+                              return "是"
+                          } else if (enable == false) {
+                              return "否";
+                          } else {
+                              return "--";
+                          }
+
+                 },
                 }, {
                     field: 'actionEvent',
                     title: '操作',
@@ -110,25 +129,17 @@
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                $("#machine_id").attr('value', row.machine_id);
-                $("#machine_id").select2();
-                $("#tag_type_sub_id").attr('value', row.tag_type_sub_id);
-                $("#tag_type_sub_id").select2();
-                $("#response_person_id").attr('value', row.response_person_id);
-                $("#response_person_id").select2();
+                $("#virtual_line_id").attr('value', row.virtual_line_id);
+                $("#virtual_line_id").select2();
+                $("#alert_type").attr('value', row.alert_type);
+                $("#alert_type").select2();
                 $("#notice_type").attr('value', row.notice_type);
                 $("#notice_type").select2();
-                $("#alert_active").attr('value', row.alert_active);
-                $("#alert_active").select2();
-                $("#trigger_out_color").attr('value', row.trigger_out_color);
-                $("#trigger_out_color").select2();
-                $("#level1_notification_group_id").attr('value', row.level1_notification_group_id);
-                $("#level1_notification_group_id").select2();
-                $("#level2_notification_group_id").attr('value', row.level2_notification_group_id);
-                $("#level2_notification_group_id").select2();
-                $("#level3_notification_group_id").attr('value', row.level3_notification_group_id);
-                $("#level3_notification_group_id").select2();
-                document.getElementById("timeout_setting").value = row.timeout_setting;
+                $("#enable").attr('value', row.enable);
+                $("#enable").select2();
+                $("#notice_group_id").attr('value', row.notice_group_id);
+                $("#notice_group_id").select2();
+
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -139,16 +150,12 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("machine_id").value = 0;
-            document.getElementById("response_person_id").value = 0;
-            document.getElementById("trigger_out_color").value = 0;
+            document.getElementById("virtual_line_id").value = 0;
+            document.getElementById("alert_type").value = -1;
             document.getElementById("notice_type").value = 0;
-            document.getElementById("alert_active").value = 0;
-            document.getElementById("tag_type_sub_id").value = 0;
-            document.getElementById("level1_notification_group_id").value = 0;
-            document.getElementById("level2_notification_group_id").value = 0;
-            document.getElementById("level3_notification_group_id").value = 0;
-            document.getElementById("timeout_setting").value = 0;
+            document.getElementById("enable").value = 0;
+            document.getElementById("notice_group_id").value = 0;
+
         }
         function Delete() {
             var id = $('#id').val();
@@ -157,7 +164,7 @@
             };
             $.ajax({
                 type: "POST",
-                url: "/ErrorConfig/Delete",
+                url: "/Workorderalert/Delete",
                 data: JSON.stringify(person),
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
@@ -177,33 +184,24 @@
         }
         function finish() {
             var id = $('#id').val();
-            var machine_id = $('#machine_id').val();
-            var response_person_id = $('#response_person_id').val();
+            var virtual_line_id = $('#virtual_line_id').val();
+            var alert_type = $('#alert_type').val();
             var notice_type = $('#notice_type').val();
-            var alert_active = $('#alert_active').val();
-            var tag_type_sub_id = $('#tag_type_sub_id').val();
-            var trigger_out_color = $('#trigger_out_color').val();
-            var level1_notification_group_id = $('#level1_notification_group_id').val();
-            var level2_notification_group_id = $('#level2_notification_group_id').val();
-            var level3_notification_group_id = $('#level3_notification_group_id').val();
-            var timeout_setting = $('#timeout_setting').val();
+            var enable = $('#enable').val();
+            var notice_group_id = $('#notice_group_id').val();
+
             var ec = {
                 id: id,
-                machine_id: parseInt(machine_id),
-                response_person_id: parseInt(response_person_id),
+                virtual_line_id: parseInt(virtual_line_id),
+                alert_type:parseInt(alert_type),
                 notice_type: parseInt(notice_type),
-                alert_active: Boolean(alert_active),
-                tag_type_sub_id: parseInt(tag_type_sub_id),
-                trigger_out_color: parseInt(trigger_out_color),
-                level1_notification_group_id: parseInt(level1_notification_group_id),
-                level2_notification_group_id: parseInt(level2_notification_group_id),
-                level3_notification_group_id: parseInt(level3_notification_group_id),
-                timeout_setting: timeout_setting
+                enable: eval(enable),
+                notice_group_id: parseInt(notice_group_id),
             };
             if (id != 0) {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorConfig/Update",
+                    url: "/Workorderalert/Update",
                     data: JSON.stringify(ec),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
@@ -222,7 +220,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorConfig/Add",
+                    url: "/Workorderalert/Add",
                     data: JSON.stringify(ec),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
@@ -238,20 +236,18 @@
                         toastr.error('执行失败!');
                     }
                 });
-
             }
-
         }
         function search() {
-            var machine_id = $("#machine").val();
-            $('#table').bootstrapTable('filterBy', { machine_id: machine_id },
+            var virtual_line_id = $("#virtual_line").val();
+            $('#table').bootstrapTable('filterBy', { virtual_line_id: virtual_line_id },
                 {
                     //自定义刷选函数
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
-                        if (filters.machine_id != 0) //如果user_name不为空，则进行判断，否则不管
+                        if (filters.virtual_line_id != 0) //如果user_name不为空，则进行判断，否则不管
                         {
-                            result1 = filters.machine_id == row.machine_id;
+                            result1 = filters.virtual_line_id == row.virtual_line_id;
                         }
                         return result1;
                     }
@@ -260,36 +256,12 @@
         function getOption() {
             $.ajax({
                 type: "get",
-                url: '/ErrorConfig/Getmachine',
+                url: '/Workorderalert/GetVline',
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        $("#machine").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
-                        $("#machine_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
-                    }
-                }
-            });
-        }
-        function getOptionperson() {
-            $.ajax({
-                type: "get",
-                url: '/ErrorConfig/Getperson',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#response_person_id").append('<option  value=' + data[i].id + '>' + data[i].user_name + '</option>');
-                    }
-                }
-            });
-        }
-        function getOptiontagsub() {
-            $.ajax({
-                type: "get",
-                url: '/ErrorConfig/Gettagsub',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#tag_type_sub_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#virtual_line_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#virtual_line").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
@@ -297,13 +269,11 @@
         function getOptiongroup() {
             $.ajax({
                 type: "get",
-                url: '/ErrorConfig/Getgroup',
+                url: '/Workorderalert/Getgroup',
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        $("#level1_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
-                        $("#level2_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
-                        $("#level3_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#notice_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
@@ -315,9 +285,9 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a href="#" style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>工单产能预警配置</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>异常配置</span>
+                    <span>工单预警</span>
                 </div>
 
 
@@ -330,11 +300,11 @@
                 <form class="form-inline">
 
                     <div class="form-group">
-                        <label class="sr-only" for="name">设备</label>
+                        <label class="sr-only" for="name">虚拟线</label>
                     </div>
-                  
+
                     <div class="form-group">
-                        <select class="select2" id="machine">
+                        <select class="select2" id="virtual_line">
                             <option value="0">请选择</option>
                         </select>
                     </div>
@@ -373,25 +343,24 @@
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
-                                <label class="control-label">设备名</label>
-                                <select class="select2 span12" id="machine_id" name="machine_id" style="width:100%">
+                                <label class="control-label">虚拟线</label>
+                                <select class="select2 span12" id="virtual_line_id" name="virtual_line_id" style="width:100%">
                                     <option value="0">请选择</option>
                                 </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">标签编码</label>
-                                <select class="select2 span12" id="tag_type_sub_id" name="tag_type_sub_id" style="width:100%">
-                                    <option value="0">请选择</option>
+                                <label class="control-label">预警类型</label>
+                                <select class="select2 span12" id="alert_type" name="alert_type" style="width:100%">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">瓶颈站</option>
+                                    <option value="1">工单完成</option>
+                                    <option value="2">逾期未完成</option>
+                                    <option value="3">工单完成</option>
                                 </select>
                             </div>
+                           
                             <div class="control-group">
-                                <label class="control-label">责任人员</label>
-                                <select class="select2 span12" id="response_person_id" name="response_person_id" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">预警形式</label>
+                                <label class="control-label">通知方式</label>
                                 <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
                                     <option value="-1">请选择</option>
                                     <option value="0">微信</option>
@@ -400,47 +369,19 @@
                                 </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">功能是否激活</label>
-                                <select class="select2 span12" id="alert_active" name="alert_active" style="width:100%">
+                                <label class="control-label">通知群组</label>
+                                <select class="select2 span12" id="notice_group_id" name="notice_group_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">是否启用</label>
+                                <select class="select2 span12" id="enable" name="enable" style="width:100%">
                                     <option value="0">请选择</option>
                                     <option value="true">是</option>
                                     <option value="false">否</option>
                                 </select>
                             </div>
-                            <div class="control-group">
-                                <label class="control-label">异常灯颜色</label>
-                                <select class="select2 span12" id="trigger_out_color" name="trigger_out_color" style="width:100%">
-                                    <option value="0">请选择</option>
-                                    <option value="1">红</option>
-                                    <option value="2">绿</option>
-                                    <option value="3">黄</option>
-                                    <option value="4">蓝</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">超时处理（分钟）</label>
-                                <input class="span12" type="text" id="timeout_setting" name="timeout_setting" />
-                            </div>
-
-                            <div class="control-group">
-                                <label class="control-label">一级通知人员</label>
-                                <select class="select2 span12" id="level1_notification_group_id" name="level1_notification_group_id" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">二级通知人员</label>
-                                <select class="select2 span12" id="level2_notification_group_id" name="level2_notification_group_id" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">三级通知人员</label>
-                                <select class="select2 span12" id="level3_notification_group_id" name="level3_notification_group_id" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">
                                     取消
@@ -455,7 +396,7 @@
 
             </div>
             <!-- 删除模态框（Modal） -->
-            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myDelModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

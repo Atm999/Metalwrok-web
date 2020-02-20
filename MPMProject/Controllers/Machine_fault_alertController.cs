@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 namespace MPMProject.Controllers
 {
-    public class Machine_status_duration_alertController : BaseController
+    public class Machine_fault_alertController : BaseController 
     {
         public string url = "http://api-mpm.wise-paas.cn/";
 
@@ -19,7 +18,7 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/andon/machine_status_duration_alert_detail";
+            url = url + "api/v1/configuration/andon/machine_fault_alert_detail";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -38,9 +37,9 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
-        public IActionResult Update([FromBody]machine_status_duration_alert ec)
+        public IActionResult Update([FromBody]machine_fault_alert ec)
         {
-            url = url + "api/v1/configuration/andon/machine_status_duration_alert";
+            url = url + "api/v1/configuration/andon/machine_fault_alert";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -60,9 +59,9 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
-        public IActionResult Add([FromBody]machine_status_duration_alert ec)
+        public IActionResult Add([FromBody]machine_fault_alert ec)
         {
-            url = url + "api/v1/configuration/andon/machine_status_duration_alert";
+            url = url + "api/v1/configuration/andon/machine_fault_alert";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -83,9 +82,9 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public IActionResult Delete([FromBody]machine_status_duration_alert ec)
+        public IActionResult Delete([FromBody]machine_fault_alert ec)
         {
-            url = url + "api/v1/configuration/andon/machine_status_duration_alert?id="+ ec.id.ToString();
+            url = url + "api/v1/configuration/andon/machine_fault_alert?id=" + ec.id.ToString();
             string result = DeleteUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -105,9 +104,9 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public JsonResult Getmachine()
+        public JsonResult GetError()
         {
-            var purl = url + "api/v1/configuration/public/machine";
+            var purl = url + "api/v1/configuration/andon/error_type";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
 
@@ -127,7 +126,28 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
+        public JsonResult GetErrorDetail()
+        {
+            var purl = url + "api/v1/configuration/andon/error_type_detail";
+            var result1 = GetUrl(purl);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
 
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json(jo["data"]);
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json(jo["data"]);
+        }
         public JsonResult Getgroup()
         {
             url = url + "api/v1/configuration/andon/notification_group";

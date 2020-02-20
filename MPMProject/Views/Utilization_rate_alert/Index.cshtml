@@ -56,7 +56,21 @@
                     title: '设备名'
                 }, {
                     field: 'utilization_rate_type',
-                    title: '稼动率类型'
+                        title: '稼动率类型',
+                     formatter: function (value, row, index)
+                    {
+                        var utilization_rate_type = row.utilization_rate_type;
+                         if (utilization_rate_type == 0) {
+                             return "日稼动率"
+                         } else if (utilization_rate_type == 1) {
+                             return "班稼动率";
+                         } else if (utilization_rate_type == 2) {
+                             return "工单稼动率";
+                         } else {
+                             return "--";
+                         }
+                      
+                 },
                 }, {
                     field: 'maximum',
                     title: '上限预警'
