@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script>
+        $(function () {
+            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(9)').addClass('active');
+
+        });
+        function upload() {
+            var fileUpload = $("#files").get(0);
+            var files = fileUpload.files;
+            var data = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                data.append(files[i].name, files[i]);
+            }
+            if (files.length <= 0) {
+                toastr.error('请选择授权文档(.lic格式)!');
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/File",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (data) {
+                        if (data == "Fail") {
+                            toastr.error('授权文件只支持lic文档!');
+                        }
+                        else {                            
+                            toastr.success('设备数量授权成功!');
+                            window.location.href = "/MachineLicence/Index";
+                        }
+                    },
+                    error: function (data) {
+                        toastr.error('"授权失败！", "" + data + ""');
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>设备数量授权</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">当前授权数</label>
+                        <input class="span6" type="text" id="licenceNum" value="50" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">已使用数</label>
+                        <input class="span6" type="text" id="inUseNum" value="20" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">授权数量</label>
+                        <input class="span6" type="text" value="@ViewBag.licenceNum" disabled />
+                    </div>
+                </div>
+
+                @*<div id="licenceBox" name="licenceBox" style="min-width:300px;min-height:100px;border:3px dashed silver;"></div>*@
+                <input type="file" id="files" name="files" placeholder="file" style="padding-top:12px" />
+                <input type="hidden" id="order_picture1" name="order_picture" value="" />
+                <input type="button" id="btn_fileUpload1" name="btn_fileUpload1" class="btn btn-primary" value="上传" onclick="upload()" />
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+

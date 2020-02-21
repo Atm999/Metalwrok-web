@@ -833,7 +833,7 @@
         }
         //当切换到设备页后，自动刷新设备的table
         function machineRefresh() {
-            $('#machineAll').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineList" });
+            $('#machineAll').bootstrapTable('filterBy', {});
             //父级名称下拉框
             GetFatherName("machineFatherSearch", "area_layer", 0);
             document.getElementById("machineName").value = "";

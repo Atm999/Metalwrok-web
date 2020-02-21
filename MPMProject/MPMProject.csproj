@@ -20,6 +20,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\Files\Files\" />
     <Folder Include="wwwroot\grafanaUIframe\loginSpecial\images\" />
   </ItemGroup>
 
