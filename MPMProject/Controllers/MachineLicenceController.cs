@@ -21,15 +21,16 @@ namespace MPMProject.Controllers
         }
         public IActionResult Index()
         {
-            string data1=DESCode.Read(hostingEnv.WebRootPath+ $@"\Files\Files\licence.txt");
-            string data = "{\"space_id\":\"0e8d66cd-55e6-4853-9835-2b24e6a95022\",\"machineNum\":100}";
+            //string data1=DESCode.Read(hostingEnv.WebRootPath + $@"\Files\Files\licence.txt");
+            string data1 = DESCode.Read(hostingEnv.WebRootPath + $@"/Files/Files/licence.txt");
+            //string data = "{\"space_id\":\"0e8d66cd-55e6-4853-9835-2b24e6a95022\",\"machineNum\":100}";
             string key = "WisePaaS";
             string iv = "AKTCKM30";
-            ViewBag.Encrypt = DESCode.DESEncrypt(data, key, iv);
+            //ViewBag.Encrypt = DESCode.DESEncrypt(data, key, iv);
 
             string licence = DESCode.DESDecrypt(data1, key, iv);
             JObject jo = (JObject)JsonConvert.DeserializeObject(licence);
-            ViewBag.licenceNum = jo["machineNum"].ToString();
+            ViewBag.licenceNum = data1;
             return View();
         }
 

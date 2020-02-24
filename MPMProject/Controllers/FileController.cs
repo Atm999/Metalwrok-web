@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MPMProject.Controllers
 {
-    [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
     public class FileController : BaseController
     {
@@ -42,7 +41,7 @@ namespace MPMProject.Controllers
                 var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
                 System.IO.File.Delete("licence.txt");
 
-                string filePath = hostingEnv.WebRootPath + $@"\Files\Files\";
+                string filePath = hostingEnv.WebRootPath + $@"/Files/Files/";
 
                 if (!Directory.Exists(filePath))
                 {
