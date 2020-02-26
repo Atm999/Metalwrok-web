@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Model.FileEncode;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
@@ -14,6 +17,7 @@ namespace MPMProject.Controllers
     public class FileController : BaseController
     {
         private IHostingEnvironment hostingEnv;
+        public string url = "http://api-mpm.wise-paas.cn/";
         string[] fileFormatArray = { "lic" };
         public FileController(IHostingEnvironment env)
         {
@@ -72,7 +76,26 @@ namespace MPMProject.Controllers
             }
             else
             {
-                return Json(filePathResultList[0].Remove(0, 10));
+                string data = DESCode.Read(hostingEnv.WebRootPath + $@"/Files/Files/licence.txt");
+
+                string licencePostUrl = url + "api/v1/configuration/public/licence";
+                string licencePostData = "{{" +
+                    "\"licence\":\"{0}\"" +
+                    "}}";
+
+                ////对于群组来说，upper_id和area_node_id均固定
+                licencePostData = string.Format(licencePostData, data);
+                string licencePostResult = PostUrl(licencePostUrl, licencePostData);
+                JObject joLicencePost = (JObject)JsonConvert.DeserializeObject(licencePostResult);
+                if (Convert.ToInt32(joLicencePost["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else {
+                    return Json("Error");
+                }
+
+                //return Json(filePathResultList[0].Remove(0, 10));
             }
 
         }
