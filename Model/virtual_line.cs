@@ -25,5 +25,9 @@ namespace Model
         /// </summary>
         public string description { get; set; }
 
+        public class virtual_lineMachine : virtual_line
+        {
+            public IList<machine> Machines { get; set; }
+        }
     }
 }

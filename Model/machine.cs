@@ -12,5 +12,6 @@ namespace Model
         public string name_tw { get; set; }
         public string description { get; set; }
         public int area_node_id { get; set; }
+        public int machine_id { get; set; }
     }
 }
