@@ -28,11 +28,18 @@
                     data: data,
                     success: function (data) {
                         if (data == "Fail") {
+                            console.log(document.getElementsByClassName("file-input-name")[0].innerText);
+                            document.getElementsByClassName("file-input-name")[0].innerText = "";
+
                             toastr.error('授权文件只支持lic文档!');
+
                         }
-                        else {                            
-                            toastr.success('设备数量授权成功!');
+                        else if (data == "Success") {
                             window.location.href = "/MachineLicence/Index";
+                            toastr.success('设备数量授权成功!');
+                        }
+                        else {
+                            toastr.error('授权文件失效!');
                         }
                     },
                     error: function (data) {
@@ -63,21 +70,15 @@
                 <div class="form-inline">
                     <div class="form-group">
                         <label class="sr-only" for="name">当前授权数</label>
-                        <input class="span6" type="text" id="licenceNum" value="50" disabled />
+                        <input class="span6" type="text" id="licenceNum" value="@ViewBag.authorized_number" disabled />
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="name">已使用数</label>
-                        <input class="span6" type="text" id="inUseNum" value="20" disabled />
-                    </div>
-                    <div class="form-group">
-                        <label class="sr-only" for="name">授权数量</label>
-                        <label class="span12" type="text">@ViewBag.licenceNum</label>
+                        <input class="span6" type="text" id="inUseNum" value="@ViewBag.used_number" disabled />
                     </div>
                 </div>
-
-                @*<div id="licenceBox" name="licenceBox" style="min-width:300px;min-height:100px;border:3px dashed silver;"></div>*@
+                <label class="sr-only" for="name">设备授权操作：</label>
                 <input type="file" id="files" name="files" placeholder="file" style="padding-top:12px" />
-                <input type="hidden" id="order_picture1" name="order_picture" value="" />
                 <input type="button" id="btn_fileUpload1" name="btn_fileUpload1" class="btn btn-primary" value="上传" onclick="upload()" />
             </div>
 

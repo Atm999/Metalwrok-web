@@ -75,13 +75,28 @@ namespace MPMProject.Controllers
 
             return result;
         }
-        /// <summary>
-        /// http put方法
-        /// </summary>
-        /// <param name="url">url地址</param>
-        /// <param name="postData">抛送数据</param>
-        /// <returns></returns>
-        public string PutUrl(string url, string postData)
+
+        public string PostUrl(string url)
+        {
+            string result = "";
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "POST";
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            //获取内容
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                result = reader.ReadToEnd();
+            }
+            return result;
+        }
+            /// <summary>
+            /// http put方法
+            /// </summary>
+            /// <param name="url">url地址</param>
+            /// <param name="postData">抛送数据</param>
+            /// <returns></returns>
+            public string PutUrl(string url, string postData)
         {
             string result = "";
             try

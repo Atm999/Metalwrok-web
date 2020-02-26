@@ -44,7 +44,6 @@ namespace MPMProject.Controllers
                     area_layer res = new area_layer();
                     res.id = datAreaNode[i].id;
                     res.name_cn = datAreaNode[i].name_cn;
-                    res.upper_id = datAreaNode[i].upper_id;
 
                     area_Layers.Add(res);
                 }
@@ -68,10 +67,9 @@ namespace MPMProject.Controllers
                 "\"name_en\":\"{0}\"," +
                 "\"name_cn\":\"{1}\"," +
                 "\"name_tw\":\"{2}\"," +
-                "\"description\":\"{3}\"," +
-                "\"upper_id\":{4}" +
+                "\"description\":\"{3}\"" +
                 "}}";
-            postData = string.Format(postData, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description, area_Layer.upper_id);
+            postData = string.Format(postData, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
             string result = PostUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
@@ -787,17 +785,151 @@ namespace MPMProject.Controllers
         //层级中数据删除
         public IActionResult Delete(int id,string flag)
         {
-            url = url + "api/v1/configuration/public/"+ flag + "?id="+ id + "";
-            string result = DeleteUrl(url);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            if (Convert.ToInt32(jo["code"]) == 200)
+            bool actionFlag = true;
+            //当层级删除时，则要把其下的节点和绑定的属性设备也同时删除
+            if (flag == "area_layer")
             {
+                string areaLayerUrl = url + "api/v1/configuration/public/area_node?area_layer_id=" + id + "";
+                string areaLayerresult = DeleteUrl(areaLayerUrl);
+                JObject joAreaLayer = (JObject)JsonConvert.DeserializeObject(areaLayerresult);
+                if (Convert.ToInt32(joAreaLayer["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }//当层级删除时，则要把其下的节点和绑定的属性设备也同时删除
+            else if (flag == "area_node")
+            {
+                
+                string areaNodeGetUrl = url + "api/v1/configuration/public/area_node";
+                string areaNodeGetResult = GetUrl(areaNodeGetUrl);
+                JObject areaNodeGetjo = (JObject)JsonConvert.DeserializeObject(areaNodeGetResult);
+                if (Convert.ToInt32(areaNodeGetjo["code"]) == 200)
+                {
+                    var areaNodeList = areaNodeGetjo["data"].ToObject<IList<Model.area_node>>();
+                    //存储所有和id相关的id
+                    List<int> idList = new List<int>();
+                    int idFlag = id;//id标识,判断id和upper_id是否相等，若相等则将upper_id 赋值给idFlag
+                    idList.Add(idFlag);
+                    for (int i = 0; i < areaNodeList.Count; i++)
+                    {
+                        if (idFlag == areaNodeList[i].upper_id)
+                        {
+                            idFlag = areaNodeList[i].id;
+                            idList.Add(idFlag);
+                        }
+                    }
+
+                    //删除绑定的所有属性
+                    List<string> typeList = new List<string> { "shift", "unfixed_break", "fixed_break", "time_zone" };
+                    for (int n=0;n< typeList.Count;n++) {
+                        string areaPropertySearchUrl = url + "api/v1/configuration/public/area_property/"+ typeList[n]+ "";
+                        string areaPropertySearchResult = GetUrl(areaPropertySearchUrl);
+                        JObject areaPropertySearchjo = (JObject)JsonConvert.DeserializeObject(areaPropertySearchResult);
+                        if (Convert.ToInt32(areaPropertySearchjo["code"]) == 200)
+                        {
+                            var areaPropertyList = areaPropertySearchjo["data"].ToObject<IList<Model.area_property>>();
+                            //idList存储area_node_id
+                            for (int i = 0; i < idList.Count; i++)
+                            {
+                                var datAreaNode = (from p in areaPropertyList
+                                                   where p.area_node_id == idList[i]
+                                                   select new { p.id }).ToList();
+                                //datAreaNode存储 id
+                                for (int j = 0; j < datAreaNode.Count; j++)
+                                {
+                                    string areaPropertyDeleteUrl = url + "api/v1/configuration/public/area_property?id=" + datAreaNode[j].id + "";
+                                    string areaPropertyDeleteResult = DeleteUrl(areaPropertyDeleteUrl);
+                                    JObject areaPropertyDeletejo = (JObject)JsonConvert.DeserializeObject(areaPropertyDeleteResult);
+                                    if (Convert.ToInt32(areaPropertyDeletejo["code"]) != 200)
+                                    {
+                                        actionFlag = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            actionFlag = false;
+                        }
+                    }
+                   
+
+                    //删除绑定的所有设备
+                    string machineSearchUrl = url + "api/v1/configuration/public/machine";
+                    string machineSearchResult = GetUrl(machineSearchUrl);
+                    JObject machineSearchjo = (JObject)JsonConvert.DeserializeObject(machineSearchResult);
+                    if (Convert.ToInt32(machineSearchjo["code"]) == 200)
+                    {
+                        var machineSearchjoList = machineSearchjo["data"].ToObject<IList<Model.machine>>();
+                        //idList存储area_node_id
+                        for (int i = 0; i < idList.Count; i++)
+                        {
+                            var datMachine = (from p in machineSearchjoList
+                                               where p.area_node_id == idList[i]
+                                               select new { p.id }).ToList();
+                            //datAreaNode存储 id
+                            for (int j = 0; j < datMachine.Count; j++)
+                            {
+                                string machinePutUrl = url + "api/v1/configuration/public/machine";
+                                string machinePutData = "{{" +
+                                    "\"id\":{0}," +
+                                    "\"area_node_id\":{1}" +
+                                    "}}";
+                                //对于群组来说，upper_id和area_node_id均固定
+                                machinePutData = string.Format(machinePutData, datMachine[j].id, 0);
+                                string machinePutResult = PutUrl(machinePutUrl, machinePutData);
+                                JObject machinePutjo = (JObject)JsonConvert.DeserializeObject(machinePutResult);
+                                if (Convert.ToInt32(machinePutjo["code"]) != 200)
+                                {
+                                    actionFlag = false;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        actionFlag = false;
+                    }
+
+                    //删除节点内容
+                    for (int i=0;i<idList.Count;i++)
+                    {
+                        string areaNodeDeteteUrl = url + "api/v1/configuration/public/area_node?id="+ idList[i]+ "";
+                        string areaNodeDeteteResult = DeleteUrl(areaNodeDeteteUrl);
+                        JObject areaNodeDetetejo = (JObject)JsonConvert.DeserializeObject(areaNodeDeteteResult);
+                        if (Convert.ToInt32(areaNodeDetetejo["code"]) != 200)
+                        {
+                            actionFlag = false;
+                        }
+                    }   
+                }
+                else {
+                    actionFlag = false;
+                }
+                
+            }
+            else {
+                string publicUrl = url + "api/v1/configuration/public/" + flag + "?id=" + id + "";
+                string result = DeleteUrl(publicUrl);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                if (Convert.ToInt32(jo["code"]) != 200)
+                {
+                    actionFlag = false;
+                }
+
+            }
+
+            if (actionFlag) {
                 return Json("Success");
             }
-            else
-            {
+            else {
                 return Json("Fail");
             }
+
             
         }
         #endregion

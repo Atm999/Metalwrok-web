@@ -833,7 +833,7 @@
         }
         //当切换到设备页后，自动刷新设备的table
         function machineRefresh() {
-            $('#machineAll').bootstrapTable('filterBy', {});
+            $('#machineAll').bootstrapTable('refresh');
             //父级名称下拉框
             GetFatherName("machineFatherSearch", "area_layer", 0);
             document.getElementById("machineName").value = "";
@@ -968,6 +968,8 @@
             document.getElementById("twLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（繁体）";
             document.getElementById("descriptionLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（描述）";
 
+
+
             $('#levelTable').bootstrapTable('filterBy', {});
             //中间层级切换时刷新表格
             $('#levelTable').bootstrapTable('refresh', { url: "/LevelsConfig/GetGroup?area_layer_id=" + area_layer_id + "" });
@@ -1101,21 +1103,36 @@
                         </div>
                         <!--各层级-->
                         <div class='tab-pane' id='tab3'>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <label class="control-label">名称</label>
+                            <div>
+                                <div class="pull-left">
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <label class="control-label">名称</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="select2" id="levelSelect"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" onclick="levelSearch()"><span class="icon-search"> 查询</span></button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" data-toggle='modal' data-target='#groupAddEditModal' onclick="AddGroup()"><span class="icon-plus"> 新增</span></button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <select class="select2" id="levelSelect">
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" onclick="levelSearch()"><span class="icon-search"> 查询</span></button>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary" data-toggle='modal' data-target='#groupAddEditModal' onclick="AddGroup()"><span class="icon-plus"> 新增</span></button>
+                                <div class="pull-right">
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal' onclick="EditGroup()"><span class="icon-edit-sign"> 修改层级</span></button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myDelModal'><span class="icon-trash"> 删除层级</span></button>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
+                            
                             <table class="table" id="levelTable"></table>
                         </div>
                         <!--设备-->

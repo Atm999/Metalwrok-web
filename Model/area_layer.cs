@@ -11,6 +11,5 @@ namespace Model
         public string name_en { get; set; }
         public string name_tw { get; set; }
         public string description { get; set; }
-        public int upper_id { get; set; }
     }
 }
