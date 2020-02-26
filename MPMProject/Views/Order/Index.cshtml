@@ -109,7 +109,6 @@
                           }else {
                               return "";
                           }
-                      
                  },
 
                 }, {
@@ -120,6 +119,21 @@
                     formatter: actionFormatter,
                     events: operateEvents
                 }]
+            });
+
+             ///虚拟线联动时候，查询该虚拟线下有几台设备
+            $("#lineidSelect").select2();
+            $("#lineidSelect").on("select2:select", function () {
+                var lineid = $(this).val();
+                $.ajax({
+                    type: "get",
+                    url: '/Order/GetmachineCount?lineid=' + lineid,
+                    async: true,
+                    success: function (data) {
+                        $("#labeltext").text("该虚拟线下有" + data + "台设备，请输入" + data + "台设备的标准工时，并以 ；隔开");
+                        document.getElementById('labeltext').style.color= "red ";
+                    }
+                });
             });
         });
         //操作栏的格式化
@@ -161,14 +175,19 @@
 
         function clean() {
             $('#myEditModal').modal('show');
+            $("#labeltext").text("");
             document.getElementById("id").value = 0;
             document.getElementById("work_order").value = "";
             document.getElementById("part_num").value = "";
             document.getElementById("standard_num").value = 0;
             document.getElementById("shiftSelect").value = 0;
+            $("#shiftSelect").select2();
             document.getElementById("autoSelect").value = 0;
-            document.getElementById("wostatusSelect").value = -1;
+            $("#autoSelect").select2();
+            document.getElementById("wostatusSelect").value = -2;
+            $("#wostatusSelect").select2();
             document.getElementById("lineidSelect").value = 0;
+            $("#lineidSelect").select2();
             document.getElementById("standard_time").value = "";
             document.getElementById("order_index").value = 0;
         }
@@ -304,6 +323,8 @@
                 }
             });
         }
+
+        
     </script>
 </head>
 <body>
@@ -452,7 +473,7 @@
                             </div>
                             <div class="control-group">
                                 <label class="control-label">标准工时</label>
-                                <input class="span12" type="text" id="standard_time" name="standard_time" />
+                                <input class="span12" type="text" id="standard_time" name="standard_time" /><label class="control-label" id="labeltext"></label>
                             </div>
                         </div>
                         <div class="modal-footer">

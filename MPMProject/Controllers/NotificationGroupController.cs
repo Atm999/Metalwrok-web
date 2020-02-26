@@ -132,7 +132,7 @@ namespace MPMProject.Controllers
 
         public IActionResult UpdatePerson([FromBody]notification_person person)
         {
-            url = url + "/api/v1/configuration/andon/notification_group/";
+            url = url + "api/v1/configuration/andon/notification_group/";
             var postData = JsonConvert.SerializeObject(person);
             string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
