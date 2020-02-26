@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Model;
 
 namespace MPMProject
@@ -54,6 +56,18 @@ namespace MPMProject
             //注册Cookie认证服务
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+            #region CORS
+            services.AddCors(options =>
+
+            {
+
+                options.AddPolicy("AllowSpecificOrigin",
+
+                 builder => builder.WithOrigins("http://localhost:3997").AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
+            });
+            #endregion
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -70,6 +84,17 @@ namespace MPMProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCors("AllowSpecificOrigin");
+
+            app.UseStaticFiles(new StaticFileOptions()
+
+            {
+
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/Files")),
+                RequestPath = new PathString("/src")
+
+            });
 
             //必须加上这句才能用session
             app.UseSession();
