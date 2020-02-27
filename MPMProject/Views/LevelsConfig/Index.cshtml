@@ -244,6 +244,11 @@
             });
         }
 
+        function DeleteLevel() {
+            document.getElementById("deleteId").value = document.getElementById("deleteLayer").value;
+            document.getElementById("deleteFlag").value = "area_layer";
+            document.getElementById("deletInfo").innerHTML = "是否确认删除该记录？（该层级及其相关的所有内容将被删除）";
+        }
 
         //群组及层级的操作栏格式化
         function groupActionFormatter(value, row, index) {
@@ -1555,7 +1560,7 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        <div>是否确认删除该条记录？</div>
+                        <div id="deletInfo">是否确认删除该记录？</div>
                         <input type="hidden" id="deleteLayer" />
                         <input type="hidden" id="deleteId" />
                         <input type="hidden" id="deleteFlag" />
