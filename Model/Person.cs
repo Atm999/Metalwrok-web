@@ -22,6 +22,6 @@ namespace Model
 
         public string user_position { get; set; }
  
-
+        public int person_id { get; set; }
     }
 }

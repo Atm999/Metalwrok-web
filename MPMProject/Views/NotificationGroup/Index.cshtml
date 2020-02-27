@@ -83,7 +83,74 @@
                     events: operateEvents
                 }]
             });
+              //设备绑定中，已绑定的设备
+            $('#machineList').bootstrapTable({
+               // url: '/LevelsConfig/GetMachineList',
+                method: 'get',
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 12,//每页的记录行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#machineList').bootstrapTable('getOptions');
+                        return  index + 1;
+                    }
+                }, {
+                    field: 'user_name',
+                    title: '员工名称'
+                }, {
+                    field: 'id_num',
+                    title: '员工工号'
+                }, {
+                    field: 'actionEvent',
+                    title: '取消绑定',
+                    formatter: machineNodeActionFormatter,
+                    events: machineNodeOperateEvents
+                }]
+            });
         });
+        //绑定设备-解除绑定
+        function machineNodeActionFormatter(value, row, index) {
+            var result = "";
+            result += "<a id='deleteMachineNode' href='javascript:;' title='取消绑定' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+         //绑定设备-解除绑定操作
+        window.machineNodeOperateEvents = {
+            //取消绑定
+            "click #deleteMachineNode": function (e, value, row, index) {
+                var id = row.person_id;//人员id
+                var group_id = $("#group_id").val();//群组id
+                $.ajax({
+                    type: "POST",
+                    url: "/NotificationGroup/DeleteMachine",
+                    data: {
+                        id: id,
+                        group_id:group_id
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('人员解绑成功!');
+                            $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id });
+
+                        }
+                        else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            }
+        }
         //操作栏的格式化
         function actionFormatter(value, row, index) {
             var id = value;
@@ -107,9 +174,15 @@
                 $('#myDelModal').modal('show');
 
             }, 'click .Binding': function (e, value, row, index) {
-                document.getElementById("linename").value = row.name_en;
-                document.getElementById("id").value = row.id;
+                 document.getElementById("group_id").value = row.id;
+                var group_id = $("#group_id").val();
+                $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id  });
                 $('#machineModal').modal('show');
+
+
+                //document.getElementById("linename").value = row.name_en;
+                //document.getElementById("id").value = row.id;
+                //$('#machineModal').modal('show');
 
             }
         };
@@ -241,6 +314,42 @@
                      }
                  });
         }
+
+         function MachineBind() {
+            var group_id = $("#group_id").val();
+            var machineList = document.getElementById('machineSelects').getElementsByTagName('option');
+            var machine = new Array();
+            for (var i = 0; i < machineList.length; i++) {
+                if (machineList[i].selected) {
+                    machine.push(machineList[i].value);
+                }
+            }
+            var Machine = machine.join(',');
+            $.ajax({
+                type: "POST",
+                url: "/NotificationGroup/AddPerson",
+                data: {
+                    id: 0,
+                    group_id: group_id,
+                    Machine: Machine
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('人员绑定成功!');
+                         $('#machineModal').modal('hide');
+                        $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData"});
+                    }
+                    else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+        }
+        function resush() {
+             $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData"});
+        }
     </script>
 </head>
 <body>
@@ -341,7 +450,7 @@
                 </div><!-- /.modal -->
             </div>
             <!-- 设备模态框（Modal） -->
-            <div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            @*<div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -370,6 +479,43 @@
                                 取消
                             </button>
                             <button onclick="finishP()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><
+                </div>
+            </div>*@
+
+            <!-- 设备绑定模态框（Modal） -->
+            <div class="modal fade" id="machineModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myBindLabel">
+                                人员绑定
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input class='span12' type="hidden" id="group_id" />
+                            <div class="control-group">
+                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%"></select>
+                            </div>
+                            <hr class="hr-top" style="margin-right:-14px" />
+                            <div class="control-group">
+                                <h4>已绑定的人员</h4>
+                            </div>
+                            <div class="control-group">
+                                <table class="table" id="machineList"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" onclick="resush()" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="MachineBind()">
                                 确认
                             </button>
                         </div>
