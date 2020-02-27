@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static Model.virtual_line;
 
 namespace MPMProject.Controllers
 {
@@ -132,43 +133,88 @@ namespace MPMProject.Controllers
 
 
         //虚拟线下设备查询
-        public JsonResult GetMachineNodeList()
+        public JsonResult GetmachineList(int group_id)
         {
-            int area_node_id = Convert.ToInt32(Request.Query["area_node_id"]);
-            url = url + "api/v1/configuration/public/machine";
-            List<machine> machines = new List<machine>();
+            url = url + "api/v1/configuration/work_order/virtual_line";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-
-            if (Convert.ToInt32(jo["code"]) == 200)
+            var list = jo["data"].ToObject<IList<virtual_lineMachine>>();
+            var data = list.FirstOrDefault(p => p.id == group_id).Machines;
+            switch (Convert.ToInt32(jo["code"]))
             {
-                var machineList = jo["data"].ToObject<IList<Model.machine>>();
-                //层级
-                var datMachine = (from p in machineList
-                                  where p.area_node_id == area_node_id
-                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id }).ToList();
-                if (datMachine.Count > 0)
+                case 200:
+                    Json(jo["data"]);
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json(data);
+        }
+
+        public IActionResult AddMachine(int id, int virtualLine_id)
+        {//"https://api-mpm.wise-paas.cn/api/v1/configuration/work_order/virtual_line/444?machine_id=444"
+            
+          //设备绑定
+                string[] Machine = Convert.ToString(HttpContext.Request.Form["Machine"]).Split(',');
+                if (Machine.Length > 0 && Machine[0] != "")
                 {
-                    for (int i = 0; i < datMachine.Count; i++)
+                    bool flag = true;
+                    for (int i = 0; i < Machine.Length; i++)
                     {
-                        machine machineRes = new machine();
-                        machineRes.id = datMachine[i].id;
-                        machineRes.name_cn = datMachine[i].name_cn;
-                        machineRes.name_en = datMachine[i].name_en;
-                        machineRes.name_tw = datMachine[i].name_tw;
-                        machineRes.description = datMachine[i].description;
-                        machineRes.area_node_id = datMachine[i].area_node_id;
-                        machines.Add(machineRes);
+                        string machinePutUrl = url + "api/v1/configuration/work_order/virtual_line/" + virtualLine_id + "?machine_id=" + Convert.ToInt32(Machine[i]);
+                        string machinePutData = "{{" +
+                                "\"virtualLine_id\":{0}," +
+                                "\"machine_id\":{1}" +
+                                "}}";
+                        machinePutData = string.Format(machinePutData, virtualLine_id, Convert.ToInt32(Machine[i]) );
+                        string machinePutResult = PostUrl(machinePutUrl, machinePutData);
+                        JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(machinePutResult);
+                        if (Convert.ToInt32(joMachinePut["code"]) != 200)
+                        {
+                            flag = false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        return Json("Success");
+                    }
+                    else
+                    {
+                        return Json("Fail");
                     }
                 }
+                else
+                {
+                    return Json("Success");
+                }
+        }
 
-                return Json(machines);
-            }
-            else
+        public IActionResult DeleteMachine(int id, int group_id)
+        {
+            url = url + "api/v1/configuration/work_order/virtual_line/" + group_id + "?machine_id=" + id;
+            string result = DeleteUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
             {
-                return Json("Fail");
+                case 200:
+                    Json("Success");
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
             }
-
+            return Json("Success");
         }
     }
 }

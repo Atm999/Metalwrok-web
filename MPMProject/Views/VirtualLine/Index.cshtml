@@ -86,7 +86,7 @@
             });
               //设备绑定中，已绑定的设备
             $('#machineList').bootstrapTable({
-                url: '/LevelsConfig/GetMachineNodeList',
+               // url: '/LevelsConfig/GetMachineList',
                 method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
@@ -135,18 +135,20 @@
         window.machineNodeOperateEvents = {
             //取消绑定
             "click #deleteMachineNode": function (e, value, row, index) {
-                var id = row.id;
-                var area_node_id = row.area_node_id;
+                var id = row.machine_id;//设备id
+                var group_id = $("#group_id").val();//线别id
                 $.ajax({
                     type: "POST",
-                    url: "/LevelsConfig/UpdateMachineNode",
+                    url: "/VirtualLine/DeleteMachine",
                     data: {
                         id: id,
-                        area_node_id:0
+                        group_id:group_id
                     },
                     success: function (msg) {
                         if (msg == "Success") {
-                            $('#machineList').bootstrapTable('refresh', { url: "/LevelsConfig/GetMachineNodeList?area_node_id=" + area_node_id + "" });
+                            toastr.success('设备解绑成功!');
+                            $('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/GetmachineList?group_id=" + group_id });
+
                         }
                         else {
                             toastr.error('执行失败!');
@@ -182,11 +184,8 @@
 
             }, 'click .Binding': function (e, value, row, index) {
               document.getElementById("group_id").value = row.id;
-                $("#machineBind").empty();
-                //var group_id = $("#group_id").val();
-                //$('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/Getmachine?group_id=" + group_id + "" });
-                ////所有未绑定的设备
-                //GetUnBindMachine()
+                var group_id = $("#group_id").val();
+                $('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/GetmachineList?group_id=" + group_id  });
                 $('#machineModal').modal('show');
 
             }
@@ -287,10 +286,44 @@
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
                         $("#machineSelects").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
-                       // $("#deptSelect").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
+        }
+        function MachineBind() {
+            var virtualLine_id = $("#group_id").val();
+            var machineList = document.getElementById('machineSelects').getElementsByTagName('option');
+            var machine = new Array();
+            for (var i = 0; i < machineList.length; i++) {
+                if (machineList[i].selected) {
+                    machine.push(machineList[i].value);
+                }
+            }
+            var Machine = machine.join(',');
+            $.ajax({
+                type: "POST",
+                url: "/VirtualLine/AddMachine",
+                data: {
+                    id: 0,
+                    virtualLine_id: virtualLine_id,
+                    Machine: Machine
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('设备绑定成功!');
+                         $('#machineModal').modal('hide');
+                        $('#table').bootstrapTable('refresh', { url: "/VirtualLine/GetData"});
+                    }
+                    else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+        }
+        function resush() {
+             $('#table').bootstrapTable('refresh', { url: "/VirtualLine/GetData"});
         }
     </script>
 </head>
@@ -391,43 +424,6 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
             </div>
-            <!-- 设备模态框（Modal） -->
-            @*<div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                &times;
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">
-                                新增/编辑
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" class="span12" id="group_id" name="group_id" />
-                            <div class="control-group">
-                                <label class="control-label">虚拟线名称（英）</label>
-                                <input class="span12" type="text" id="linename" readonly="readonly" name="linename" />
-                            </div>
-                            <div class="from-group">
-                                <label class="control-label">设备名称</label>
-                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                取消
-                            </button>
-                            <button onclick="finishP()" class="btn btn-primary">
-                                确认
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>*@
-
             <!-- 设备绑定模态框（Modal） -->
             <div class="modal fade" id="machineModal" style="display:none">
                 <div class="modal-dialog">
@@ -454,10 +450,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <button type="button" class="btn btn-default" onclick="resush()" data-dismiss="modal">
                                 取消
                             </button>
-                            <button type="button" class="btn btn-primary" onclick="MachineNodeBind()">
+                            <button type="button" class="btn btn-primary" onclick="MachineBind()">
                                 确认
                             </button>
                         </div>
