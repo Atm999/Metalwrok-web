@@ -208,7 +208,7 @@ namespace MPMProject.Controllers
 
         public JsonResult onsite(int type,int machine_id,int work_order_id)
         {
-            url = url + "api/v1/client/work_order/onsite/"+type+"?machine_id+"+machine_id+"&work_order_id="+work_order_id;
+            url = url + "api/v1/client/work_order/onsite/"+type+"?machine_id="+machine_id+"&work_order_id="+work_order_id;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
