@@ -23,5 +23,10 @@ namespace Model
         /// 
         /// </summary>
         public string description { get; set; }
+
+        public class notification_groupPerson : notification_group
+        {
+            public IList<Person> person { get; set; }
+        } 
     }
 }
