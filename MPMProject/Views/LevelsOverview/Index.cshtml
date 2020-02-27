@@ -31,6 +31,7 @@
                     {
                         delete aVal.id
                         delete aVal['id']
+                        delete aVal['upper_id']
                         !hashVP[children] && (hashVP[children] = []);
                         hashVP[children].push(aVal);
                     }
@@ -39,6 +40,7 @@
                         r.push(aVal);
                     }
                 }
+                console.log(r);
                 return r;
             }
 

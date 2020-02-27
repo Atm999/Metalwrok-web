@@ -190,7 +190,8 @@
             var name_cn = $('#cnLevel').val();
             var name_tw = $('#twLevel').val();
             var description = $('#descriptionLevel').val();
-            var upper_id = $('#LevelFlag').val();
+            var id = $('#editLayer').val();
+
             $.ajax({
                 type: "POST",
                 url: "/LevelsConfig/AddLevel",
@@ -199,7 +200,7 @@
                     name_cn: name_cn,
                     name_tw: name_tw,
                     description: description,
-                    upper_id: upper_id
+                    id: id
                 },
                 success: function (msg) {
                     if (msg == "Success") {
@@ -214,6 +215,35 @@
             });
 
         }
+
+        //编辑层级
+        function EditLevel() {
+            document.getElementById("myAddEditLabel").innerHTML = "修改层级"; 
+            var urlPara = "area_layer";
+            var area_layer_id = $("#editLayer").val();
+            $.ajax({
+                type: "POST",
+                url: "/LevelsConfig/GetLevel",
+                data: {
+                    urlPara: urlPara,
+                    area_layer_id: area_layer_id
+                },
+                success: function (msg) {
+                    for (var i = 0; i < msg.length; i++) {
+                        if (msg[i].id == parseInt(area_layer_id)) {
+                            document.getElementById("cnLevel").value = msg[i].name_cn;
+                            document.getElementById("twLevel").value = msg[i].name_en;
+                            document.getElementById("enLevel").value = msg[i].name_tw;
+                            document.getElementById("descriptionLevel").value = msg[i].description;
+                        }
+                    }
+                    
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+        }
+
 
         //群组及层级的操作栏格式化
         function groupActionFormatter(value, row, index) {
@@ -968,7 +998,8 @@
             document.getElementById("twLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（繁体）";
             document.getElementById("descriptionLabel").innerHTML = document.getElementById("" + area_layer_id + "").innerHTML + "（描述）";
 
-
+            document.getElementById("editLayer").value = area_layer_id;
+            document.getElementById("deleteLayer").value = area_layer_id;
 
             $('#levelTable').bootstrapTable('filterBy', {});
             //中间层级切换时刷新表格
@@ -1123,10 +1154,10 @@
                                 <div class="pull-right">
                                     <div class="form-inline">
                                         <div class="form-group">
-                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal' onclick="EditGroup()"><span class="icon-edit-sign"> 修改层级</span></button>
+                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal' onclick="EditLevel()"><span class="icon-edit-sign"> 修改层级</span></button>
                                         </div>
                                         <div class="form-group">
-                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myDelModal'><span class="icon-trash"> 删除层级</span></button>
+                                            <button class="btn btn-primary" data-toggle='modal' data-target='#myDelModal' onclick="DeleteLevel()"><span class="icon-trash"> 删除层级</span></button>
                                         </div>
                                     </div>
                                     
@@ -1186,6 +1217,7 @@
                         </h4>
                     </div>
                     <div class="modal-body">
+                        <input type="hidden" id="editLayer"/>
                         <div class="control-group">
                             <label class="control-label">层级名称（简中）</label>
                             <input class="span12" type="text" id="cnLevel" />
@@ -1524,6 +1556,7 @@
                     </div>
                     <div class="modal-body">
                         <div>是否确认删除该条记录？</div>
+                        <input type="hidden" id="deleteLayer" />
                         <input type="hidden" id="deleteId" />
                         <input type="hidden" id="deleteFlag" />
                     </div>

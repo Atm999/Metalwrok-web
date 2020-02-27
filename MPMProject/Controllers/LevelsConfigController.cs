@@ -32,18 +32,17 @@ namespace MPMProject.Controllers
             JObject joAreaLayer = (JObject)JsonConvert.DeserializeObject(resAreaLayer);
             if (Convert.ToInt32(joAreaLayer["code"]) == 200)
             {
-                var areaNodeList = joAreaLayer["data"].ToObject<IList<Model.area_node>>();
+                var areaLayerList = joAreaLayer["data"].ToObject<IList<Model.area_layer>>();
                 //层级
-                var datAreaNode = (from p in areaNodeList
-                                   where p.upper_id>=0
-                                   orderby p.upper_id
-                                   select new { p.id,p.name_cn,p.upper_id }).ToList();//若直接将datAreaNode赋值给ViewBag.Layer无法使用获取元素的方法
+                var datAreaLayer = (from p in areaLayerList
+                                   orderby p.id
+                                   select new { p.id,p.name_cn }).ToList();//若直接将datAreaNode赋值给ViewBag.Layer无法使用获取元素的方法
 
-                for (int i=0;i< datAreaNode.Count;i++)
+                for (int i=0;i< datAreaLayer.Count;i++)
                 {
                     area_layer res = new area_layer();
-                    res.id = datAreaNode[i].id;
-                    res.name_cn = datAreaNode[i].name_cn;
+                    res.id = datAreaLayer[i].id;
+                    res.name_cn = datAreaLayer[i].name_cn;
 
                     area_Layers.Add(res);
                 }
@@ -63,23 +62,48 @@ namespace MPMProject.Controllers
         public IActionResult AddLevel(area_layer area_Layer)
         {
             url = url + "api/v1/configuration/public/area_layer";
-            string postData = "{{" +
+            
+            if (area_Layer.id == 0)
+            {
+                string postData = "{{" +
                 "\"name_en\":\"{0}\"," +
                 "\"name_cn\":\"{1}\"," +
                 "\"name_tw\":\"{2}\"," +
                 "\"description\":\"{3}\"" +
                 "}}";
-            postData = string.Format(postData, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
-            string result = PostUrl(url, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            if (Convert.ToInt32(jo["code"]) == 200)
-            {
-                return Json("Success");
+                postData = string.Format(postData, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
+                string result = PostUrl(url, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                if (Convert.ToInt32(jo["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
             }
-            else
-            {
-                return Json("Fail");
+            else {
+                string postData = "{{" +
+                "\"id\":{0}," +
+                "\"name_en\":\"{1}\"," +
+                "\"name_cn\":\"{2}\"," +
+                "\"name_tw\":\"{3}\"," +
+                "\"description\":\"{4}\"" +
+                "}}";
+                postData = string.Format(postData, area_Layer.id, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
+                string result = PutUrl(url, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                if (Convert.ToInt32(jo["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
             }
+
         }
         //获取层级
         public IActionResult GetLevel(string urlPara,int area_layer_id)
