@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class QualityCallController : BaseController
+    public class MaterialCallController : BaseController
     {
         public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()

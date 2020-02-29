@@ -167,6 +167,10 @@ namespace MPMProject.Controllers
             JObject vjo = (JObject)JsonConvert.DeserializeObject(vresult);
             var vlist = vjo["data"].ToObject<IList<virtual_lineMachine>>();
             var entity = vlist.FirstOrDefault(p => p.Machines.Any(q => q.machine_id == machineid));//根据设备id找到所在的线
+            if (entity == null)
+            {
+                return Json(null);
+            }
             var index = entity.Machines.ToList().FindIndex(p => p.machine_id == machineid);
             var id = 0;
             bool isFirst = false;
