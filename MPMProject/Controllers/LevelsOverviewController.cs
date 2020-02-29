@@ -33,6 +33,11 @@ namespace MPMProject.Controllers
             List<object> final = new List<object>() { new { name = "根节点", id = 0, upper_id = "-" } };
 
             //配置的节点
+            var areaLayerUrl = url + "api/v1/configuration/public/area_layer";
+            var resAreaLayer = GetUrl(areaLayerUrl);
+            JObject joAreaLayer = (JObject)JsonConvert.DeserializeObject(resAreaLayer);
+
+            //配置的节点
             var areaNodeUrl = url + "api/v1/configuration/public/area_node";
             var resAreaNode = GetUrl(areaNodeUrl);
             JObject joAreaNode = (JObject)JsonConvert.DeserializeObject(resAreaNode);
@@ -42,17 +47,20 @@ namespace MPMProject.Controllers
             var resMachine = GetUrl(machineUrl);
             JObject joMachine = (JObject)JsonConvert.DeserializeObject(resMachine);
 
-            if (Convert.ToInt32(joAreaNode["code"]) == 200 && Convert.ToInt32(joMachine["code"]) == 200)
+            if (Convert.ToInt32(joAreaLayer["code"]) == 200 &&  Convert.ToInt32(joAreaNode["code"]) == 200 && Convert.ToInt32(joMachine["code"]) == 200)
             {
+                var areaLayerList = joAreaLayer["data"].ToObject<IList<Model.area_layer>>();
                 var areaNodeList = joAreaNode["data"].ToObject<IList<Model.area_node>>();
                 var machineList = joMachine["data"].ToObject<IList<Model.machine>>();
                 //层级
                 var datAreaNode = (from p in areaNodeList
-                                   select new { name = p.name_cn, p.id, p.upper_id }).ToList();
+                                   join q in areaLayerList
+                                   on p.area_layer_id equals q.id
+                                   select new { name = q.name_cn+":"+ p.name_cn, p.id, p.upper_id }).ToList();
                 //设备
                 var datMachine = (from q in machineList
                                   where q.area_node_id !=0
-                                  select new { name = q.name_cn, id, upper_id = q.area_node_id }).ToList();
+                                  select new { name = "设备:"+q.name_cn, id, upper_id = q.area_node_id }).ToList();
                 var dat = final.Union(datAreaNode).Union(datMachine).ToList();
                 return Json(dat);
             }
