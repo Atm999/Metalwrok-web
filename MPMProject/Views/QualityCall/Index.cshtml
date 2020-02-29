@@ -1,7 +1,191 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
+    <script type='text/javascript'>
+        getOption();
+        $(document).ready(function () {
+            $("#Virtual_line").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+        //JS操作cookies方法!
+        //写cookies
+        function setCookie(name, value) {
+            var Days = 365;
+            var exp = new Date();
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+        }
+        //读取cookies
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
 
-<h1>Index</h1>
+            if (arr = document.cookie.match(reg))
 
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        $(function () {
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4)').addClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(4)').removeClass('active');
+
+            var vValue = getCookie('machine');
+            $("#machine").attr('value', vValue);
+              $("#machine").select2();
+            $('#table').bootstrapTable({
+                method: 'get',
+                theadClasses: "thead-blue",
+                striped: true,  //表格显示条纹，默认为false
+                pagination: true,
+                singleSelect: true,
+                showColumns: false,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 12,//每页的记录行数（*）
+                undefinedText: '---', //当数据为 undefined 时显示的字符
+                paginationDetailHAlign: 'left',
+                toolbarAlign: 'right',
+                columns: [{
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#table').bootstrapTable('getOptions');
+                        return index + 1;
+                    }
+                }, {
+                    field: 'responsible_name',
+                    title: '责任人'
+                },{
+                    field: 'start_time',
+                    title: '发生时间'
+                }, {
+                    field: 'arrival_time',
+                    title: '签到时间'
+                }, {
+                    field: 'release_time',
+                    title: '解除时间'
+                }]
+            });
+
+            
+        });
+       
+        //页面加载时，获取所有设备信息
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/QualityCall/GetMachine',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machine").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+                    }
+                   
+                }
+            });
+        }
+        //页面加载时候，根据设备id,查当前可执行的工单数据，返回页面显示
+        $(function () {
+            //var vValue = getCookie('machine');
+             $.ajax({
+                    type: "get",
+                    url: '/QualityCall/GetIndex',
+                    async: true,
+                    success: function (data) {
+                        setView(data);
+                    }
+                });
+             ///把设备id保存cookie
+            //$("#machine").select2();
+            $("#machine").on("select2:select", function () {
+                var machine = $(this).val();
+                setCookie('machine', machine);
+            });
+            function setView(data) {
+                if (data == null) {//error_log没有数据，呼叫按钮亮起，其他隐藏
+                    $("#hj").attr("style", "display:block;");
+                    $("#qd").attr("style", "display:none;");
+                    $("#jc").attr("style", "display:none;");
+                }
+                else {//error_log 有数据，呼叫隐藏，签到亮起，解除亮起
+                    
+                    $("#hj").attr("style", "display:none;");
+                    $("#qd").attr("style", "display:block;");
+                    $("#jc").attr("style", "display:block;");
+                }
+            }
+           
+        });
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a href="#" style="color:#008FD7;font-weight:600"><span>现场客户端</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>品质呼叫</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">设备</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="select2" id="machine">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <div class='tabbable' id="tabAll">
+                    <ul class='nav nav-tabs'>
+                        <!--群组-->
+                        <li class='active'>
+                            <a data-toggle='tab' href='#tab1'>
+                                <i class='icon-home'></i>
+                                品质呼叫
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="form-inline" style="float:left">
+                        <div class="form-group">
+
+                            <button id="hj" type="submit" class="btn btn-primary" onclick="call()"> 呼叫</button>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="form-group">
+                            <button id="qd" type="submit" class="btn btn-primary" onclick="begin()">签到</button>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="form-group">
+                            <button id="jc" class="btn btn-primary" onclick="end()" data-toggle='modal'>解除</button>
+                        </div>
+                    </div>
+                    <table class="table"  id="table"></table>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</body>
+</html>

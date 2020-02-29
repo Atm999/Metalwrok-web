@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -135,9 +136,15 @@ namespace MPMProject.Controllers
         /// 加载页面时判断  当前设备是否已开始工单
         /// </summary> //https://api-mpm.wise-paas.cn/api/v1/client/work_order/onsite/0?machine_id=122&work_order_id=12
         /// <param name="machineid"></param>
+        ///  //转化为正常的时间类型
+        //CultureInfo culture = new CultureInfo("en-us");
+        //DateTime dt = Convert.ToDateTime("2/28/20 2:53:00 PM", culture);
+
         /// <returns></returns>
         public JsonResult GetIndex(int machineid)
         {
+           
+
             //第一步：先根据machineid查machine_current_log是否有数据，有->显示页面；
             //第二步：查不到数据的情况下，查当前这一站是否是第一站
             var furl = url + "api/v1/client/work_order/machine_current_log";
@@ -178,32 +185,21 @@ namespace MPMProject.Controllers
             string mresult = GetUrl(murl);
             JObject mjo = (JObject)JsonConvert.DeserializeObject(mresult);
             var mlist = mjo["data"].ToObject<IList<wo_machine_cur_log>>();
-            // var data = mlist.Where(p => p.machine_id == id);
-            //新增
+            if (mlist.Count == 0)
+            {
+                return Json(new { IsFirst=isFirst,wo_config=new List<wo_config>(), wo_machine_cur_log=new List<wo_machine_cur_log>()});
+            }
             var data = mlist.FirstOrDefault(p => p.machine_id == id);
-          
-                var durl = url + "api/v1/configuration/work_order/wo_config";
+            if (data==null)
+            {
+                return Json(new { IsFirst = isFirst, wo_config = new List<wo_config>(), wo_machine_cur_log = new List<wo_machine_cur_log>() });
+            }
+            var durl = url + "api/v1/configuration/work_order/wo_config";
                 string dresult = GetUrl(durl);
                 JObject djo = (JObject)JsonConvert.DeserializeObject(dresult);
                 var dlist = djo["data"].ToObject<IList<wo_config>>();
                 var ddata = dlist.FirstOrDefault(p => p.id == data.wo_config_id);
                 return Json(new { IsFirst = isFirst, wo_config = ddata, wo_machine_cur_log = data });
-           
-            //switch (Convert.ToInt32(mjo["code"]))
-            //{
-            //    case 200:
-            //        Json(data);
-            //        break;
-            //    case 400:
-            //        break;
-            //    case 410:
-            //        break;
-            //    case 411:
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //return Json(new {IsFirst=isFirst,Data=data });//isFirst ?Json(true):(data.Count()>0 ? Json(true):Json(false));
         }
 
         public JsonResult onsite(int type,int machine_id,int work_order_id)
