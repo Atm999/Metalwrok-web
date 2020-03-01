@@ -68,6 +68,30 @@ namespace MPMProject.Controllers
             }
             return Json(data);
         }
+
+        public JsonResult GetIndexqd(string machinename)
+        {
+            url = url + "api/v1/configuration/andon/error_log/1?status=2";
+            string result = GetUrl(url);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            var list = jo["data"].ToObject<IList<error_log>>();
+            var data = list.Where(p => p.machine_name == machinename);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json(jo["data"]);
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json(data);
+        }
         /// <summary>
         /// 呼叫
         /// </summary>
@@ -127,16 +151,16 @@ namespace MPMProject.Controllers
         /// <param name="type"></param>
         /// <param name="machine_id"></param>
         /// <returns></returns>
-        public JsonResult GetQd(int type, int machine_id,int person_id,int log_id)
+        public JsonResult GetQd(int type, int machine_id,string number, int log_id)
         {
-            url = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id+"&log_id="+log_id+"&person_id="+person_id;
+            url = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id+"&log_id="+log_id+ "&number=" + number;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
                                 "\"log_id\":{2}," +
-                                 "\"person_id\":{3}," +
+                                 "\"number\":\"{3}\"," +
                                "}}";
-            postData = string.Format(postData, type, machine_id, log_id,person_id);
+            postData = string.Format(postData, type, machine_id, log_id, number);
             string result = PutUrl(url, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))

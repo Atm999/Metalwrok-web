@@ -6,9 +6,8 @@
     <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
     <script type='text/javascript'>
         getOption();
-        getOptionPerson();
         $(document).ready(function () {
-             $("#personnum").select2();
+            
             $("#Virtual_line").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
@@ -84,19 +83,9 @@
                 },{
                     field: 'release_time',
                     title: '解除时间'
-                }, {
-                    field: 'actionEvent',
-                    title: '操作',
-                    align: 'center',
-                    valign: 'middle',
-                    formatter: actionFormatter,
                 }]
             });
         });
-          //操作栏的格式化
-        function actionFormatter(value, row, index) {
-            document.getElementById("id").value = row.id;
-        }
         //页面加载时，获取所有设备信息
         function getOption() {
             $.ajax({
@@ -155,18 +144,18 @@
             }
         });
         //获取人员工号
-        function getOptionPerson() {
-            $.ajax({
-                type: "get",
-                url: '/QualityCall/GetPerson',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#personnum").append('<option  value=' + data[i].id + '>' + data[i].id_num + '</option>');
-                    }
-                }
-            });
-        }
+        //function getOptionPerson() {
+        //    $.ajax({
+        //        type: "get",
+        //        url: '/QualityCall/GetPerson',
+        //        async: true,
+        //        success: function (data) {
+        //            for (var i = 0; i < data.length; i++) {
+        //                $("#personnum").append('<option  value=' + data[i].id + '>' + data[i].id_num + '</option>');
+        //            }
+        //        }
+        //    });
+        //}
         //根据设备id  查找  无数据时，点呼叫按钮
         function call() {
             //呼叫时候 ，需要传数据设备id，以及type类型 0:品质异常 1:设备异常 2:物料呼叫
@@ -178,7 +167,7 @@
                         $("#hj").attr("style", "display:none;");
                         $("#qd").attr("style", "display:block;");
                         var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name});
+                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/GetIndex?machinename=" + name});
                     }
                 });
 
@@ -190,18 +179,19 @@
         //确认签到
         function confirm() {
             //签到传值 type 0:品质异常 1:设备异常   machine_id  log_id  person_id
-            var person_id = $("#personnum").val();
-            var log_id= $("#id").val();
+            var number = $("#number").val();
+            var data = $('#table').bootstrapTable("getData");
+            var log_id= data[0].id;
              $.ajax({
                  type: "get",
-                 url: '/QualityCall/GetQd?type=' + 0 + "&machine_id=" + getCookie('machine') + "&person_id=" + person_id+"&log_id="+log_id,
+                 url: '/QualityCall/GetQd?type=' + 0 + "&machine_id=" + getCookie('machine') + "&number=" + number+"&log_id="+log_id,
                     async: true,
                     success: function (data) {
                         $("#hj").attr("style", "display:none;");
                         $("#qd").attr("style", "display:none;");
                         $("#jc").attr("style", "display:block;");
                         var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name });
+                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndexqd?machinename=" + name });
                          $('#machineModal').modal('hide');
                     }
                 });
@@ -213,19 +203,19 @@
           //确认解除
         function confirmcount() {
             //签到传值 type 0:品质异常 1:设备异常   machine_id  log_id  count
-            var person_id = $("#personnum").val();
-            var log_id = $("#id").val();
+           // var person_id = $("#personnum").val();
+            var data = $('#table').bootstrapTable("getData");
+            var log_id= data[0].id;
             var count = $("#count").val();
              $.ajax({
                  type: "get",
                  url: '/QualityCall/GetJc?type=' + 0 + "&machine_id=" + getCookie('machine') + "&count=" + count+"&log_id="+log_id,
                     async: true,
                     success: function (data) {
-                        //$("#hj").attr("style", "display:none;");
-                        //$("#qd").attr("style", "display:none;");
-                        //$("#jc").attr("style", "display:block;");
                         var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name});
+                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name });
+                        $('#countModal').modal('hide');
+                        
                     }
                 });
         }
@@ -309,9 +299,10 @@
                             <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
                                 <label class="control-label">人员工号</label>
-                                <select class="select2 span12" id="personnum" style="width:100%">
+                                <input class="span12" type="text" id="number" name="number" />
+                                @*<select class="select2 span12" id="personnum" style="width:100%">
                                     <option value="0">请选择</option>
-                                </select>
+                                </select>*@
                             </div>
                         </div>
 
