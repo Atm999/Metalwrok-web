@@ -6,9 +6,8 @@
     <script src="~/grafanaUIframe/script/lib/bootstrap.min.js"></script>
     <script type='text/javascript'>
         getOption();
+       
         $(document).ready(function () {
-            
-            $("#Virtual_line").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
         //JS操作cookies方法!
@@ -31,15 +30,7 @@
             }
             return "";
         }
-        ////删除cookies
-        //function delCookie(name) {
-        //    var exp = new Date();
-        //    exp.setTime(exp.getTime() - 1);
-        //    var cval = getCookie(name);
-        //    if (cval != null)
-        //        document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
-        //}
-       
+
         $(function () {
             $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
@@ -51,7 +42,7 @@
             $("#machine").select2();
             var name = $("#machine").find("option:selected").text();
             $('#table').bootstrapTable({
-                //url:'/QualityCall/getIndex?machinename='+name,
+                //url:'/MaterialCall/getIndex?machinename='+name,
                 method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
@@ -80,7 +71,7 @@
                 }, {
                     field: 'arrival_time',
                     title: '签到时间'
-                },{
+                }, {
                     field: 'release_time',
                     title: '解除时间'
                 }]
@@ -90,7 +81,7 @@
         function getOption() {
             $.ajax({
                 type: "get",
-                url: '/QualityCall/GetMachine',
+                url: '/MaterialCall/GetMachine',
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -102,13 +93,13 @@
         //页面加载时候，根据设备id,查当前可执行的工单数据，返回页面显示
         $(function () {
             var vValue = getCookie('machine');
-             $("#machine").attr('value', vValue);
+            $("#machine").attr('value', vValue);
             $("#machine").select2();
             var name = $("#machine").find("option:selected").text();
-            $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name});
-              $.ajax({
+            $('#table').bootstrapTable('refresh', { url: "/MaterialCall/getIndex?machinename=" + name });
+            $.ajax({
                 type: "get",
-                url: '/QualityCall/getIndex?machinename=' + name,
+                url: '/MaterialCall/getIndex?machinename=' + name,
                 async: true,
                 success: function (data) {
                     setView(data);
@@ -119,106 +110,68 @@
             $("#machine").on("select2:select", function () {
                 var machine = $(this).val();
                 setCookie('machine', machine);
-                var name=$("#machine").find("option:selected").text();
-                $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name});
+                var name = $("#machine").find("option:selected").text();
+                $('#table').bootstrapTable('refresh', { url: "/MaterialCall/getIndex?machinename=" + name });
                 $.ajax({
-                type: "get",
-                url: '/QualityCall/getIndex?machinename=' + name,
-                async: true,
-                success: function (data) {
-                    setView(data);
-                }
-            });
+                    type: "get",
+                    url: '/MaterialCall/getIndex?machinename=' + name,
+                    async: true,
+                    success: function (data) {
+                        setView(data);
+                    }
+                });
             });
             function setView(data) {
                 if (data.length == 0) {//error_log没有数据，呼叫按钮亮起，其他隐藏
                     $("#hj").attr("style", "display:block;");
-                    $("#qd").attr("style", "display:none;");
                     $("#jc").attr("style", "display:none;");
                 }
                 else {//error_log 有数据，呼叫隐藏，签到亮起，解除亮起
                     $("#hj").attr("style", "display:none;");
-                    $("#qd").attr("style", "display:block;");
                     $("#jc").attr("style", "display:block;");
                 }
             }
         });
-        //获取人员工号
-        //function getOptionPerson() {
-        //    $.ajax({
-        //        type: "get",
-        //        url: '/QualityCall/GetPerson',
-        //        async: true,
-        //        success: function (data) {
-        //            for (var i = 0; i < data.length; i++) {
-        //                $("#personnum").append('<option  value=' + data[i].id + '>' + data[i].id_num + '</option>');
-        //            }
-        //        }
-        //    });
-        //}
+
         //根据设备id  查找  无数据时，点呼叫按钮
         function call() {
-            //呼叫时候 ，需要传数据设备id，以及type类型 0:品质异常 1:设备异常 2:物料呼叫
-             $.ajax({
-                    type: "get",
-                    url: '/QualityCall/Getcall?type=' + 0+"&machine_id="+getCookie('machine'),
-                    async: true,
-                    success: function (data) {
-                        $("#hj").attr("style", "display:none;");
-                        $("#qd").attr("style", "display:block;");
-                        var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/GetIndex?machinename=" + name});
-                    }
-                });
-
+           $('#machineModal').modal('show');
+            
         }
-        //签到
-        function begin() {
-             $('#machineModal').modal('show');
-        }
-        //确认签到
-        function confirm() {
-            //签到传值 type 0:品质异常 1:设备异常   machine_id  log_id  person_id
-            var number = $("#number").val();
-            var data = $('#table').bootstrapTable("getData");
-            var log_id= data[0].id;
-             $.ajax({
-                 type: "get",
-                 url: '/QualityCall/GetQd?type=' + 0 + "&machine_id=" + getCookie('machine') + "&number=" + number+"&log_id="+log_id,
-                    async: true,
-                    success: function (data) {
-                        $("#hj").attr("style", "display:none;");
-                        $("#qd").attr("style", "display:none;");
-                        $("#jc").attr("style", "display:block;");
-                        var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndexqd?machinename=" + name });
-                         $('#machineModal').modal('hide');
-                    }
-                });
+       function confirmcall(){
+              //呼叫时候 ，需要传数据设备id，以及type类型 0:品质异常 1:设备异常 2:物料呼叫
+           var count = $("#count").val();
+           var material_name = $("#material_name").val();
+            $.ajax({
+                type: "get",
+                url: '/MaterialCall/Getcall?type=' + 2 + "&machine_id=" + getCookie('machine')+"&count="+count+"&material_name="+material_name,
+                async: true,
+                success: function (data) {
+                    $("#hj").attr("style", "display:none;");
+                    var name = $("#machine").find("option:selected").text();
+                    $('#table').bootstrapTable('refresh', { url: "/MaterialCall/GetIndexqd?machinename=" + name });
+                    $('#machineModal').modal('hide');
+                     $("#jc").attr("style", "display:block;");
+                }
+            });
         }
         //解除
         function end() {
-             $('#countModal').modal('show');
-        }
-          //确认解除
-        function confirmcount() {
-            //签到传值 type 0:品质异常 1:设备异常   machine_id  log_id  count
-           // var person_id = $("#personnum").val();
+           //签到传值 type 0:品质异常 1:设备异常   machine_id  log_id  
+
             var data = $('#table').bootstrapTable("getData");
-            var log_id= data[0].id;
-            var count = $("#count").val();
-             $.ajax({
-                 type: "get",
-                 url: '/QualityCall/GetJc?type=' + 0 + "&machine_id=" + getCookie('machine') + "&count=" + count+"&log_id="+log_id,
-                    async: true,
-                    success: function (data) {
-                        var name = $("#machine").find("option:selected").text();
-                        $('#table').bootstrapTable('refresh', { url: "/QualityCall/getIndex?machinename=" + name });
-                        $('#countModal').modal('hide');
-                        
-                    }
-                });
+            var log_id = data[0].id;
+            $.ajax({
+                type: "get",
+                url: '/MaterialCall/GetJc?type=' + 2 + "&machine_id=" + getCookie('machine')  + "&log_id=" + log_id,
+                async: true,
+                success: function (data) {
+                    var name = $("#machine").find("option:selected").text();
+                    $('#table').bootstrapTable('refresh', { url: "/MaterialCall/getIndex?machinename=" + name });
+                }
+            });
         }
+       
 
     </script>
 </head>
@@ -229,7 +182,7 @@
                 <div class='pull-left' style="font-size:18px">
                     <a href="#" style="color:#008FD7;font-weight:600"><span>现场客户端</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>品质呼叫</span>
+                    <span>物料呼叫</span>
                 </div>
 
 
@@ -262,7 +215,7 @@
                         <li class='active'>
                             <a data-toggle='tab' href='#tab1'>
                                 <i class='icon-home'></i>
-                                品质呼叫
+                                物料呼叫
                             </a>
                         </li>
                     </ul>
@@ -272,9 +225,7 @@
                             <button id="hj" type="submit" class="btn btn-primary" onclick="call()"> 呼叫</button>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="form-group">
-                            <button id="qd" type="submit" class="btn btn-primary" onclick="begin()">签到</button>
-                        </div>
+                       
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="form-group">
                             <button id="jc" class="btn btn-primary" onclick="end()" data-toggle='modal'>解除</button>
@@ -283,7 +234,7 @@
                     <table class="table" id="table"></table>
                 </div>
             </div>
-            @*签到人员信息*@
+            @*物料信息*@
             <div class="modal fade" id="machineModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -298,42 +249,12 @@
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
-                                <label class="control-label">人员工号</label>
-                                <input class="span12" type="text" id="number" name="number" />
-                                @*<select class="select2 span12" id="personnum" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>*@
+                                <label class="control-label">送料数量</label>
+                                <input class="span12" type="text" id="count" name="count" />
                             </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                取消
-                            </button>
-                            <button type="button" onclick="confirm()" class="btn btn-primary">
-                                确定
-                            </button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal -->
-            </div>
-            @*不良数量信息信息*@
-            <div class="modal fade" id="countModal" style="display:none">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                &times;
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">
-                                不良数量
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
-                                    <label class="control-label">不良数量</label>
-                                    <input class="span12" type="text" id="count" name="count" />
+                                <label class="control-label">物料名称</label>
+                                <input class="span12" type="text" id="material_name" name="material_name" />
                             </div>
                         </div>
 
@@ -341,7 +262,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 取消
                             </button>
-                            <button type="button" onclick="confirmcount()" class="btn btn-primary">
+                            <button type="button" onclick="confirmcall()" class="btn btn-primary">
                                 确定
                             </button>
                         </div>

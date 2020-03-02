@@ -152,9 +152,11 @@ namespace MPMProject.Controllers
 
         public JsonResult Gettagsub()
         {
-            url = url + "api/v1/configuration/andon/error_type_detail";
+            url = url + "api/v1/configuration/public/tag_type_sub";
             string result = GetUrl(url);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            var flist = jo["data"].ToObject<IList<tag_type_sub>>();
+            var fdata = flist.Where(p => p.tag_type_id == 3);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -169,7 +171,7 @@ namespace MPMProject.Controllers
                 default:
                     break;
             }
-            return Json(jo["data"]);
+            return Json(fdata);
         }
 
         public JsonResult Getperson()
