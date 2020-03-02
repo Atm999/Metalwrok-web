@@ -175,6 +175,28 @@
                 }, {
                     field: 'description',
                     title: '描述'
+                },{
+                    field: 'tag',
+                    title: '绑定的Tag点',
+                        formatter: function (value, row, index) {
+                            console.log(row.tag);
+                            var str = JSON.stringify(row.tag);
+                            var myTag = new Array();
+                            var result="";
+                            
+                            myTag = str.split(";");
+                            console.log(myTag);
+                            if (myTag.length == 1) { return "---" }
+                            else {
+                                for (var i = 0; i < myTag.length-1; i++) {
+                                    result += myTag[i].replace("\"","") + "；";
+                                    if ((i+1)% 4 == 0) {
+                                        result +="<br/>"
+                                    }
+                                }
+                                return result
+                            }
+                    }
                 }, {
                     field: 'actionEvent',
                     title: '操作',

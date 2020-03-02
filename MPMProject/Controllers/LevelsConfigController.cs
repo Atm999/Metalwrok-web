@@ -30,6 +30,7 @@ namespace MPMProject.Controllers
             var areaLayerUrl = url + "api/v1/configuration/public/area_layer";
             var resAreaLayer = GetUrl(areaLayerUrl);
             JObject joAreaLayer = (JObject)JsonConvert.DeserializeObject(resAreaLayer);
+
             if (Convert.ToInt32(joAreaLayer["code"]) == 200)
             {
                 var areaLayerList = joAreaLayer["data"].ToObject<IList<Model.area_layer>>();
@@ -725,20 +726,69 @@ namespace MPMProject.Controllers
             string areaNodeResult = GetUrl(areaNodeUrl);
             JObject joAreaNode = (JObject)JsonConvert.DeserializeObject(areaNodeResult);
 
-            if (Convert.ToInt32(joMachine["code"]) == 200 && Convert.ToInt32(joAreaNode["code"]) == 200)
+            string tagTypeSubUrl = url + "api/v1/configuration/public/tag_type_sub";
+            string tagTypeSubResult = GetUrl(tagTypeSubUrl);
+            JObject joTagTypeSub = (JObject)JsonConvert.DeserializeObject(tagTypeSubResult);
+
+            string tagInfoUrl = url + "api/v1/configuration/public/tag";
+            string tagInfoResult = GetUrl(tagInfoUrl);
+            JObject joTagInfo = (JObject)JsonConvert.DeserializeObject(tagInfoResult);
+
+            if (Convert.ToInt32(joMachine["code"]) == 200 && Convert.ToInt32(joAreaNode["code"]) == 200 
+                && Convert.ToInt32(joTagTypeSub["code"]) == 200 && Convert.ToInt32(joTagInfo["code"]) == 200)
             {
                 var machineList = joMachine["data"].ToObject<IList<Model.machine>>();
                 var areaNodeList = joAreaNode["data"].ToObject<IList<Model.area_node>>();
+                var tagTypeSubList = joTagTypeSub["data"].ToObject<IList<Model.tag_type_sub>>();
+                var tagInfoList = joTagInfo["data"].ToObject<IList<Model.tag_info>>();
 
+                
                 var datMachine = (from p in machineList
                                   join q in areaNodeList
                                   on p.area_node_id equals q.id
-                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id,area_node_name=q.name_cn,q.area_layer_id }).ToList();
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id,area_node_name=q.name_cn,q.area_layer_id}).ToList();
 
                 var datUnBindMachine = (from p in machineList
                                   where p.area_node_id==0
-                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id, area_node_name="-", area_layer_id =-1 }).ToList();
-                return Json(datMachine.Union(datUnBindMachine));
+                                  select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.area_node_id, area_node_name="-", area_layer_id =-1}).ToList();
+
+
+                var tagInfo = (from p in tagInfoList
+                           join q in tagTypeSubList
+                           on p.tag_type_sub_id equals q.id
+                           select new { p.machine_id, q.name_cn }).ToList();
+                var machineInfo = datMachine.Union(datUnBindMachine).ToList();//该list只能读不可写
+
+                //存储machine_id和mame_cn(标签名)
+                List<tag_info> tag_Infos = new List<tag_info>();
+               
+                //存储machine_id
+                for (int i=0; i < machineInfo.Count; i++) {
+                    tag_info tag = new tag_info();
+                    tag.machine_id = machineInfo[i].id;
+                    tag_Infos.Add(tag);
+                }
+                //存储machine_id下的所有tag名称
+                for (int i=0;i< tag_Infos.Count;i++) {
+                    for (int j = 0; j < tagInfo.Count; j++)
+                    {
+                        if (tag_Infos[i].machine_id == tagInfo[j].machine_id) {
+                            tag_Infos[i].name += tagInfo[j].name_cn + ";";
+                        }
+                    }
+                }
+
+
+                
+                var result = (from a in machineInfo
+                              join b in tag_Infos
+                              on a.id equals b.machine_id into temp
+                              from res in temp.DefaultIfEmpty()
+                              select new { a.id,a.name_cn,a.name_en,a.name_tw,a.description,a.area_layer_id,a.area_node_id,a.area_node_name,
+                                  tag = temp.Select(T => T.name).FirstOrDefault()
+                              }).ToList();
+
+                return Json(result);
             }
             else
             {
