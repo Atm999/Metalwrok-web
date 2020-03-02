@@ -14,7 +14,6 @@ namespace MPMProject.Controllers
     /// </summary>
     public class SecondLevelTagsController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
@@ -25,8 +24,8 @@ namespace MPMProject.Controllers
             var result1 = GetUrl(purl);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
 
-            url = url + "api/v1/configuration/public/tag_type_sub";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/tag_type_sub";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var typeList = jo1["data"].ToObject<IList<Model.tag_type>>();
             var subList = jo["data"].ToObject<IList<Model.tag_type_sub>>();
@@ -77,10 +76,10 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]tag_type_sub sub) 
         {
-            url = url + "api/v1/configuration/public/tag_type_sub";
+            string myurl = url + "api/v1/configuration/public/tag_type_sub";
             string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
             postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description, sub.tag_type_id);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -100,10 +99,10 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]tag_type_sub sub)
         {
-            url = url + "api/v1/configuration/public/tag_type_sub";
+            string myurl = url + "api/v1/configuration/public/tag_type_sub";
             string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
             postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description,sub.tag_type_id);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -124,8 +123,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]tag_type_sub sub)
         {
-            url = url + "api/v1/configuration/public/tag_type_sub?id=" + sub.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/public/tag_type_sub?id=" + sub.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

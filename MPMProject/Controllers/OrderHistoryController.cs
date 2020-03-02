@@ -10,7 +10,6 @@ namespace MPMProject.Controllers
 {
     public class OrderHistoryController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -18,8 +17,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/work_order/produced_work_order";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/produced_work_order";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

@@ -17,7 +17,6 @@ namespace MPMProject.Controllers
     public class FileController : BaseController
     {
         private IHostingEnvironment hostingEnv;
-        public string url = "http://api-mpm.wise-paas.cn/";
         string[] fileFormatArray = { "lic" };
         public FileController(IHostingEnvironment env)
         {

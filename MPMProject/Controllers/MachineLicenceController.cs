@@ -15,7 +15,6 @@ namespace MPMProject.Controllers
     public class MachineLicenceController : BaseController
     {
         private IHostingEnvironment hostingEnv;
-        public string url = "http://api-mpm.wise-paas.cn/";
         public MachineLicenceController(IHostingEnvironment env)
         {
             this.hostingEnv = env;

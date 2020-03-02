@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Model;
+using MPMProject.Controllers;
 
 namespace MPMProject
 {
@@ -21,6 +22,15 @@ namespace MPMProject
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            try
+            {
+                BaseController.url= Configuration.GetValue<string>("APIUrl");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ex.message=" + ex.Message);
+            }
         }
 
         public IConfiguration Configuration { get; }

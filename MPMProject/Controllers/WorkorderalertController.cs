@@ -10,7 +10,6 @@ namespace MPMProject.Controllers
 {
     public class WorkorderalertController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -18,8 +17,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/andon/work_order_alert_detail";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/work_order_alert_detail";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -39,9 +38,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Update([FromBody]work_order_alert ec)
         {
-            url = url + "api/v1/configuration/andon/work_order_alert";
+            string myurl = url + "api/v1/configuration/andon/work_order_alert";
             var postData = JsonConvert.SerializeObject(ec);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -61,9 +60,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]work_order_alert ec)
         {
-            url = url + "api/v1/configuration/andon/work_order_alert";
+            string myurl = url + "api/v1/configuration/andon/work_order_alert";
             var postData = JsonConvert.SerializeObject(ec);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -84,8 +83,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]work_order_alert ec)
         {
-            url = url + "api/v1/configuration/andon/work_order_alert?id=" + ec.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/work_order_alert?id=" + ec.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -129,8 +128,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getgroup()
         {
-            url = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

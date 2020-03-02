@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class PersonController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -23,8 +22,8 @@ namespace MPMProject.Controllers
             string result1 = GetUrl(purl);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
 
-            url = url + "api/v1/configuration/public/dept";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/dept";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
 
             var personList = jo1["data"].ToObject<IList<Model.Person>>();
@@ -75,10 +74,10 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]Person person)
         {
-            url = url + "api/v1/configuration/public/person";
+            string myurl = url + "api/v1/configuration/public/person";
             string postData = "{{\"id\":{0},\"user_name\":\"{1}\",\"id_num\":\"{2}\",\"user_level\":\"{3}\",\"email\":\"{4}\",\"wechart\":\"{5}\",\"mobile_phone\":\"{6}\",\"user_position\":\"{7}\",\"dept_id\":{8}}}";
             postData = string.Format(postData, person.id, person.user_name, person.id_num, person.user_level, person.email, person.wechart, person.mobile_phone, person.user_position, person.dept_id);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -98,9 +97,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]Person person)
         {
-            url = url + "api/v1/configuration/public/person";
+            string myurl = url + "api/v1/configuration/public/person";
             var postData = JsonConvert.SerializeObject(person);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -121,8 +120,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]Person person)
         {
-            url = url + "api/v1/configuration/public/person?id=" + person.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/public/person?id=" + person.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

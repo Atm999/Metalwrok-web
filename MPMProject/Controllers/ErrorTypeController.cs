@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class ErrorTypeController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -20,8 +19,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/andon/error_type";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -42,9 +41,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]error_type type)
         {
-            url = url + "api/v1/configuration/andon/error_type";
+            string myurl = url + "api/v1/configuration/andon/error_type";
             var postData = JsonConvert.SerializeObject(type); 
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -64,9 +63,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]error_type type)
         {
-            url = url + "api/v1/configuration/andon/error_type";
+            string myurl = url + "api/v1/configuration/andon/error_type";
             var postData = JsonConvert.SerializeObject(type);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -87,8 +86,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]error_type type)
         {
-            url = url + "api/v1/configuration/andon/error_type?id=" + type.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type?id=" + type.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

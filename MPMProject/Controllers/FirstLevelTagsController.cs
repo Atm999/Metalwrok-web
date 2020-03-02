@@ -14,15 +14,14 @@ namespace MPMProject.Controllers
     /// </summary>
     public class FirstLevelTagsController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/public/tag_type";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/tag_type";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

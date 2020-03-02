@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class ErrorTypeDetailController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
@@ -22,8 +21,8 @@ namespace MPMProject.Controllers
             var result1 = GetUrl(purl);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
 
-            url = url + "api/v1/configuration/andon/error_type_detail";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type_detail";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var typeList = jo1["data"].ToObject<IList<Model.error_type>>();
             var subList = jo["data"].ToObject<IList<Model.error_type_detail>>();
@@ -74,11 +73,11 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]error_type_detail sub)
         {
-            url = url + "api/v1/configuration/andon/error_type_detail";
+            string myurl = url + "api/v1/configuration/andon/error_type_detail";
             //string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"error_type_id\":{5},\"code\":\"{6}\"}}";
             //postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description, sub.error_type_id,sub.code);
             var postData = JsonConvert.SerializeObject(sub);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -98,11 +97,11 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]error_type_detail sub)
         {
-            url = url + "api/v1/configuration/andon/error_type_detail";
+            string myurl = url + "api/v1/configuration/andon/error_type_detail";
             //string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"error_type_id\":{5},\"code\":\"{6}\"}}";
             //postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description, sub.error_type_id,sub.code);
             var postData = JsonConvert.SerializeObject(sub);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -123,8 +122,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]error_type_detail sub)
         {
-            url = url + "api/v1/configuration/andon/error_type_detail?id=" + sub.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type_detail?id=" + sub.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

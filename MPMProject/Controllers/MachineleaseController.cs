@@ -11,15 +11,14 @@ namespace MPMProject.Controllers
 {
     public class MachineleaseController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/oee/machine_lease_detail";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/oee/machine_lease_detail";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -40,8 +39,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getmachine()
         {
-            url = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/machine";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -62,9 +61,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/oee/machine_lease";
+            string myurl = url + "api/v1/configuration/oee/machine_lease";
             var postData = JsonConvert.SerializeObject(lease);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -84,11 +83,11 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/oee/machine_lease";
+            string myurl = url + "api/v1/configuration/oee/machine_lease";
             var time = DateTime.UtcNow;
             lease.start_time = time;
             var postData = JsonConvert.SerializeObject(lease);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -109,8 +108,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/oee/machine_lease?id=" + lease.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/oee/machine_lease?id=" + lease.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

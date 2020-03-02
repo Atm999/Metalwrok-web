@@ -14,7 +14,6 @@ namespace MPMProject.Controllers
 {
     public class DeptController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -23,8 +22,8 @@ namespace MPMProject.Controllers
         }
         public  JsonResult GetData()
         {
-            url = url + "api/v1/configuration/public/dept";
-            string result = GetUrl(url);
+            string  geturl = url + "api/v1/configuration/public/dept";
+            string result = GetUrl(geturl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -45,10 +44,10 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]dept dept) 
         {
-            url=url + "api/v1/configuration/public/dept";
+            string updateurl=url + "api/v1/configuration/public/dept";
             string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
             postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(updateurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -68,10 +67,10 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]dept dept)
         {
-            url = url + "api/v1/configuration/public/dept";
+            string addurl = url + "api/v1/configuration/public/dept";
             string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
             postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(addurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -92,8 +91,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]dept dept)
         {
-            url = url + "api/v1/configuration/public/dept?id="+dept.id.ToString();
-            string result = DeleteUrl(url);
+            string deleteurl = url + "api/v1/configuration/public/dept?id="+dept.id.ToString();
+            string result = DeleteUrl(deleteurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
