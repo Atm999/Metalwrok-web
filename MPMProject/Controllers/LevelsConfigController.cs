@@ -15,7 +15,6 @@ namespace MPMProject.Controllers
     /// </summary>
     public class LevelsConfigController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -62,7 +61,7 @@ namespace MPMProject.Controllers
         //添加层级
         public IActionResult AddLevel(area_layer area_Layer)
         {
-            url = url + "api/v1/configuration/public/area_layer";
+            string levelUrl = url + "api/v1/configuration/public/area_layer";
             
             if (area_Layer.id == 0)
             {
@@ -73,7 +72,7 @@ namespace MPMProject.Controllers
                 "\"description\":\"{3}\"" +
                 "}}";
                 postData = string.Format(postData, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
-                string result = PostUrl(url, postData);
+                string result = PostUrl(levelUrl, postData);
                 JObject jo = (JObject)JsonConvert.DeserializeObject(result);
                 if (Convert.ToInt32(jo["code"]) == 200)
                 {
@@ -93,7 +92,7 @@ namespace MPMProject.Controllers
                 "\"description\":\"{4}\"" +
                 "}}";
                 postData = string.Format(postData, area_Layer.id, area_Layer.name_en, area_Layer.name_cn, area_Layer.name_tw, area_Layer.description);
-                string result = PutUrl(url, postData);
+                string result = PutUrl(levelUrl, postData);
                 JObject jo = (JObject)JsonConvert.DeserializeObject(result);
                 if (Convert.ToInt32(jo["code"]) == 200)
                 {
@@ -151,8 +150,8 @@ namespace MPMProject.Controllers
                 area_layer_id = Convert.ToInt32(Request.Query["area_layer_id"]);
             }
 
-            url = url + "api/v1/configuration/public/area_node";
-            string result = GetUrl(url);
+            string groupUrl = url + "api/v1/configuration/public/area_node";
+            string result = GetUrl(groupUrl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
@@ -199,7 +198,7 @@ namespace MPMProject.Controllers
         //群组新增
         public IActionResult AddGroup(area_node area_Node)
         {
-            url = url + "api/v1/configuration/public/area_node";
+            string groupUrl = url + "api/v1/configuration/public/area_node";
             string postData = "{{" +
                 "\"name_en\":\"{0}\"," +
                 "\"name_cn\":\"{1}\"," +
@@ -210,7 +209,7 @@ namespace MPMProject.Controllers
                 "}}";
             //对于群组来说，upper_id和area_layer_id均固定
             postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description,area_Node.upper_id, area_Node.area_layer_id);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(groupUrl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
@@ -224,7 +223,7 @@ namespace MPMProject.Controllers
         //群组修改
         public IActionResult UpdateGroup(area_node area_Node)
         {
-            url = url + "api/v1/configuration/public/area_node";
+            string groupUrl = url + "api/v1/configuration/public/area_node";
             string postData = "{{" +
                 "\"id\":{0}," +
                 "\"name_en\":\"{1}\"," +
@@ -236,7 +235,7 @@ namespace MPMProject.Controllers
                 "}}";
             //对于群组来说，upper_id和area_node_id均固定
             postData = string.Format(postData, area_Node.id, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description, area_Node.upper_id, area_Node.area_layer_id);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(groupUrl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
@@ -252,9 +251,9 @@ namespace MPMProject.Controllers
         //属性设置查询
         public JsonResult GetSetting(int area_node_id,string type)
         {
-            url = url + "api/v1/configuration/public/area_property/"+ type + "";
+            string settingUrl = url + "api/v1/configuration/public/area_property/"+ type + "";
             area_property area_Property = new area_property();
-            string result = GetUrl(url);
+            string result = GetUrl(settingUrl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             
             if (Convert.ToInt32(jo["code"]) == 200)
@@ -582,9 +581,9 @@ namespace MPMProject.Controllers
         public JsonResult GetMachineNodeList()
         {
             int area_node_id=Convert.ToInt32(Request.Query["area_node_id"]);
-            url = url + "api/v1/configuration/public/machine";
+            string groupUrl = url + "api/v1/configuration/public/machine";
             List<machine> machines = new List<machine>();
-            string result = GetUrl(url);
+            string result = GetUrl(groupUrl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
 
             if (Convert.ToInt32(jo["code"]) == 200)

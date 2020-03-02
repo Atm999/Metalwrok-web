@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class QualityCallController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
@@ -22,8 +21,8 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public JsonResult GetMachine()
         {
-            url = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/machine";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -47,8 +46,8 @@ namespace MPMProject.Controllers
         /// </summary>
         /// <returns></returns>
         public JsonResult GetIndex(string machinename) {
-            url = url + "api/v1/configuration/andon/error_log/1?status=1";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_log/1?status=1";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var list = jo["data"].ToObject<IList<error_log>>();
             var data = list.Where(p => p.machine_name == machinename);
@@ -71,8 +70,8 @@ namespace MPMProject.Controllers
 
         public JsonResult GetIndexqd(string machinename)
         {
-            url = url + "api/v1/configuration/andon/error_log/1?status=2";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_log/1?status=2";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var list = jo["data"].ToObject<IList<error_log>>();
             var data = list.Where(p => p.machine_name == machinename);
@@ -100,13 +99,13 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public JsonResult Getcall(int type, int machine_id)
         {
-            url = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id ;
+            string myurl = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id ;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
                                "}}";
             postData = string.Format(postData, type, machine_id);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -126,8 +125,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetPerson()
         {
-            url = url + "api/v1/configuration/public/person";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/person";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -153,7 +152,7 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public JsonResult GetQd(int type, int machine_id,string number, int log_id)
         {
-            url = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id+"&log_id="+log_id+ "&number=" + number;
+            string myurl = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id+"&log_id="+log_id+ "&number=" + number;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
@@ -161,7 +160,7 @@ namespace MPMProject.Controllers
                                  "\"number\":\"{3}\"," +
                                "}}";
             postData = string.Format(postData, type, machine_id, log_id, number);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -189,7 +188,7 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public JsonResult GetJc(int type, int machine_id, int count, int log_id)
         {
-            url = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id + "&log_id=" + log_id + "&count=" + count;
+            string myurl = url + "api/v1/client/error/onsite/" + type + "?machine_id=" + machine_id + "&log_id=" + log_id + "&count=" + count;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
@@ -197,7 +196,7 @@ namespace MPMProject.Controllers
                                  "\"count\":{3}," +
                                "}}";
             postData = string.Format(postData, type, machine_id, log_id, count);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

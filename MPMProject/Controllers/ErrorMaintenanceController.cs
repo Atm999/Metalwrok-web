@@ -12,7 +12,6 @@ namespace MPMProject.Controllers
 {
     public class ErrorMaintenanceController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/"; 
 
         public IActionResult Index()
         {
@@ -20,8 +19,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {//
-            url = url + "api/v1/configuration/andon/error_log?status=3";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_log?status=3";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -42,9 +41,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]error_log log)
         {
-            url = url + "api/v1/configuration/andon/error_log" ;
+            string myurl = url + "api/v1/configuration/andon/error_log" ;
             var postData = JsonConvert.SerializeObject(log);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -64,8 +63,8 @@ namespace MPMProject.Controllers
         }
         public IActionResult Delete([FromBody]machinelease lease)
         {
-            url = url + "api/v1/configuration/andon/error_log?id=" + lease.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_log?id=" + lease.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -86,8 +85,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getmachine()
         {
-            url = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/machine";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -107,8 +106,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult Geterror()
         {
-            url = url + "api/v1/configuration/andon/error_type";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -128,8 +127,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult Geterrordetail()
         {
-            url = url + "api/v1/configuration/andon/error_type_detail";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_type_detail";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

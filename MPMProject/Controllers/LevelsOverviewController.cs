@@ -18,7 +18,6 @@ namespace MPMProject.Controllers
     /// </summary>
     public class LevelsOverviewController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {

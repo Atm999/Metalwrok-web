@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class StatusSettingController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -19,8 +18,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/oee/status_setting";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/oee/status_setting";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -42,9 +41,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]status_setting set)
         {
-            url = url + "api/v1/configuration/oee/status_setting";
+            string myurl = url + "api/v1/configuration/oee/status_setting";
             var postData = JsonConvert.SerializeObject(set);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -64,9 +63,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]status_setting set)
         {
-            url = url + "api/v1/configuration/oee/status_setting";
+            string myurl = url + "api/v1/configuration/oee/status_setting";
             var postData = JsonConvert.SerializeObject(set);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -87,8 +86,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]status_setting set)
         {
-            url = url + "api/v1/configuration/oee/status_setting?id=" + set.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/oee/status_setting?id=" + set.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -109,9 +108,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Updateformula([FromBody]utilization_rate_formula formula)
         {
-            url = url + "api/v1/configuration/oee/utilization_formula";
+            string myurl = url + "api/v1/configuration/oee/utilization_formula";
             var postData = JsonConvert.SerializeObject(formula);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -132,8 +131,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getdateformula() 
         {
-            url = url + "api/v1/configuration/oee/utilization_formula";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/oee/utilization_formula";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

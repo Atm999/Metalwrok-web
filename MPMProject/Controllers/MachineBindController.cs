@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class MachineBindController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -105,8 +104,8 @@ namespace MPMProject.Controllers
         //群组查询
         public JsonResult GetTagTypeSub(int tag_type_id=0)
         {
-            url = url + "api/v1/configuration/public/tag_type_sub";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/tag_type_sub";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {
@@ -189,8 +188,8 @@ namespace MPMProject.Controllers
         //层级中数据删除
         public IActionResult Delete(int id, string flag)
         {
-            url = url + "api/v1/configuration/public/" + flag + "?id=" + id + "";
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/public/" + flag + "?id=" + id + "";
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)
             {

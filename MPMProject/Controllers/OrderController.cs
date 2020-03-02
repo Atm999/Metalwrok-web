@@ -12,7 +12,6 @@ namespace MPMProject.Controllers
 {
     public class OrderController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public static int Count = 0;
 
         public IActionResult Index()
@@ -21,8 +20,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-             url = url + "api/v1/configuration/work_order/wo_config";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/wo_config";
+            string result = GetUrl(myurl);
             JObject jo= (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -44,9 +43,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]wo_config wo)
         {
-            url = url + "api/v1/configuration/work_order/wo_config";
+            string myurl = url + "api/v1/configuration/work_order/wo_config";
             var postData = JsonConvert.SerializeObject(wo);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -76,9 +75,9 @@ namespace MPMProject.Controllers
             if (list.Count() == Count)
             {
                 work.create_time = DateTime.UtcNow;
-                url = url + "api/v1/configuration/work_order/wo_config";
+                string myurl = url + "api/v1/configuration/work_order/wo_config";
                 var postData = JsonConvert.SerializeObject(work);
-                string result = PostUrl(url, postData);
+                string result = PostUrl(myurl, postData);
                 JObject jo = (JObject)JsonConvert.DeserializeObject(result);
                 switch (Convert.ToInt32(jo["code"]))
                 {
@@ -103,8 +102,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]wo_config wo)
         {
-            url = url + "api/v1/configuration/work_order/wo_config?id=" + wo.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/wo_config?id=" + wo.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

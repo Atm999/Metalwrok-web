@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class ErrorConfigController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
 
         public IActionResult Index()
         {
@@ -19,8 +18,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/andon/error_config_detail";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_config_detail";
+            string result = GetUrl(myurl);
             JObject jo= (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -40,9 +39,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Update([FromBody]error_config ec)
         {
-            url = url + "api/v1/configuration/andon/error_config";
+            string myurl = url + "api/v1/configuration/andon/error_config";
             var postData = JsonConvert.SerializeObject(ec);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -62,9 +61,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]error_config ec)
         {
-            url = url + "api/v1/configuration/andon/error_config";
+            string myurl = url + "api/v1/configuration/andon/error_config";
             var postData = JsonConvert.SerializeObject(ec);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -85,8 +84,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]error_config ec)
         {
-            url = url + "api/v1/configuration/andon/error_config?id=" + ec.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_config?id=" + ec.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -130,8 +129,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getgroup()
         {
-            url = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -152,8 +151,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Gettagsub()
         {
-            url = url + "api/v1/configuration/public/tag_type_sub";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/tag_type_sub";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var flist = jo["data"].ToObject<IList<tag_type_sub>>();
             var fdata = flist.Where(p => p.tag_type_id == 3);
@@ -176,8 +175,8 @@ namespace MPMProject.Controllers
 
         public JsonResult Getperson()
         {
-            url = url + "api/v1/configuration/public/person";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/person";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

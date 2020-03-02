@@ -12,7 +12,6 @@ namespace MPMProject.Controllers
 {
     public class NotificationGroupController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -21,8 +20,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -43,9 +42,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]notification_group group)
         {
-            url = url + "api/v1/configuration/andon/notification_group";
+            string myurl = url + "api/v1/configuration/andon/notification_group";
             var postData = JsonConvert.SerializeObject(group);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -65,9 +64,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]notification_group group)
         {
-            url = url + "api/v1/configuration/andon/notification_group";
+            string myurl = url + "api/v1/configuration/andon/notification_group";
             var postData = JsonConvert.SerializeObject(group);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -88,8 +87,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]notification_group group)
         {
-            url = url + "api/v1/configuration/andon/notification_group?id=" + group.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group?id=" + group.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -133,9 +132,9 @@ namespace MPMProject.Controllers
 
         public IActionResult UpdatePerson([FromBody]notification_person person)
         {
-            url = url + "api/v1/configuration/andon/notification_group/";
+            string myurl = url + "api/v1/configuration/andon/notification_group/";
             var postData = JsonConvert.SerializeObject(person);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -158,8 +157,8 @@ namespace MPMProject.Controllers
         //群组下人员查询
         public JsonResult GetmachineList(int group_id)
         {
-            url = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var list = jo["data"].ToObject<IList<notification_groupPerson>>();
             var data = list.FirstOrDefault(p => p.id == group_id).person;
@@ -219,8 +218,8 @@ namespace MPMProject.Controllers
 
         public IActionResult DeleteMachine(int id, int group_id)
         {
-            url = url + "api/v1/configuration/andon/notification_group/" + group_id + "?person_id=" + id;
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/andon/notification_group/" + group_id + "?person_id=" + id;
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

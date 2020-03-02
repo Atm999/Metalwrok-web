@@ -14,7 +14,6 @@ namespace MPMProject.Controllers
 {
     public class Email_ServerController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -23,8 +22,8 @@ namespace MPMProject.Controllers
         }
         public  JsonResult GetData()
         {
-            url = url + "api/v1/configuration/public/Email_Server";
-            string result = GetUrl(url);
+            string geturl = url + "api/v1/configuration/public/Email_Server";
+            string result = GetUrl(geturl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -45,9 +44,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]email_server email) 
         {
-            url=url + "api/v1/configuration/public/Email_Server";
+            string updateurl=url + "api/v1/configuration/public/Email_Server";
             var postData = JsonConvert.SerializeObject(email);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(updateurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

@@ -12,7 +12,6 @@ namespace MPMProject.Controllers
 {
     public class VirtualLineController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -21,8 +20,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {
-            url = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -43,9 +42,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]virtual_line line)
         {
-            url = url + "api/v1/configuration/work_order/virtual_line";
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
             var postData = JsonConvert.SerializeObject(line);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -65,9 +64,9 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]virtual_line line)
         {
-            url = url + "api/v1/configuration/work_order/virtual_line";
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
             var postData = JsonConvert.SerializeObject(line);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -88,8 +87,8 @@ namespace MPMProject.Controllers
 
         public IActionResult Delete([FromBody]virtual_line line)
         {
-            url = url + "api/v1/configuration/work_order/virtual_line?id=" + line.id.ToString();
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line?id=" + line.id.ToString();
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -135,8 +134,8 @@ namespace MPMProject.Controllers
         //虚拟线下设备查询
         public JsonResult GetmachineList(int group_id)
         {
-            url = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var list = jo["data"].ToObject<IList<virtual_lineMachine>>();
             var data = list.FirstOrDefault(p => p.id == group_id).Machines;
@@ -197,8 +196,8 @@ namespace MPMProject.Controllers
 
         public IActionResult DeleteMachine(int id, int group_id)
         {
-            url = url + "api/v1/configuration/work_order/virtual_line/" + group_id + "?machine_id=" + id;
-            string result = DeleteUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line/" + group_id + "?machine_id=" + id;
+            string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

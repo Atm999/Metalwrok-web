@@ -11,7 +11,6 @@ namespace MPMProject.Controllers
 {
     public class PendingController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -20,8 +19,8 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {//
-            url = url + "api/v1/configuration/andon/error_log?status=1";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/andon/error_log?status=1";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -78,8 +77,8 @@ namespace MPMProject.Controllers
         
         public JsonResult Getmachine()
         {
-            url = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/machine";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

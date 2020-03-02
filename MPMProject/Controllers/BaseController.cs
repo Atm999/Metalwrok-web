@@ -7,11 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
+using Model;
 
 namespace MPMProject.Controllers
 {
     public class BaseController : Controller
     {
+        public static string url = "";
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             try

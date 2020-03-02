@@ -14,7 +14,6 @@ namespace MPMProject.Controllers
 {
     public class Wechart_ServerController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         //List<dept> dept = new List<dept>();
 
         public IActionResult Index()
@@ -23,8 +22,8 @@ namespace MPMProject.Controllers
         }
         public  JsonResult GetData()
         {
-            url = url + "api/v1/configuration/public/wechart_server";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/public/wechart_server";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -45,9 +44,9 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]wechart_server wechart) 
         {
-            url=url + "api/v1/configuration/public/wechart_server";
+            string myurl = url + "api/v1/configuration/public/wechart_server";
             var postData = JsonConvert.SerializeObject(wechart);
-            string result = PutUrl(url, postData);
+            string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {

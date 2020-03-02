@@ -14,7 +14,6 @@ namespace MPMProject.Controllers
 {
     public class SiteclientController : BaseController
     {
-        public string url = "http://api-mpm.wise-paas.cn/";
         public IActionResult Index()
         {
             return View();
@@ -25,8 +24,8 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public JsonResult GetVirtualLine()
         {
-            url = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
@@ -53,8 +52,8 @@ namespace MPMProject.Controllers
         {
             if (id == 0)
                 return Json(new List<machine>());
-            url = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(url);
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
+            string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             var list = jo["data"].ToObject<IList<virtual_lineMachine>>();
             var data = list.FirstOrDefault(p => p.id == id).Machines;
@@ -208,14 +207,14 @@ namespace MPMProject.Controllers
 
         public JsonResult onsite(int type,int machine_id,int work_order_id)
         {
-            url = url + "api/v1/client/work_order/onsite/"+type+"?machine_id="+machine_id+"&work_order_id="+work_order_id;
+            string myurl = url + "api/v1/client/work_order/onsite/"+type+"?machine_id="+machine_id+"&work_order_id="+work_order_id;
             string postData = "{{" +
                                "\"type\":{0}," +
                                "\"machine_id\":{1}," +
                                 "\"work_order_id\":{2}," +
                                "}}";
             postData = string.Format(postData, type, machine_id,work_order_id);
-            string result = PostUrl(url, postData);
+            string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
             {
