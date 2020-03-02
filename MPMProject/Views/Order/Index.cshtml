@@ -7,9 +7,9 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-          getOption();
+        getOption();
         $(document).ready(function () {
-            $("#lineidSelect").select2(); 
+            $("#lineidSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
@@ -38,11 +38,11 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
-                     field: 'no',
+                    field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return  index + 1;
+                        return index + 1;
                     }
                 }, {
                     field: 'work_order',
@@ -55,61 +55,58 @@
                     title: '标准数量'
                 }, {
                     field: 'virtual_Line.name_en',
-                        title: '虚拟线'
-                    
+                    title: '虚拟线'
+
                 }, {
                     field: 'shift',
-                        title: '班次',
-                      formatter: function (value, row, index)
-                    {
+                    title: '班次',
+                    formatter: function (value, row, index) {
                         var shift = row.shift;
-                          if (shift == 0) {
-                              return "--"
-                          } else if (shift == 1) {
-                              return "白班";
-                          } else {
-                              return "夜班";
-                          }
-                      
-                 },
+                        if (shift == 0) {
+                            return "--"
+                        } else if (shift == 1) {
+                            return "白班";
+                        } else {
+                            return "夜班";
+                        }
+
+                    },
                 }, {
                     field: 'create_time',
                     title: '日期'
                 }, {
                     field: 'auto',
-                        title: '结束方式',
-                     formatter: function (value, row, index)
-                    {
+                    title: '结束方式',
+                    formatter: function (value, row, index) {
                         var auto = row.auto;
-                          if (auto == true) {
-                              return "自动"
-                          } else if (auto == false) {
-                              return "手动";
-                          } else {
-                              return "--";
-                          }
-                      
-                 },
+                        if (auto == true) {
+                            return "自动"
+                        } else if (auto == false) {
+                            return "手动";
+                        } else {
+                            return "--";
+                        }
+
+                    },
                 }, {
                     field: 'status',
-                        title: '工单状态',
-                    formatter: function (value, row, index)
-                    {
+                    title: '工单状态',
+                    formatter: function (value, row, index) {
                         var status = row.status;
-                          if (status == 0) {
-                              return "创建"
-                          } else if (status == 1) {
-                              return "排产";
-                          } else if (status == 2) {
-                              return "执行中";
-                          }else if (status == 3) {
-                              return "完成";
-                          }else if (status == 4) {
-                              return "--";
-                          }else {
-                              return "";
-                          }
-                 },
+                        if (status == 0) {
+                            return "创建"
+                        } else if (status == 1) {
+                            return "排产";
+                        } else if (status == 2) {
+                            return "执行中";
+                        } else if (status == 3) {
+                            return "完成";
+                        } else if (status == 4) {
+                            return "--";
+                        } else {
+                            return "";
+                        }
+                    },
 
                 }, {
                     field: 'actionEvent',
@@ -121,7 +118,7 @@
                 }]
             });
 
-             ///虚拟线联动时候，查询该虚拟线下有几台设备
+            ///虚拟线联动时候，查询该虚拟线下有几台设备
             $("#lineidSelect").select2();
             $("#lineidSelect").on("select2:select", function () {
                 var lineid = $(this).val();
@@ -131,7 +128,7 @@
                     async: true,
                     success: function (data) {
                         $("#labeltext").text("该虚拟线下有" + data + "台设备，请输入" + data + "台设备的标准工时，并以 ；隔开");
-                        document.getElementById('labeltext').style.color= "red ";
+                        document.getElementById('labeltext').style.color = "red ";
                     }
                 });
             });
@@ -156,15 +153,21 @@
                 $("#shiftSelect").select2();
                 $("#autoSelect").attr('value', row.auto);
                 $("#autoSelect").select2();
-                $("#wostatusSelect").attr('value', row.status);
-                $("#wostatusSelect").select2();
-                $("#shiftSelect").attr('value', row.shift);
-                $("#shiftSelect").select2();
-                 $("#lineidSelect").attr('value', row.virtual_line_id);
-                $("#lineidSelect").select2();
+                if (row.status == 2) {
+                    alert("执行中的工单不允许修改");
+                     toastr.error('执行失败!');
+                } else {
 
-                document.getElementById("standard_time").value = row.standard_time;
-                $('#myEditModal').modal('show');
+                    $("#wostatusSelect").attr('value', row.status);
+                    $("#wostatusSelect").select2();
+                    $("#shiftSelect").attr('value', row.shift);
+                    $("#shiftSelect").select2();
+                    $("#lineidSelect").attr('value', row.virtual_line_id);
+                    $("#lineidSelect").select2();
+
+                    document.getElementById("standard_time").value = row.standard_time;
+                    $('#myEditModal').modal('show');
+                }
             },
             'click .remove': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
@@ -209,17 +212,17 @@
                         $('#myDelModal').modal('hide');
                         $('#table').bootstrapTable('refresh');
                     } else {
-                         toastr.error('执行失败!');
+                        toastr.error('执行失败!');
                     }
                 }, error: function (msg) {
-                     toastr.error('执行失败!');
+                    toastr.error('执行失败!');
                 }
             });
 
         }
         function finish() {
             var id = $('#id').val();
-            var work_order =$('#work_order').val();
+            var work_order = $('#work_order').val();
             var part_num = $('#part_num').val();
             var standard_num = $('#standard_num').val();
             var shiftSelect = $('#shiftSelect').val();
@@ -234,12 +237,12 @@
                 part_num: part_num,
                 standard_num: standard_num,
                 shift: parseInt(shiftSelect),
-                auto:Boolean(autoSelect),
-                status:parseInt(wostatusSelect),
+                auto: Boolean(autoSelect),
+                status: parseInt(wostatusSelect),
                 virtual_line_id: parseInt(lineidSelect),
                 standard_time: standard_time,
-                order_index:order_index
-                
+                order_index: order_index
+
             };
             if (id != 0) {
                 $.ajax({
@@ -254,10 +257,10 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                           toastr.error('执行失败!');
+                            toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
-                         toastr.error('执行失败!');
+                        toastr.error('执行失败!');
                     }
                 });
             } else {
@@ -273,7 +276,7 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                             toastr.error('执行失败!');
+                            toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -283,25 +286,24 @@
             }
 
         }
-         function search() {
+        function search() {
             var create_time = new Date(Date.parse($("#create_time").val()));
             var end_time = new Date(Date.parse($("#end_time").val()));
             var wo = $("#wo").val();
-             var woSelect = $("#woSelect").val();
-             $('#table').bootstrapTable('filterBy', { create_time: create_time, end_time: end_time, work_order: wo, status: woSelect },
+            var woSelect = $("#woSelect").val();
+            $('#table').bootstrapTable('filterBy', { create_time: create_time, end_time: end_time, work_order: wo, status: woSelect },
                 {
                     //自定义刷选函数
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
                         var result2 = true;
                         var result3 = true;
-                        if ( new Date(Date.parse(row.create_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time){
+                        if (new Date(Date.parse(row.create_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time) {
                             result1 = true;
                         } else {
-                              result1 = false;
+                            result1 = false;
                         }
-                        if (filters.work_order != "") 
-                        {
+                        if (filters.work_order != "") {
                             result2 = filters.work_order == row.work_order;
                         }
                         if (filters.status > 0) {
@@ -324,7 +326,7 @@
             });
         }
 
-        
+
     </script>
 </head>
 <body>
@@ -350,8 +352,8 @@
                     </div>
                     <div class="control-group">
                         <div class='datetimepicker input-append' id='datetimepicker'>
-                            <input class='span9' type="text" id="create_time"style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
-                            <span class='add-on'style="margin-top:12px">
+                            <input class='span9' type="text" id="create_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                            <span class='add-on' style="margin-top:12px">
                                 <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                             </span>
                         </div>
@@ -363,7 +365,7 @@
                         @*<label class="control-label">截至时间</label>*@
                         <div class='datetimepicker input-append' id='datetimepicker'>
                             <input class='span9' type="text" id="end_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
-                            <span class='add-on'style="margin-top:12px">
+                            <span class='add-on' style="margin-top:12px">
                                 <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                             </span>
                         </div>
@@ -385,7 +387,6 @@
                             <option value="0">创建</option>
                             <option value="1">排产</option>
                             <option value="2">执行中</option>
-                            <option value="3">完成</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -461,8 +462,6 @@
                                     <option value="-1">请选择</option>
                                     <option value="0">创建</option>
                                     <option value="1">排产</option>
-                                    <option value="2">执行中</option>
-                                    <option value="3">完成</option>
                                 </select>
                             </div>
                             <div class="control-group">

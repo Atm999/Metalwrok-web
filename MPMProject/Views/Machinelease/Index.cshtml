@@ -153,59 +153,70 @@
 
         }
         function finish() {
-            var id = $('#id').val();
-            var machine_id =$('#machine_id').val();
             var unit_price = $('#unit_price').val();
-            var type =$('#type').val();
             var total_price = $('#total_price').val();
-            var lease = {
-                id: id,
-                machine_id: machine_id,
-                unit_price: parseInt(unit_price),
-                type:parseInt(type),
-                total_price:total_price
-            };
-            if (id != 0) {
-                $.ajax({
-                    type: "POST",
-                    url: "/machinelease/Update",
-                    data: JSON.stringify(lease),
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据更新成功!');
-                            $('#myEditModal').modal('hide');
-                            $('#table').bootstrapTable('refresh');
-                        } else {
-                           toastr.error('执行失败!');
-                        }
-                    }, error: function (msg) {
-                         toastr.error('执行失败!');
-                    }
-                });
+            if (!total_price.match(/(^-?[0-9][0-9]*(.[0-9]+)?)$/)) {
+                alert("预存费用格式不正确！请重新输入");
+                toastr.error('执行失败!');
+
+            } else if (!unit_price.match(/(^-?[0-9][0-9]*(.[0-9]+)?)$/ )) {
+                alert("租赁单价格式不正确！请重新输入");
+                toastr.error('执行失败!');
             } else {
-                $.ajax({
-                    type: "POST",
-                    url: "/machinelease/Add",
-                    data: JSON.stringify(lease),
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据新增成功!');
-                            $('#myEditModal').modal('hide');
-                            $('#table').bootstrapTable('refresh');
-                        } else {
-                             toastr.error('执行失败!');
+
+                var id = $('#id').val();
+                var machine_id = $('#machine_id').val();
+                var unit_price = $('#unit_price').val();
+                var type = $('#type').val();
+                var total_price = $('#total_price').val();
+                var lease = {
+                    id: id,
+                    machine_id: machine_id,
+                    unit_price: parseInt(unit_price),
+                    type: parseInt(type),
+                    total_price: total_price
+                };
+                if (id != 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/machinelease/Update",
+                        data: JSON.stringify(lease),
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据更新成功!');
+                                $('#myEditModal').modal('hide');
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
+                            toastr.error('执行失败!');
                         }
-                    }, error: function (msg) {
-                        toastr.error('执行失败!');
-                    }
-                });
+                    });
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/machinelease/Add",
+                        data: JSON.stringify(lease),
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据新增成功!');
+                                $('#myEditModal').modal('hide');
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
+                            toastr.error('执行失败!');
+                        }
+                    });
 
+                }
             }
-
         }
 
 

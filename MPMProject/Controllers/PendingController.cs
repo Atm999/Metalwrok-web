@@ -19,7 +19,7 @@ namespace MPMProject.Controllers
         }
         public JsonResult GetData()
         {//
-            string myurl = url + "api/v1/configuration/andon/error_log?status=1";
+            string myurl = url + "api/v1/configuration/andon/error_log/0?status=1";
             string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
