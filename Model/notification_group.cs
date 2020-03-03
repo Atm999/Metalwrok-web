@@ -23,6 +23,7 @@ namespace Model
         /// 
         /// </summary>
         public string description { get; set; }
+        public int notification_group_id { get; set; }
 
         public class notification_groupPerson : notification_group
         {

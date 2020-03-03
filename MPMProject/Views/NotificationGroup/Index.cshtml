@@ -7,7 +7,7 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-          getOption();
+        
         $(document).ready(function () {
             $("#machineSelects").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
@@ -181,7 +181,7 @@
                 var group_id = $("#group_id").val();
                 $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id  });
                 $('#machineModal').modal('show');
-
+                  getOption();
 
                 //document.getElementById("linename").value = row.name_en;
                 //document.getElementById("id").value = row.id;
@@ -278,9 +278,10 @@
                 document.getElementById("description").value = "";
         }
         function getOption() {
+             var group_id = $("#group_id").val();
             $.ajax({
                 type: "get",
-                url: '/NotificationGroup/Getperson',
+                url: '/NotificationGroup/Getperson?group_id='+group_id,
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -340,7 +341,9 @@
                     if (msg == "Success") {
                         toastr.success('人员绑定成功!');
                          $('#machineModal').modal('hide');
-                        $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData"});
+                        $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData" });
+                         $("#machineSelects").empty();
+                        getOption();
                     }
                     else {
                         toastr.error('执行失败!');

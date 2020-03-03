@@ -107,27 +107,21 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public JsonResult Getperson()
+        public JsonResult Getperson(int group_id)
         {
+            List<Person> machines = new List<Person>();
             var purl = url + "api/v1/configuration/public/person";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
 
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            var list = jo["data"].ToObject<IList<Person>>();
+            string myurl = url + "api/v1/configuration/andon/notification_group";
+            string result = GetUrl(myurl);
+            JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
+            var mylist = myjo["data"].ToObject<IList<notification_groupPerson>>();
+            var data = mylist.FirstOrDefault(p => p.id == group_id).person;
+            var otherPersons=list.Where(p=>!data.Select(q=>q.person_id).Contains(p.id));
+            return Json(otherPersons);
         }
 
         public IActionResult UpdatePerson([FromBody]notification_person person)
