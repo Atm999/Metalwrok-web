@@ -5,6 +5,32 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\ErrorCall\**" />
+    <Compile Remove="Views\MaterialCall\**" />
+    <Compile Remove="Views\QualityCall\**" />
+    <Compile Remove="Views\Siteclient\**" />
+    <Content Remove="Views\ErrorCall\**" />
+    <Content Remove="Views\MaterialCall\**" />
+    <Content Remove="Views\QualityCall\**" />
+    <Content Remove="Views\Siteclient\**" />
+    <EmbeddedResource Remove="Views\ErrorCall\**" />
+    <EmbeddedResource Remove="Views\MaterialCall\**" />
+    <EmbeddedResource Remove="Views\QualityCall\**" />
+    <EmbeddedResource Remove="Views\Siteclient\**" />
+    <None Remove="Views\ErrorCall\**" />
+    <None Remove="Views\MaterialCall\**" />
+    <None Remove="Views\QualityCall\**" />
+    <None Remove="Views\Siteclient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ErrorCallController.cs" />
+    <Compile Remove="Controllers\MaterialCallController.cs" />
+    <Compile Remove="Controllers\QualityCallController.cs" />
+    <Compile Remove="Controllers\SiteclientController.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />

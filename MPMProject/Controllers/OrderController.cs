@@ -23,6 +23,8 @@ namespace MPMProject.Controllers
             string myurl = url + "api/v1/configuration/work_order/wo_config";
             string result = GetUrl(myurl);
             JObject jo= (JObject)JsonConvert.DeserializeObject(result);
+            var list = jo["data"].ToObject<IList<wo_config>>();
+            var data = list.Where(p => p.status != 3);
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -37,7 +39,7 @@ namespace MPMProject.Controllers
                 default:
                     break;
             }
-            return Json(jo["data"]);
+            return Json(data);
         }
        
 
