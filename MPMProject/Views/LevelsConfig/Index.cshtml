@@ -24,7 +24,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 12,//每页的记录行数（*）
+                pageSize: 10,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -32,7 +32,6 @@
                     field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
-                        var options = $('#group').bootstrapTable('getOptions');
                         return  index + 1;
                     }
                 },{
@@ -61,7 +60,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 12,//每页的记录行数（*）
+                pageSize: 10,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -69,8 +68,7 @@
                     field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
-                        var options = $('#machineList').bootstrapTable('getOptions');
-                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        return index + 1;
                     }
                 }, {
                     field: 'id',
@@ -104,7 +102,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 12,//每页的记录行数（*）
+                pageSize: 10,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -112,7 +110,6 @@
                     field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
-                        var options = $('#levelTable').bootstrapTable('getOptions');
                         return index + 1;
                     }
                 }, {
@@ -144,7 +141,7 @@
                 pagination: true,
                 sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
                 pageNumber: 1,//初始化加载第一页，默认第一页
-                pageSize: 12,//每页的记录行数（*）
+                pageSize: 10,//每页的记录行数（*）
                 undefinedText: '---', //当数据为 undefined 时显示的字符
                 paginationDetailHAlign: 'left',
                 toolbarAlign: 'right',
@@ -152,8 +149,7 @@
                     field: 'no',
                     title: '序号',
                     formatter: function (value, row, index) {
-                        var options = $('#machineAll').bootstrapTable('getOptions');
-                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                        return index + 1;
                     }
                 },{
                     field: 'id',
