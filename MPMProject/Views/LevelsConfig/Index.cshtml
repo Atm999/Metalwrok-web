@@ -2,6 +2,7 @@
 <head>
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    
     <script type='text/javascript'>
         var fixIndex = 1;//固定排休数
         var unFixIndex = 1;//非固定排休数
@@ -50,7 +51,7 @@
                     formatter: groupActionFormatter,
                     events: groupOperateEvents
                 }]
-            });        
+            });
             //设备绑定中，已绑定的设备
             $('#machineList').bootstrapTable({
                 url: '/LevelsConfig/GetMachineNodeList',
@@ -178,14 +179,12 @@
                 },{
                     field: 'tag',
                     title: '绑定的Tag点',
-                        formatter: function (value, row, index) {
-                            console.log(row.tag);
+                        formatter: function (value, row, index) {                  
                             var str = JSON.stringify(row.tag);
                             var myTag = new Array();
                             var result="";
                             
                             myTag = str.split(";");
-                            console.log(myTag);
                             if (myTag.length == 1) { return "---" }
                             else {
                                 for (var i = 0; i < myTag.length-1; i++) {
@@ -203,7 +202,7 @@
                     formatter: machineActionFormatter,
                     events: machineOperateEvents
                 }]
-            });            
+            });  
         });
 
         //添加层级
@@ -836,6 +835,20 @@
                 document.getElementById('deleteFlag').value = "machine";
             }
         }
+        //获取所有设备
+        function getMachineListForSearch() {
+            $.ajax({
+                type: "get",
+                url: '/LevelsConfig/GetMachineListForSearch',
+                success: function (data) {
+                    $("#machineName").empty();
+                    $("#machineName").append('<option value=-1>-请选择-</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machineName").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
         //设备查询
         function machineSearch() {
             //父级名称
@@ -843,23 +856,22 @@
             //父级内容
             var area_node_id = $("#machineFatherContentSearch").find("option:selected").val();
             //设备名称
-            var machine_name = $('#machineName').val();
+            var machine_name = $('#machineName').find("option:selected").val();
             //筛选
             if (area_layer_id == -1) {
                 //area_layer_id为-1时，area_node_id必为-1
-                if (machine_name == "") {
+                if (machine_name == -1) {
                     $('#machineAll').bootstrapTable('filterBy', {});
                 }
-                else {
-                        
+                else { 
                     $('#machineAll').bootstrapTable('filterBy', {
                         name_cn: machine_name
-                    }, { 'silent': true });
+                    });
                 }
             }
             else {
                 if (area_node_id == -1) {
-                    if (machine_name == "") {
+                    if (machine_name == -1) {
                         $('#machineAll').bootstrapTable('filterBy', {
                             area_layer_id: parseInt(area_layer_id)
                         });
@@ -872,7 +884,7 @@
                     }
                 }
                 else {
-                    if (machine_name == "") {
+                    if (machine_name == -1) {
                         $('#machineAll').bootstrapTable('filterBy', {
                             area_layer_id: parseInt(area_layer_id),
                             area_node_id: parseInt(area_node_id)
@@ -893,7 +905,7 @@
             $('#machineAll').bootstrapTable('refresh');
             //父级名称下拉框
             GetFatherName("machineFatherSearch", "area_layer", 0);
-            document.getElementById("machineName").value = "";
+            getMachineListForSearch();
         }
         //获取父级名称 area_layer
         function GetFatherName(machineFatherName, urlPara, area_layer_id) {
@@ -1082,6 +1094,11 @@
                         $('#myDelModal').modal('hide');
                         $('#group').bootstrapTable('refresh');
                         $('#levelTable').bootstrapTable('refresh');
+                        $('#machineAll').bootstrapTable('refresh');
+                        if (flag == "area_layer") {
+                            window.location.href = '/LevelsConfig/Index'
+
+                        }
                     } else {
                         toastr.error('执行失败!');
                     }
@@ -1213,9 +1230,17 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label">设备</label>
+                                </div>
+                                <div class="form-group">
+                                    <select class="select2" id="machineName">
+                                        <option value="-1">-请选择-</option>
+                                    </select>
+                                </div>
+                                @*<div class="form-group">
                                     <label class="control-label" for="name">设备</label>
                                     <input type="text" class='span9' id="machineName" />
-                                </div>
+                                </div>*@
                                 <div class="form-group">
                                     <button class="btn btn-primary" onclick="machineSearch()"><span class="icon-search"> 查询</span></button>
                                 </div>

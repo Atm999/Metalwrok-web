@@ -713,7 +713,26 @@ namespace MPMProject.Controllers
             }
             
         }
+        //获取所有设备查询
+        public JsonResult GetMachineListForSearch()
+        {
+            string machineUrl = url + "api/v1/configuration/public/machine";
+            string machineResult = GetUrl(machineUrl);
+            JObject joMachine = (JObject)JsonConvert.DeserializeObject(machineResult);
 
+
+            if (Convert.ToInt32(joMachine["code"]) == 200)
+            {
+                var machineList = joMachine["data"].ToObject<IList<Model.machine>>();
+
+                return Json(machineList);
+            }
+            else
+            {
+                return Json("Fail");
+            }
+
+        }
         //获取所有设备查询
         public JsonResult GetMachineList()
         {
