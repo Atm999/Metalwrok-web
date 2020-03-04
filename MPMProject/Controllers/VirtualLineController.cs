@@ -109,25 +109,42 @@ namespace MPMProject.Controllers
 
         public JsonResult Getmachine()
         {
+            List<machine> machines = new List<machine>();
             var purl = url + "api/v1/configuration/public/machine";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+            var list = jo["data"].ToObject<IList<machine>>();
 
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+            string myurl = url + "api/v1/configuration/work_order/virtual_line";
+            string result = GetUrl(myurl);
+            JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
+            var mylist = myjo["data"].ToObject<IList<virtual_lineMachine>>();
+
+            if (mylist.Count>0) {
+                for (int i=0;i<mylist.Count;i++) {
+
+                    var index = mylist[i].Machines.ToList();
+                    for (int j=0;j<index.Count;j++) {
+                        machine machineRes = new machine();
+                        machineRes.id = index[j].machine_id;
+                        machineRes.name_cn = index[j].name_cn;
+                        machineRes.name_en = index[j].name_en;
+                        machineRes.name_tw = index[j].name_tw;
+                        machineRes.description = index[j].description;
+                        machineRes.area_node_id = index[j].area_node_id;
+                        machines.Add(machineRes);
+                    }
+                    
+                }
+            
             }
-            return Json(jo["data"]);
+            var otherPersons = list.Where(p => !machines.Select(q => q.id).Contains(p.id));
+            return Json(otherPersons);
+
+            //var otherPersons = list.Where(p => !data.Select(q => q.person_id).Contains(p.id));
+            //mylist.Count[0].Machines[0].machine_id
+            //return Json(jo["data"]);
+
         }
 
 

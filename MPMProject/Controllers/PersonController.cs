@@ -97,6 +97,7 @@ namespace MPMProject.Controllers
         }
         public IActionResult Add([FromBody]Person person)
         {
+            person.user_position = "";
             string myurl = url + "api/v1/configuration/public/person";
             var postData = JsonConvert.SerializeObject(person);
             string result = PostUrl(myurl, postData);
