@@ -23,7 +23,7 @@
 
             $('#table').bootstrapTable({
                 url: '/SecondLevelTags/GetData',
-               method: 'get',
+                method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
                 pagination: true,
@@ -39,7 +39,7 @@
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#table').bootstrapTable('getOptions');
-                        return  index + 1;
+                        return index + 1;
                     }
                 }, {
                     field: 'typeName',
@@ -93,32 +93,35 @@
         };
         function Delete() {
             var id = $('#id').val();
-            var dept = {
-                id: id
-            };
-            $.ajax({
-                type: "POST",
-                url: "/SecondLevelTags/Delete",
-                data: JSON.stringify(dept),
-                dataType: "json",
-                contentType: "application/json;charset=utf-8",
-                success: function (msg) {
-                    if (msg == "Success") {
-                        toastr.success('数据删除成功!');
-                        $('#myDelModal').modal('hide');
-                        $('#table').bootstrapTable('refresh');
-                    } else {
-                         toastr.error('执行失败!');
+            if (id <= 13) {
+                toastr.error('执行失败!基本数据不允许删除');
+            } else {
+                var dept = {
+                    id: id
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/SecondLevelTags/Delete",
+                    data: JSON.stringify(dept),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据删除成功!');
+                            $('#myDelModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                     toastr.error('执行失败!');
-                }
-            });
-
+                });
+            }
         }
         function finish() {
             var id = $('#id').val();
-            var tag_type_id =$('#firstTagSelects').val();
+            var tag_type_id = $('#firstTagSelects').val();
             var name_en = $('#name_en').val();
             var name_tw = $('#name_tw').val();
             var name_cn = $('#name_cn').val();
@@ -132,24 +135,28 @@
                 description: description
             };
             if (id != 0) {
-                $.ajax({
-                    type: "POST",
-                    url: "/SecondLevelTags/Update",
-                    data: JSON.stringify(sub),
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据更新成功!');
-                            $('#myEditModal').modal('hide');
-                            $('#table').bootstrapTable('refresh');
-                        } else {
-                           toastr.error('执行失败!');
+                if (id <= 13) {
+                    toastr.error('执行失败!基本数据不允许修改');
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/SecondLevelTags/Update",
+                        data: JSON.stringify(sub),
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据更新成功!');
+                                $('#myEditModal').modal('hide');
+                                $('#table').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
+                            toastr.error('执行失败!');
                         }
-                    }, error: function (msg) {
-                         toastr.error('执行失败!');
-                    }
-                });
+                    });
+                }
             } else {
                 $.ajax({
                     type: "POST",
@@ -163,7 +170,7 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                             toastr.error('执行失败!');
+                            toastr.error('执行失败!');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -278,7 +285,7 @@
                             </div>
                             <div class="control-group">
                                 <label class="control-label">二级标签（简中）</label>
-                                <input class="span12" type="text" id="name_cn" name="name_cn"/>
+                                <input class="span12" type="text" id="name_cn" name="name_cn" />
                             </div>
                             <div class="control-group">
                                 <label class="control-label">二级标签（繁中）</label>

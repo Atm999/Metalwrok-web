@@ -142,16 +142,17 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("machine_id").value = 0;
-            document.getElementById("response_person_id").value = 0;
-            document.getElementById("trigger_out_color").value = 0;
-            document.getElementById("notice_type").value = 0;
-            document.getElementById("alert_active").value = 0;
-            document.getElementById("tag_type_sub_id").value = 0;
-            document.getElementById("level1_notification_group_id").value = 0;
-            document.getElementById("level2_notification_group_id").value = 0;
-            document.getElementById("level3_notification_group_id").value = 0;
-            document.getElementById("timeout_setting").value = 0;
+             $("#machine_id").val('' + 0 + '').select2();
+            $("#response_person_id").val('' + 0 + '').select2();
+            $("#trigger_out_color").val('' + 0 + '').select2();
+            $("#notice_type").val('' + -1 + '').select2();
+            $("#alert_active").val('' + 0 + '').select2();
+            $("#tag_type_sub_id").val('' + 0 + '').select2();
+            $("#level1_notification_group_id").val('' + 0 + '').select2();
+            $("#level2_notification_group_id").val('' + 0 + '').select2();
+            $("#level3_notification_group_id").val('' + 0 + '').select2();
+            $("#timeout_setting").val('' + 0 + '').select2();
+
         }
         function Delete() {
             var id = $('#id').val();
@@ -458,7 +459,7 @@
 
             </div>
             <!-- 删除模态框（Modal） -->
-            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myDelModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

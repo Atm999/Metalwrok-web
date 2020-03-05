@@ -137,6 +137,9 @@
                             toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
+                             getOption();
+                            $("#deptSelects").empty();
+                             
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -156,6 +159,9 @@
                             toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
+                             getOption();
+                             $("#deptSelects").empty();
+                           
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -188,8 +194,6 @@
                         return result1;
                     }
                 }); 
-           
-
         }
 
          function getOption() {
@@ -198,6 +202,8 @@
                 url: '/Person/Getdept',
                 async: true,
                 success: function (data) {
+                      $("#deptSelects").empty();
+                      $("#deptSelects").append('<option  value=' + 0 + '>请选择</option>');
                     for (var i = 0; i < data.length; i++) {
                         $("#deptSelects").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }

@@ -39,47 +39,67 @@ namespace MPMProject.Controllers
         }
         public IActionResult Update([FromBody]error_config ec)
         {
-            string myurl = url + "api/v1/configuration/andon/error_config";
-            var postData = JsonConvert.SerializeObject(ec);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/error_config";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.error_config>>();
+            var list = typeList.Where(p => p.id != ec.id);
+
+            var lists = list.Any(p => p.machine_id == ec.machine_id && p.tag_type_sub_id == ec.tag_type_sub_id);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/andon/error_config";
+                var postData = JsonConvert.SerializeObject(ec);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]error_config ec)
         {
-            string myurl = url + "api/v1/configuration/andon/error_config";
-            var postData = JsonConvert.SerializeObject(ec);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/error_config";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.error_config>>();
+
+            var list = typeList.Any(p => p.machine_id == ec.machine_id && p.tag_type_sub_id == ec.tag_type_sub_id );
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/andon/error_config";
+                var postData = JsonConvert.SerializeObject(ec);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+               
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]error_config ec)

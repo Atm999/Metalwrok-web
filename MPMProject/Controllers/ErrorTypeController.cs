@@ -41,47 +41,67 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]error_type type)
         {
-            string myurl = url + "api/v1/configuration/andon/error_type";
-            var postData = JsonConvert.SerializeObject(type); 
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/error_type";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.error_type>>();
+            var list = typeList.Where(p => p.id != type.id);
+
+            var lists = list.Any(p => p.name_cn == type.name_cn || p.name_en == type.name_en || p.name_tw == type.name_tw);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/andon/error_type";
+                var postData = JsonConvert.SerializeObject(type);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            
+            return Json(msg);
         }
         public IActionResult Add([FromBody]error_type type)
         {
-            string myurl = url + "api/v1/configuration/andon/error_type";
-            var postData = JsonConvert.SerializeObject(type);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/error_type";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.error_type>>();
+
+            var list = typeList.Any(p => p.name_cn == type.name_cn || p.name_en == type.name_en || p.name_tw == type.name_tw);
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/andon/error_type";
+                var postData = JsonConvert.SerializeObject(type);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+           
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]error_type type)

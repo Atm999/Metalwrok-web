@@ -44,49 +44,78 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]dept dept) 
         {
-            string updateurl=url + "api/v1/configuration/public/dept";
-            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
-            postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
-            string result = PutUrl(updateurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/dept";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.dept>>();
+            var list = typeList.Where(p => p.id != dept.id);
+
+            var lists = list.Any(p => p.name_cn == dept.name_cn || p.name_en == dept.name_en || p.name_tw == dept.name_tw);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success"); 
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string updateurl = url + "api/v1/configuration/public/dept";
+                string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
+                postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
+                string result = PutUrl(updateurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+
+            
+            return Json(msg);
         }
         public IActionResult Add([FromBody]dept dept)
         {
-            string addurl = url + "api/v1/configuration/public/dept";
-            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
-            postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
-            string result = PostUrl(addurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/dept";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.dept>>();
+
+            var list = typeList.Any(p => p.name_cn == dept.name_cn || p.name_en == dept.name_en || p.name_tw == dept.name_tw);
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string addurl = url + "api/v1/configuration/public/dept";
+                string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
+                postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
+                string result = PostUrl(addurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]dept dept)

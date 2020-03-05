@@ -37,8 +37,6 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
-      
-
         public IActionResult Update([FromBody]status_setting set)
         {
             string myurl = url + "api/v1/configuration/oee/status_setting";
@@ -106,10 +104,10 @@ namespace MPMProject.Controllers
             return Json("Success");
         }
 
-        public IActionResult Updateformula([FromBody]utilization_rate_formula formula)
+        public IActionResult Updateformula([FromBody]utilization_rate_formula set)
         {
             string myurl = url + "api/v1/configuration/oee/utilization_formula";
-            var postData = JsonConvert.SerializeObject(formula);
+            var postData = JsonConvert.SerializeObject(set);
             string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))

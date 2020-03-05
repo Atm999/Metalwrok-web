@@ -74,49 +74,76 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]Person person)
         {
-            string myurl = url + "api/v1/configuration/public/person";
-            string postData = "{{\"id\":{0},\"user_name\":\"{1}\",\"id_num\":\"{2}\",\"user_level\":\"{3}\",\"email\":\"{4}\",\"wechart\":\"{5}\",\"mobile_phone\":\"{6}\",\"user_position\":\"{7}\",\"dept_id\":{8}}}";
-            postData = string.Format(postData, person.id, person.user_name, person.id_num, person.user_level, person.email, person.wechart, person.mobile_phone, person.user_position, person.dept_id);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/person";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.Person>>();
+            var list = typeList.Where(p => p.id_num != person.id_num);
+
+            var lists = list.Any(p => p.id_num == person.id_num);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/public/person";
+                string postData = "{{\"id\":{0},\"user_name\":\"{1}\",\"id_num\":\"{2}\",\"user_level\":\"{3}\",\"email\":\"{4}\",\"wechart\":\"{5}\",\"mobile_phone\":\"{6}\",\"user_position\":\"{7}\",\"dept_id\":{8}}}";
+                postData = string.Format(postData, person.id, person.user_name, person.id_num, person.user_level, person.email, person.wechart, person.mobile_phone, person.user_position, person.dept_id);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]Person person)
         {
             person.user_position = "";
-            string myurl = url + "api/v1/configuration/public/person";
-            var postData = JsonConvert.SerializeObject(person);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/person";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.Person>>();
+            var list = typeList.Any(p => p.id_num == person.id_num);
+            if (list == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/public/person";
+                var postData = JsonConvert.SerializeObject(person);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]Person person)

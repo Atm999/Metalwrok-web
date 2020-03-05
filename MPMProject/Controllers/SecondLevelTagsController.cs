@@ -76,49 +76,76 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]tag_type_sub sub) 
         {
-            string myurl = url + "api/v1/configuration/public/tag_type_sub";
-            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
-            postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description, sub.tag_type_id);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/tag_type_sub";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.tag_type_sub>>();
+            var list = typeList.Where(p=>p.id != sub.id);
+
+            var lists = list.Any(p => p.name_cn == sub.name_cn || p.name_en == sub.name_en || p.name_tw == sub.name_tw || p.tag_type_id == sub.tag_type_id);
+            if (lists == false)
+            { //无重复数据
+                string myurl = url + "api/v1/configuration/public/tag_type_sub";
+                string postData = JsonConvert.SerializeObject(sub);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]tag_type_sub sub)
         {
-            string myurl = url + "api/v1/configuration/public/tag_type_sub";
-            string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\",\"tag_type_id\":{5}}}";
-            postData = string.Format(postData, sub.id, sub.name_en, sub.name_cn, sub.name_tw, sub.description,sub.tag_type_id);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/tag_type_sub";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.tag_type_sub>>();
+
+            var list = typeList.Any(p => p.name_cn == sub.name_cn && p.name_en == sub.name_en && p.name_tw==sub.name_tw&& p.tag_type_id==sub.tag_type_id);
+            
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/public/tag_type_sub";
+                var postData = JsonConvert.SerializeObject(sub);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
             }
-            return Json("Success");
+            else {
+                return Json("fail");
+            }
+            return Json(msg);
+           
         }
 
         public IActionResult Delete([FromBody]tag_type_sub sub)
