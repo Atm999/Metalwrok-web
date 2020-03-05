@@ -777,6 +777,7 @@ namespace MPMProject.Controllers
                            select new { p.machine_id, q.name_cn }).ToList();
                 var machineInfo = datMachine.Union(datUnBindMachine).ToList();//该list只能读不可写
 
+
                 //存储machine_id和mame_cn(标签名)
                 List<tag_info> tag_Infos = new List<tag_info>();
                
@@ -802,6 +803,7 @@ namespace MPMProject.Controllers
                               join b in tag_Infos
                               on a.id equals b.machine_id into temp
                               from res in temp.DefaultIfEmpty()
+                              orderby a.area_node_name, a.name_cn
                               select new { a.id,a.name_cn,a.name_en,a.name_tw,a.description,a.area_layer_id,a.area_node_id,a.area_node_name,
                                   tag = temp.Select(T => T.name).FirstOrDefault()
                               }).ToList();
