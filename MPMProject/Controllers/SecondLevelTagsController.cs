@@ -96,12 +96,7 @@ namespace MPMProject.Controllers
                         msg = "Success";
                         break;
                     case 400:
-                        break;
-                    case 410:
-                        break;
-                    case 411:
-                        break;
-                    default:
+                        msg = "fail";
                         break;
                 }
             }
@@ -132,12 +127,7 @@ namespace MPMProject.Controllers
                         msg = "Success";
                         break;
                     case 400:
-                        break;
-                    case 410:
-                        break;
-                    case 411:
-                        break;
-                    default:
+                        msg = "fail";
                         break;
                 }
             }

@@ -61,52 +61,73 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]machinelease lease)
         {
-            string myurl = url + "api/v1/configuration/oee/machine_lease";
-            var postData = JsonConvert.SerializeObject(lease);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/oee/machine_lease";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.machinelease>>();
+            var list = typeList.Where(p => p.id != lease.id);
+
+            var lists = list.Any(p => p.machine_id == lease.machine_id );
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/oee/machine_lease";
+                var postData = JsonConvert.SerializeObject(lease);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]machinelease lease)
         {
-            string myurl = url + "api/v1/configuration/oee/machine_lease";
-            var time = DateTime.UtcNow;
-            lease.start_time = time;
-            var postData = JsonConvert.SerializeObject(lease);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/oee/machine_lease";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.machinelease>>();
+
+            var list = typeList.Any(p => p.machine_id == lease.machine_id );
+
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/oee/machine_lease";
+                var time = DateTime.UtcNow;
+                lease.start_time = time;
+                var postData = JsonConvert.SerializeObject(lease);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                return Json("fail");
+            }
+            return Json(msg);
         }
 
-        public IActionResult Delete([FromBody]machinelease lease)
+
+            public IActionResult Delete([FromBody]machinelease lease)
         {
             string myurl = url + "api/v1/configuration/oee/machine_lease?id=" + lease.id.ToString();
             string result = DeleteUrl(myurl);
