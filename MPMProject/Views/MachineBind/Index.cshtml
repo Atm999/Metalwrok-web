@@ -103,8 +103,7 @@
 
                 $("#tagType").val('' + row.tag_type_id + '').select2();
                 $("#tagTypeSub").empty();
-                GetTagTypeName("tagTypeSub", "tag_type_sub", row.tag_type_id);
-                $("#tagTypeSub").val('' + row.tag_type_sub_id + '').select2();
+                GetTagTypeName("tagTypeSub", "tag_type_sub", row.tag_type_id,row.tag_type_sub_id);
             },
             "click #TagDelete": function (e, value, row, index) {
                 document.getElementById('deleteId').value = row.id;
@@ -113,7 +112,7 @@
 
         }
         //获取父级名称 area_layer
-        function GetTagTypeName(tagTypeName,urlPara,tag_type_id) {
+        function GetTagTypeName(tagTypeName, urlPara, tag_type_id, tag_type_sub_id=0) {
             $.ajax({
                 type: "POST",
                 url: '/MachineBind/GetTagTypeList',
@@ -128,6 +127,10 @@
                     for (var i = 0; i < data.length; i++) {
                         $("#" + tagTypeName + "").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
+                    if (tag_type_sub_id != 0) {
+                        $("#tagTypeSub").val('' + tag_type_sub_id + '').select2();
+                    }
+                    
                 }
             });
         }

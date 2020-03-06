@@ -174,7 +174,7 @@
                     title: '描述'
                 },{
                     field: 'tag',
-                    title: '绑定的Tag点',
+                    title: '绑定的标签类型',
                         formatter: function (value, row, index) {                  
                             var str = JSON.stringify(row.tag);
                             var myTag = new Array();
@@ -232,7 +232,10 @@
             });
 
         }
-
+        //新增层级
+        function addNewLevel() {
+            document.getElementById("editLayer").value = "";
+        }
         //编辑层级
         function EditLevel() {
             document.getElementById("myAddEditLabel").innerHTML = "修改层级"; 
@@ -1156,7 +1159,7 @@
                         </li>
                         <!--添加层级-->
                         <li>
-                            <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal'>
+                            <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal' onclick="addNewLevel()">
                                 <i class='icon-plus'></i>
                                 添加层级
                             </a>
