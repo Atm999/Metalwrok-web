@@ -8,6 +8,7 @@
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
         getOption();
+        getOptionWO();
         $(document).ready(function () {
             $("#lineidSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
@@ -185,16 +186,13 @@
             document.getElementById("work_order").value = "";
             document.getElementById("part_num").value = "";
             document.getElementById("standard_num").value = 0;
-            document.getElementById("shiftSelect").value = 0;
-            $("#shiftSelect").select2();
-            document.getElementById("autoSelect").value = 0;
-            $("#autoSelect").select2();
-            document.getElementById("wostatusSelect").value = -2;
-            $("#wostatusSelect").select2();
-            document.getElementById("lineidSelect").value = 0;
-            $("#lineidSelect").select2();
             document.getElementById("standard_time").value = "";
             document.getElementById("order_index").value = 0;
+            $("#shiftSelect").val('' + 0 + '').select2();
+            $("#autoSelect").val('' + 0+ '').select2();
+            $("#wostatusSelect").val('' + -1 + '').select2();
+            $("#lineidSelect").val('' + 0 + '').select2();
+
         }
 
         function Delete() {
@@ -258,6 +256,9 @@
                             toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
+                              getOptionWO();
+                            $("#wo").empty();
+
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -277,6 +278,8 @@
                             toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
+                               getOptionWO();
+                            $("#wo").empty();
                         } else {
                             toastr.error('执行失败!');
                         }
@@ -327,7 +330,20 @@
                 }
             });
         }
-
+         function getOptionWO() {
+            $.ajax({
+                type: "get",
+                url: '/Order/GetData',
+                async: true,
+                success: function (data) {
+                     $("#namecn").empty();
+                      $("#namecn").append('<option  value=' + 0 + '>请选择</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#wo").append('<option  value=' + data[i].work_order + '>' + data[i].work_order + '</option>');
+                    }
+                }
+            });
+        }
 
     </script>
 </head>
@@ -354,7 +370,7 @@
                     </div>
                     <div class="control-group">
                         <div class='datetimepicker input-append' id='datetimepicker'>
-                            <input class='span9' type="text" id="create_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                            <input class='span9' type="text" id="create_time" style="margin-top:10px" data-format='yyyy-MM-dd' placeholder='2000-01-01' />
                             <span class='add-on' style="margin-top:12px">
                                 <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                             </span>
@@ -366,7 +382,7 @@
                     <div class="control-group">
                         @*<label class="control-label">截至时间</label>*@
                         <div class='datetimepicker input-append' id='datetimepicker'>
-                            <input class='span9' type="text" id="end_time" style="margin-top:10px" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                            <input class='span9' type="text" id="end_time" style="margin-top:10px" data-format='yyyy-MM-dd' placeholder='2000-01-01' />
                             <span class='add-on' style="margin-top:12px">
                                 <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                             </span>
@@ -376,9 +392,9 @@
                         <label class="sr-only" for="name">工单</label>
                     </div>
                     <div class="form-group">
-                        <div class="form-group">
-                            <input type="text" class="span11" id="wo" name="wo" />
-                        </div>
+                        <select class="select2" id="wo">
+                            <option value="">请选择</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="name">工单状态</label>

@@ -42,49 +42,69 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]virtual_line line)
         {
-            string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            var postData = JsonConvert.SerializeObject(line);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/work_order/virtual_line";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.virtual_line>>();
+            var list = typeList.Where(p => p.id != line.id);
+
+            var lists = list.Any(p => p.name_cn == line.name_cn || p.name_en == line.name_en || p.name_tw == line.name_tw);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/work_order/virtual_line";
+                var postData = JsonConvert.SerializeObject(line);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]virtual_line line)
         {
-            string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            var postData = JsonConvert.SerializeObject(line);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json("Success");
-        }
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/work_order/virtual_line";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.virtual_line>>();
 
+            var list = typeList.Any(p => p.name_cn == line.name_cn || p.name_en == line.name_en || p.name_tw == line.name_tw);
+            if (list == false)//没有重复的
+            {
+                string myurl = url + "api/v1/configuration/work_order/virtual_line";
+                var postData = JsonConvert.SerializeObject(line);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+
+                }
+            }
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
+        }
         public IActionResult Delete([FromBody]virtual_line line)
         {
             string myurl = url + "api/v1/configuration/work_order/virtual_line?id=" + line.id.ToString();

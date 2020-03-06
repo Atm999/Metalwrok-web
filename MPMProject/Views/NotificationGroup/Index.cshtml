@@ -7,7 +7,7 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-        
+
         $(document).ready(function () {
             $("#machineSelects").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
@@ -45,12 +45,12 @@
                 pageSize: 10,//每页的记录行数（*）
                 pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
                 columns: [{
-                        field: 'no',
-                        title: '序号',
-                        formatter: function (value, row, index) {
-                            var options = $('#table').bootstrapTable('getOptions');
-                            return  index + 1;
-                        }
+                    field: 'no',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        var options = $('#table').bootstrapTable('getOptions');
+                        return index + 1;
+                    }
                 }, {
                     field: 'name_en',
                     title: '群组名称（英）'
@@ -63,8 +63,7 @@
                 }, {
                     field: 'user_name',
                     title: '人员列表',
-                    formatter: function (value, row, index)
-                    {
+                    formatter: function (value, row, index) {
                         var persons = row.person;
                         var PList = new Array(persons.length);
                         var i = 0;
@@ -73,7 +72,7 @@
                             i++;
                         });
                         return PList.toString();
-                 },
+                    },
                 }, {
                     field: 'description',
                     title: '描述'
@@ -86,9 +85,9 @@
                     events: operateEvents
                 }]
             });
-              //设备绑定中，已绑定的设备
+            //设备绑定中，已绑定的设备
             $('#machineList').bootstrapTable({
-               // url: '/LevelsConfig/GetMachineList',
+                // url: '/LevelsConfig/GetMachineList',
                 method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
@@ -104,7 +103,7 @@
                     title: '序号',
                     formatter: function (value, row, index) {
                         var options = $('#machineList').bootstrapTable('getOptions');
-                        return  index + 1;
+                        return index + 1;
                     }
                 }, {
                     field: 'user_name',
@@ -126,7 +125,7 @@
             result += "<a id='deleteMachineNode' href='javascript:;' title='取消绑定' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
-         //绑定设备-解除绑定操作
+        //绑定设备-解除绑定操作
         window.machineNodeOperateEvents = {
             //取消绑定
             "click #deleteMachineNode": function (e, value, row, index) {
@@ -137,12 +136,24 @@
                     url: "/NotificationGroup/DeleteMachine",
                     data: {
                         id: id,
-                        group_id:group_id
+                        group_id: group_id
                     },
                     success: function (msg) {
                         if (msg == "Success") {
                             toastr.success('人员解绑成功!');
                             $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id });
+                            $("#machineSelects").empty();
+                            $.ajax({
+                                type: "get",
+                                url: '/NotificationGroup/Getperson?group_id=' + group_id,
+                                async: true,
+                                success: function (data) {
+                                    $("#machineSelects").append('<option  value=' + 0+ '>请选择</option>');
+                                    for (var i = 0; i < data.length; i++) {
+                                        $("#machineSelects").append('<option  value=' + data[i].id + '>' + data[i].user_name + '</option>');
+                                    }
+                                }
+                            });
 
                         }
                         else {
@@ -158,9 +169,9 @@
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-             result += "<a class='Binding m110' href='javascript:;'  title='添加人员'  style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-             result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='Binding m110' href='javascript:;'  title='添加人员'  style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+            result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
         window.operateEvents = {
@@ -177,113 +188,110 @@
                 $('#myDelModal').modal('show');
 
             }, 'click .Binding': function (e, value, row, index) {
-                 document.getElementById("group_id").value = row.id;
+                document.getElementById("group_id").value = row.id;
                 var group_id = $("#group_id").val();
-                $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id  });
+                $('#machineList').bootstrapTable('refresh', { url: "/NotificationGroup/GetmachineList?group_id=" + group_id });
                 $('#machineModal').modal('show');
-                  getOption();
-
-                //document.getElementById("linename").value = row.name_en;
-                //document.getElementById("id").value = row.id;
-                //$('#machineModal').modal('show');
-
+                $("#machineSelects").empty();
+                getOption();
             }
         };
         function Delete() {
-           var id = $('#id').val();
-                var dept = {
-                     id: id
-                };
-                 $.ajax({
-                     type: "POST",
-                     url: "/NotificationGroup/Delete",
-                     data: JSON.stringify(dept),
-                     dataType: "json",
-                     contentType: "application/json;charset=utf-8",
-                     success: function (msg) {
-                         if (msg == "Success") {
-                             toastr.success('数据删除成功!');
-                             $('#myDelModal').modal('hide');
-                             $('#table').bootstrapTable('refresh');
-                         } else {
-                             toastr.error('执行失败!');
-                         }
-                     }, error: function (msg) {
-                         toastr.error('执行失败!');
-                     }
-                 });
+            var id = $('#id').val();
+            var dept = {
+                id: id
+            };
+            $.ajax({
+                type: "POST",
+                url: "/NotificationGroup/Delete",
+                data: JSON.stringify(dept),
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('数据删除成功!');
+                        $('#myDelModal').modal('hide');
+                        $('#table').bootstrapTable('refresh');
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
 
         }
-         function finish() {
+        function finish() {
             var id = $('#id').val();
             var name_en = $('#name_en').val();
             var name_tw = $('#name_tw').val();
             var name_cn = $('#name_cn').val();
             var description = $('#description').val();
             var dept = {
-                 id: id,
-                 name_en: name_en,
-                 name_tw:name_tw,
-                 name_cn: name_cn,
-                 description:description
-             };
-             if (id != 0) {
-                 $.ajax({
-                     type: "POST",
-                     url: "/NotificationGroup/Update",
-                     data: JSON.stringify(dept),
-                     dataType: "json",
-                     contentType: "application/json;charset=utf-8",
-                     success: function (msg) {
-                         if (msg == "Success") {
-                             toastr.success('数据更新成功!');
-                             $('#myEditModal').modal('hide');
-                             $('#table').bootstrapTable('refresh');
-                         } else {
-                             toastr.error('执行失败!');
-                         }
-                     }, error: function (msg) {
-                         toastr.error('执行失败!');
-                     }
-                 });
-             } else {
-                   $.ajax({
-                     type: "POST",
-                     url: "/NotificationGroup/Add",
-                     data: JSON.stringify(dept),
-                     dataType: "json",
-                     contentType: "application/json;charset=utf-8",
-                     success: function (msg) {
-                         if (msg == "Success") {
-                             toastr.success( '数据新增成功!');
-                             $('#myEditModal').modal('hide');
-                             $('#table').bootstrapTable('refresh');
-                         } else {
-                             toastr.error('执行失败!');
-                         }
-                     }, error: function (msg) {
-                         toastr.error('执行失败!');
-                     }
-                 });
+                id: id,
+                name_en: name_en,
+                name_tw: name_tw,
+                name_cn: name_cn,
+                description: description
+            };
+            if (id != 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/NotificationGroup/Update",
+                    data: JSON.stringify(dept),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据更新成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/NotificationGroup/Add",
+                    data: JSON.stringify(dept),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据新增成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
 
-             }
+            }
 
         }
         function clean() {
             $('#myEditModal').modal('show');
-                document.getElementById("id").value = 0;
-                document.getElementById("name_en").value = "";
-                document.getElementById("name_tw").value ="";
-                document.getElementById("name_cn").value = "";
-                document.getElementById("description").value = "";
+            document.getElementById("id").value = 0;
+            document.getElementById("name_en").value = "";
+            document.getElementById("name_tw").value = "";
+            document.getElementById("name_cn").value = "";
+            document.getElementById("description").value = "";
         }
         function getOption() {
-             var group_id = $("#group_id").val();
+            var group_id = $("#group_id").val();
             $.ajax({
                 type: "get",
-                url: '/NotificationGroup/Getperson?group_id='+group_id,
+                url: '/NotificationGroup/Getperson?group_id=' + group_id,
                 async: true,
                 success: function (data) {
+                     $("#machineSelects").append('<option  value=' + 0+ '>请选择</option>');
                     for (var i = 0; i < data.length; i++) {
                         $("#machineSelects").append('<option  value=' + data[i].id + '>' + data[i].user_name + '</option>');
                     }
@@ -295,31 +303,31 @@
             var group_id = $('#id').val();
             var machineSelects = $('#machineSelects').val();
             var group = {
-                 group_id: group_id,
-                 person_id: machineSelects
-                
-             };
-                 $.ajax({
-                     type: "POST",
-                     url: "/NotificationGroup/Update",
-                     data: JSON.stringify(group),
-                     dataType: "json",
-                     contentType: "application/json;charset=utf-8",
-                     success: function (msg) {
-                         if (msg == "Success") {
-                             toastr.success('数据更新成功!');
-                             $('#myEditModal').modal('hide');
-                             $('#table').bootstrapTable('refresh');
-                         } else {
-                             toastr.error('执行失败!');
-                         }
-                     }, error: function (msg) {
-                         toastr.error('执行失败!');
-                     }
-                 });
+                group_id: group_id,
+                person_id: machineSelects
+
+            };
+            $.ajax({
+                type: "POST",
+                url: "/NotificationGroup/Update",
+                data: JSON.stringify(group),
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('数据更新成功!');
+                        $('#myEditModal').modal('hide');
+                        $('#table').bootstrapTable('refresh');
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
         }
 
-         function MachineBind() {
+        function MachineBind() {
             var group_id = $("#group_id").val();
             var machineList = document.getElementById('machineSelects').getElementsByTagName('option');
             var machine = new Array();
@@ -340,10 +348,9 @@
                 success: function (msg) {
                     if (msg == "Success") {
                         toastr.success('人员绑定成功!');
-                         $('#machineModal').modal('hide');
+                        $('#machineModal').modal('hide');
                         $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData" });
-                         $("#machineSelects").empty();
-                        getOption();
+                        $("#machineSelects").empty();
                     }
                     else {
                         toastr.error('执行失败!');
@@ -354,7 +361,7 @@
             });
         }
         function resush() {
-             $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData"});
+            $('#table').bootstrapTable('refresh', { url: "/NotificationGroup/GetData" });
         }
     </script>
 </head>
@@ -387,7 +394,7 @@
             </div>
 
             <!-- 编辑模态框（Modal） -->
-            <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myEditModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -429,7 +436,7 @@
                 </div><!-- /.modal -->
             </div>
             <!-- 删除模态框（Modal） -->
-            <div class="modal fade" id="myDelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="myDelModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -455,42 +462,7 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
             </div>
-            <!-- 设备模态框（Modal） -->
-            @*<div class="modal fade" id="machineModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                &times;
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">
-                                新增/编辑
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" class="span12" id="group_id" name="group_id" />
-                            <div class="control-group">
-                                <label class="control-label">群组名称</label>
-                                <input class="span12" type="text" id="linename" readonly="readonly" name="linename" />
-                            </div>
-                            <div class="from-group">
-                                <label class="control-label">人员名称</label>
-                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%">
-                                    <option value="0">请选择</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                取消
-                            </button>
-                            <button onclick="finishP()" class="btn btn-primary">
-                                确认
-                            </button>
-                        </div>
-                    </div><
-                </div>
-            </div>*@
+
 
             <!-- 设备绑定模态框（Modal） -->
             <div class="modal fade" id="machineModal" style="display:none">

@@ -83,7 +83,7 @@ namespace MPMProject.Controllers
             var typeList = jo1["data"].ToObject<IList<Model.tag_type_sub>>();
             var list = typeList.Where(p=>p.id != sub.id);
 
-            var lists = list.Any(p => p.name_cn == sub.name_cn || p.name_en == sub.name_en || p.name_tw == sub.name_tw || p.tag_type_id == sub.tag_type_id);
+            var lists = list.Any(p => p.name_cn == sub.name_cn || p.name_en == sub.name_en || p.name_tw == sub.name_tw );
             if (lists == false)
             { //无重复数据
                 string myurl = url + "api/v1/configuration/public/tag_type_sub";
@@ -118,7 +118,7 @@ namespace MPMProject.Controllers
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
             var typeList = jo1["data"].ToObject<IList<Model.tag_type_sub>>();
 
-            var list = typeList.Any(p => p.name_cn == sub.name_cn && p.name_en == sub.name_en && p.name_tw==sub.name_tw&& p.tag_type_id==sub.tag_type_id);
+            var list = typeList.Any(p => p.name_cn == sub.name_cn || p.name_en == sub.name_en || p.name_tw==sub.name_tw );
             
             if (list == false)//没有重复的
             {

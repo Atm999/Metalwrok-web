@@ -153,12 +153,13 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("virtual_line_id").value = 0;
-            document.getElementById("alert_type").value = -1;
-            document.getElementById("notice_type").value = 0;
-            document.getElementById("enable").value = 0;
-            document.getElementById("notice_group_id").value = 0;
 
+
+               $("#virtual_line_id").val('' + 0 + '').select2();
+            $("#alert_type").val('' + -1 + '').select2();
+            $("#notice_type").val('' + -1 + '').select2();
+            $("#enable").val('' + 0 + '').select2();
+            $("#notice_group_id").val('' + 0 + '').select2();
         }
         function Delete() {
             var id = $('#id').val();
@@ -358,7 +359,7 @@
                                     <option value="0">瓶颈站</option>
                                     <option value="1">工单完成</option>
                                     <option value="2">逾期未完成</option>
-                                    <option value="3">工单完成</option>
+                                    <option value="3">超过标准工时</option>
                                 </select>
                             </div>
                            

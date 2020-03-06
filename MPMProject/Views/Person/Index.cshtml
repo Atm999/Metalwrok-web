@@ -103,7 +103,7 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("deptSelect").value = 0;
+             $("#deptSelect").val('' + 0 + '').select2();
             document.getElementById("user_name").value = "";
             document.getElementById("id_num").value = "";
             document.getElementById("user_level").value = "";
