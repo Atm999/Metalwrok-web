@@ -49,13 +49,13 @@ namespace MPMProject.Controllers
             var personList = jo1["data"].ToObject<IList<Model.Person>>();
             var entity=personList.FirstOrDefault(p => p.id_num == id_num);
 
-            url = url + "api/v1/configuration/andon/error_log/" + id + "?name=" + entity.user_name;
+            string myurl = url + "api/v1/configuration/andon/error_log/" + id + "?name=" + entity.user_name;
             string machinePutData = "{{" +
                                "\"id\":{0}," +
                                "\"name\":\"{1}\"," +
                                "}}";
             machinePutData = string.Format(machinePutData, id, entity.user_name);
-            string machinePutResult = PutUrl(url, machinePutData);
+            string machinePutResult = PutUrl(myurl, machinePutData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(machinePutResult);
             switch (Convert.ToInt32(jo["code"]))
             {
