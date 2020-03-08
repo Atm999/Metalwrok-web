@@ -39,47 +39,66 @@ namespace MPMProject.Controllers
         }
         public IActionResult Update([FromBody]status_setting set)
         {
-            string myurl = url + "api/v1/configuration/oee/status_setting";
-            var postData = JsonConvert.SerializeObject(set);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/oee/status_setting";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.status_setting>>();
+            var list = typeList.Where(p => p.id != set.id);
+
+            var lists = list.Any(p => p.status_name == set.status_name || p.value == set.value);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/oee/status_setting";
+                var postData = JsonConvert.SerializeObject(set);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]status_setting set)
         {
-            string myurl = url + "api/v1/configuration/oee/status_setting";
-            var postData = JsonConvert.SerializeObject(set);
-            string result = PostUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/oee/status_setting";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.status_setting>>();
+
+            var list = typeList.Any(p => p.status_name == set.status_name||p.value==set.value);
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/oee/status_setting";
+                var postData = JsonConvert.SerializeObject(set);
+                string result = PostUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]status_setting set)

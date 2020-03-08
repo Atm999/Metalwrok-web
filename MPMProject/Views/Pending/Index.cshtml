@@ -109,6 +109,7 @@
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
+                document.getElementById("responsible_name").value = row.responsible_name;
                   document.getElementById("name").value = "";
                 $('#myEditModal').modal('show');
             }
@@ -116,10 +117,12 @@
       
         function finish() {
             var id = $('#id').val();
+             var responsible_name = $('#responsible_name').val();
             var name = $('#name').val();
             var dept = {
                 id: id,
                 name: name,
+                responsible_name,responsible_name
             };
             
                 $.ajax({
@@ -134,7 +137,7 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('责任人不可以接单!');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -229,11 +232,12 @@
                         </div>
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
+                            <input type="hidden" class="span12" id="responsible_name" name="responsible_name" />
                             <div class="control-group">
                                 <label class="control-label">人员卡号</label>
                                 <input class="span12" type="text" id="name" name="name" />
                             </div>
-                           
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">

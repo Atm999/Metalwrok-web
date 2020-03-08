@@ -45,25 +45,35 @@ namespace MPMProject.Controllers
 
         public IActionResult Update([FromBody]wo_config wo)
         {
-            string myurl = url + "api/v1/configuration/work_order/wo_config";
-            var postData = JsonConvert.SerializeObject(wo);
-            string result = PutUrl(myurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/work_order/wo_config";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.wo_config>>();
+            var list = typeList.Where(p => p.id != wo.id);
+
+            var lists = list.Any(p => p.work_order == wo.work_order);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string myurl = url + "api/v1/configuration/work_order/wo_config";
+                var postData = JsonConvert.SerializeObject(wo);
+                string result = PutUrl(myurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         /// <summary>
         /// 确保数据类型一致
@@ -74,32 +84,39 @@ namespace MPMProject.Controllers
         {
             var standard_time = work.standard_time;
             var list = standard_time.Split(";");
+            string msg = "";
             if (list.Count() == Count)
             {
                 work.create_time = DateTime.UtcNow;
-                string myurl = url + "api/v1/configuration/work_order/wo_config";
-                var postData = JsonConvert.SerializeObject(work);
-                string result = PostUrl(myurl, postData);
-                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-                switch (Convert.ToInt32(jo["code"]))
+                string myurl1 = url + "api/v1/configuration/work_order/wo_config";
+                string result1 = GetUrl(myurl1);
+                JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+                var typeList = jo1["data"].ToObject<IList<Model.wo_config>>();
+
+                var lists = typeList.Any(p => p.work_order == work.work_order);
+                if (lists == false)//没有重复的
                 {
-                    case 200:
-                        Json("Success");
-                        break;
-                    case 400:
-                        break;
-                    case 410:
-                        break;
-                    case 411:
-                        break;
-                    default:
-                        break;
+                    string myurl = url + "api/v1/configuration/work_order/wo_config";
+                    var postData = JsonConvert.SerializeObject(work);
+                    string result = PostUrl(myurl, postData);
+                    JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                    switch (Convert.ToInt32(jo["code"]))
+                    {
+                        case 200:
+                            msg = "Success";
+                            break;
+                        case 400:
+                            msg = "fail";
+                            break;
+                    }
                 }
-                return Json("Success");
+                else
+                {
+                    msg = "fail";
+                }
+               
             }
-            else {
-                return Json("Fail");
-            }
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]wo_config wo)

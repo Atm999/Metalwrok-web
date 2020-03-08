@@ -142,9 +142,12 @@
             document.getElementById("id").value = 0;
             document.getElementById("work_order_id").value = 0;
             document.getElementById("defective_number").value = 0;
-            document.getElementById("notice_type").value = 0;
-            document.getElementById("enable").value = 0;
-            document.getElementById("notice_group_id").value = 0;
+             $("#work_order_id").val('' + 0 + '').select2();
+            $("#notice_type").val('' + -1 + '').select2();
+            $("#enable").val('' + 0 + '').select2();
+            $("#notice_group_id").val('' + 0 + '').select2();
+
+          
 
         }
         function Delete() {

@@ -39,47 +39,66 @@ namespace MPMProject.Controllers
         }
         public IActionResult Update([FromBody]capacity_alert ec)
         {
-            string updateurl = url + "api/v1/configuration/andon/capacity_alert";
-            var postData = JsonConvert.SerializeObject(ec);
-            string result = PutUrl(updateurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/capacity_alert";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.capacity_alert>>();
+            var list = typeList.Where(p => p.id != ec.id);
+
+            var lists = list.Any(p => p.date == ec.date);
+            if (lists == false)
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string updateurl = url + "api/v1/configuration/andon/capacity_alert";
+                var postData = JsonConvert.SerializeObject(ec);
+                string result = PutUrl(updateurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
         public IActionResult Add([FromBody]capacity_alert ec)
         {
-            string addurl = url + "api/v1/configuration/andon/capacity_alert";
-            var postData = JsonConvert.SerializeObject(ec);
-            string result = PostUrl(addurl, postData);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/andon/capacity_alert";
+            string result1 = GetUrl(myurl1);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var typeList = jo1["data"].ToObject<IList<Model.capacity_alert>>();
+
+            var list = typeList.Any(p => p.date == ec.date);
+            if (list == false)//没有重复的
             {
-                case 200:
-                    Json("Success");
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+                string addurl = url + "api/v1/configuration/andon/capacity_alert";
+                var postData = JsonConvert.SerializeObject(ec);
+                string result = PostUrl(addurl, postData);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        msg = "Success";
+                        break;
+                    case 400:
+                        msg = "fail";
+                        break;
+                }
             }
-            return Json("Success");
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
         }
 
         public IActionResult Delete([FromBody]capacity_alert ec)

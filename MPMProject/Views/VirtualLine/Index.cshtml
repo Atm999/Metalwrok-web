@@ -186,6 +186,7 @@
                 var group_id = $("#group_id").val();
                 $('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/GetmachineList?group_id=" + group_id  });
                 $('#machineModal').modal('show');
+                $("#machineSelects").empty();
                     getOption();
 
             }

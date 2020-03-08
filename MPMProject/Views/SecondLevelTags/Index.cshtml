@@ -183,7 +183,8 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-            document.getElementById("firstTagSelects").value = 0;
+              $("#firstTagSelects").val('' + 0 + '').select2();
+
             document.getElementById("name_en").value = "";
             document.getElementById("name_tw").value = "";
             document.getElementById("name_cn").value = "";

@@ -8,13 +8,15 @@
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
         getOption();
+          getOptionWO();
         getOptionError();
         getOptionErrorDetail();
         $(document).ready(function () {
             $("#machine_name").select2();
             $("#error_type_name").select2();
             $("#error_type_detail_name").select2();
-             $("#error_name").select2();
+            $("#error_name").select2();
+              $("#wo").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
@@ -59,7 +61,7 @@
                     }
                 }, {
                     field: 'error_type_name',
-                    title: '异常名称'
+                    title: '异常类型'
                 }, {
                     field: 'machine_name',
                     title: '设备名'
@@ -124,8 +126,10 @@
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
                  document.getElementById("error_config_id").value = row.error_config_id;
-                document.getElementById("error_type_name").value = row.error_type_name;
-                document.getElementById("error_type_detail_name").value = row.error_type_detail_name;
+                 $("#error_type_name").attr('value', row.error_type_name);
+                $("#error_type_name").select2(); error_type_detail_name
+                  $("#error_type_detail_name").attr('value', row.error_type_detail_name);
+                $("#error_type_detail_name").select2();
                 document.getElementById("defectives_count").value = row.defectives_count;
                 document.getElementById("description").value = row.description;
                 $('#myEditModal').modal('show');
@@ -245,6 +249,18 @@
                 }
             });
         }
+         function getOptionWO() {
+            $.ajax({
+                type: "get",
+                url: '/Order/GetData',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#wo").append('<option  value=' + data[i].work_order + '>' + data[i].work_order + '</option>');
+                    }
+                }
+            });
+        }
         function getOptionError() {
             $.ajax({
                 type: "get",
@@ -291,7 +307,7 @@
             <div class="box-content box-padding">
                 <form class="form-inline">
                     <div class="form-group">
-                        <label class="sr-only" for="name">异常名称</label>
+                        <label class="sr-only" for="name">异常类型</label>
                     </div>
                     <div class="form-group">
                         <select class="select2" id="error_name">
@@ -311,8 +327,13 @@
                         <label class="sr-only" for="name">工单</label>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="wo" name="wo" class="span11" />
+                        <select class="select2" id="wo">
+                            <option value="">请选择</option>
+                        </select>
                     </div>
+                    @*<div class="form-group">
+                        <input type="text" id="wo" name="wo" class="span11" />
+                    </div>*@
                     <div class="form-group">
                         <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
                     </div>
