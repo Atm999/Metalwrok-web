@@ -126,47 +126,68 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
+        /// <summary>
+        /// 设备一旦被某一条线选中，则其余线不可选这个设备
+        /// </summary>
+        /// <param name="group_id"></param>
+        /// <returns></returns>
+        //public JsonResult Getmachine()
+        //{
+        //    List<machine> machines = new List<machine>();
+        //    var purl = url + "api/v1/configuration/public/machine";
+        //    var result1 = GetUrl(purl);
+        //    JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+        //    var list = jo["data"].ToObject<IList<machine>>();
 
-        public JsonResult Getmachine()
+        //    string myurl = url + "api/v1/configuration/work_order/virtual_line";
+        //    string result = GetUrl(myurl);
+        //    JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
+        //    var mylist = myjo["data"].ToObject<IList<virtual_lineMachine>>();
+
+        //    if (mylist.Count>0) {
+        //        for (int i=0;i<mylist.Count;i++) {
+
+        //            var index = mylist[i].Machines.ToList();
+        //            for (int j=0;j<index.Count;j++) {
+        //                machine machineRes = new machine();
+        //                machineRes.id = index[j].machine_id;
+        //                machineRes.name_cn = index[j].name_cn;
+        //                machineRes.name_en = index[j].name_en;
+        //                machineRes.name_tw = index[j].name_tw;
+        //                machineRes.description = index[j].description;
+        //                machineRes.area_node_id = index[j].area_node_id;
+        //                machines.Add(machineRes);
+        //            }
+                    
+        //        }
+            
+        //    }
+        //    var otherPersons = list.Where(p => !machines.Select(q => q.id).Contains(p.id));
+        //    return Json(otherPersons);
+
+        //    //var otherPersons = list.Where(p => !data.Select(q => q.person_id).Contains(p.id));
+        //    //mylist.Count[0].Machines[0].machine_id
+        //    //return Json(jo["data"]);
+
+        //}
+        ////
+        ///当前这条线选中某一设备，其余线也可以选择这个设备
+        public JsonResult Getmachine(int group_id)
         {
             List<machine> machines = new List<machine>();
             var purl = url + "api/v1/configuration/public/machine";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-            var list = jo["data"].ToObject<IList<machine>>();
 
+            var list = jo["data"].ToObject<IList<machine>>();
             string myurl = url + "api/v1/configuration/work_order/virtual_line";
             string result = GetUrl(myurl);
             JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
             var mylist = myjo["data"].ToObject<IList<virtual_lineMachine>>();
-
-            if (mylist.Count>0) {
-                for (int i=0;i<mylist.Count;i++) {
-
-                    var index = mylist[i].Machines.ToList();
-                    for (int j=0;j<index.Count;j++) {
-                        machine machineRes = new machine();
-                        machineRes.id = index[j].machine_id;
-                        machineRes.name_cn = index[j].name_cn;
-                        machineRes.name_en = index[j].name_en;
-                        machineRes.name_tw = index[j].name_tw;
-                        machineRes.description = index[j].description;
-                        machineRes.area_node_id = index[j].area_node_id;
-                        machines.Add(machineRes);
-                    }
-                    
-                }
-            
-            }
-            var otherPersons = list.Where(p => !machines.Select(q => q.id).Contains(p.id));
+            var data = mylist.FirstOrDefault(p => p.id == group_id).Machines;
+            var otherPersons = list.Where(p => !data.Select(q => q.machine_id).Contains(p.id));
             return Json(otherPersons);
-
-            //var otherPersons = list.Where(p => !data.Select(q => q.person_id).Contains(p.id));
-            //mylist.Count[0].Machines[0].machine_id
-            //return Json(jo["data"]);
-
         }
-
 
         //虚拟线下设备查询
         public JsonResult GetmachineList(int group_id)
