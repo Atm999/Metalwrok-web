@@ -147,6 +147,8 @@
                         if (msg == "Success") {
                             toastr.success('设备解绑成功!');
                             $('#machineList').bootstrapTable('refresh', { url: "/VirtualLine/GetmachineList?group_id=" + group_id });
+                             $("#machineSelects").empty();
+                            getOption();
 
                         }
                         else {
@@ -280,9 +282,10 @@
                 document.getElementById("description").value = "";
         }
         function getOption() {
+              var group_id = $("#group_id").val();
             $.ajax({
                 type: "get",
-                url: '/VirtualLine/Getmachine',
+                url: '/VirtualLine/Getmachine?group_id=' + group_id,
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
