@@ -13,7 +13,18 @@
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
 
-
+         function getLocalDateTime(date)
+            {
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hours = d.getHours();
+                var min = d.getMinutes();
+                var seconds = d.getSeconds();
+                var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
+                return localDate;
+            }
         $(function () {
           $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(8) ul').attr("class", "nav nav-stacked");
@@ -83,7 +94,7 @@
                           if (start_time == "0001-01-01T08:00:00+08:00") {
                               return "--"
                           }  else {
-                              return  row.start_time;
+                              return  getLocalDateTime(row.start_time);
                           }
                       
                  },

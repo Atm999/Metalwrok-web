@@ -237,7 +237,7 @@
                     'filterAlgorithm': function (row, filters) {
                         var TM = row.date.substr(0,7);
                         var result1 = true;//定义一个返回结果  
-                        if (date==TM ){
+                        if (date==TM || date==""){
                             result1 = true;
                         } else {
                               result1 = false;

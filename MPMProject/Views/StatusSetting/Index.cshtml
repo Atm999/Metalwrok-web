@@ -107,7 +107,7 @@
         }
         function Delete() {
             var id = $('#id').val();
-            if (id == 1 || id == 2 || id == 3 || id == 18) {
+            if (id == 1 || id == 2 || id == 3 || id == 4||id==5) {
                 toastr.error('固定数据不允许删除！');
                 $('#myDelModal').modal('hide');
                 $('#table').bootstrapTable('refresh');
@@ -366,24 +366,27 @@
                                 <label class="span12" type="text" id="oldformula"></label>
                                 <label class="span12" type="text" style="display:none" id="oldid"></label>
                             </div>
-                            <button type="button" value="+" onclick="gre(this)" style="width:25px">
-                                +
-                            </button>
-                            <button type="button" value="-" onclick="gre(this)" style="width:25px">
-                                -
-                            </button>
-                            <button type="button" value="*" onclick="gre(this)" style="width:25px">
-                                *
-                            </button>
-                            <button type="button" value="/" onclick="gre(this)" style="width:25px">
-                                /
-                            </button>
-                            <button type="button" value="(" onclick="gre(this)" style="width:25px">
-                                (
-                            </button>
-                            <button type="button" value=")" onclick="gre(this)" style="width:25px">
-                                )
-                            </button>
+                            <div class="control-group">
+                                <label class="control-label" style="font-size:larger;color:red">提示：请输入规定的运算符：+ - * / （）</label>
+                            </div>
+                            @*<button type="button" value="+" onclick="gre(this)" style="width:25px">
+            +
+        </button>
+        <button type="button" value="-" onclick="gre(this)" style="width:25px">
+            -
+        </button>
+        <button type="button" value="*" onclick="gre(this)" style="width:25px">
+            *
+        </button>
+        <button type="button" value="/" onclick="gre(this)" style="width:25px">
+            /
+        </button>
+        <button type="button" value="(" onclick="gre(this)" style="width:25px">
+            (
+        </button>
+        <button type="button" value=")" onclick="gre(this)" style="width:25px">
+            )
+        </button>*@
                             <div class="control-group">
                                 <label class="control-label">稼动率公式</label>
                                 <input class="span12" type="text" id="formula" name="formula" />

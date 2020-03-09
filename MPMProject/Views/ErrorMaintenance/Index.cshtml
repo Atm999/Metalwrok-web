@@ -43,6 +43,18 @@
                 "showMethod": "fadeIn",//显示时的动画方式
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
+            function getLocalDateTime(date)
+            {
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hours = d.getHours();
+                var min = d.getMinutes();
+                var seconds = d.getSeconds();
+                var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
+                return localDate;
+            }
             $('#table').bootstrapTable({
                 url: '/ErrorMaintenance/GetData',
                 method: 'get',
@@ -60,8 +72,8 @@
                         return index + 1;
                     }
                 }, {
-                    field: 'error_type_name',
-                    title: '异常类型'
+                    field: 'tag_type_sub_name',
+                    title: '标签详细类型'
                 }, {
                     field: 'machine_name',
                     title: '设备名'
@@ -75,6 +87,9 @@
                     field: 'responsible_name',
                     title: '责任人'
                 }, {
+                    field: 'error_type_name',
+                    title: '异常类型'
+                }, {
                     field: 'error_type_detail_name',
                     title: '异常代码说明'
                 },{
@@ -86,7 +101,7 @@
                           if (start_time == "0001-01-01T08:00:00+08:00") {
                               return "--"
                           }  else {
-                              return  row.start_time;
+                              return getLocalDateTime(row.start_time);
                           }
                       
                  },
@@ -99,7 +114,7 @@
                           if (release_time == "0001-01-01T08:00:00+08:00") {
                               return "--"
                           }  else {
-                              return  row.release_time;
+                              return  getLocalDateTime(row.release_time);
                           }
                       
                  },
@@ -113,6 +128,7 @@
                 }]
             });
         });
+
         //操作栏的格式化
         function actionFormatter(value, row, index) {
             var id = value;
@@ -286,6 +302,7 @@
                 }
             });
         }
+
     </script>
 </head>
 <body>
