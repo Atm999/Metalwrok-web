@@ -13,7 +13,18 @@
             $("#lineidSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
-
+          function getLocalDateTime(date)
+            {
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hours = d.getHours();
+                var min = d.getMinutes();
+                var seconds = d.getSeconds();
+                var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
+                return localDate;
+            }
         $(function () {
             $('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(3) ul li:nth-of-type(3)').addClass('active');
@@ -75,10 +86,30 @@
                  },
                 }, {
                     field: 'virtual_Line_log.start_time',
-                    title: '生产日期'
+                        title: '生产日期',
+                      formatter: function (value, row, index)
+                    {
+                        var start_time = row.virtual_Line_log.start_time.toString();
+                          if (start_time == "0001-01-01T08:00:00+08:00") {
+                              return "--"
+                          }  else {
+                              return getLocalDateTime(row.virtual_Line_log.start_time);
+                          }
+                      
+                 },
                 }, {
                     field: 'virtual_Line_log.end_time',
-                    title: '结束日期'
+                        title: '结束日期',
+                       formatter: function (value, row, index)
+                    {
+                        var start_time = row.virtual_Line_log.end_time.toString();
+                          if (start_time == "0001-01-01T08:00:00+08:00") {
+                              return "--"
+                          }  else {
+                              return getLocalDateTime(row.virtual_Line_log.end_time);
+                          }
+                      
+                 },
                 }, {
                     field: 'auto',
                         title: '结束方式',
@@ -108,7 +139,7 @@
                         var result1 = true;//定义一个返回结果
                         var result2 = true;
                         
-                        if ( new Date(Date.parse(row.virtual_Line_log.start_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.create_time.toLocaleString())) <= filters.end_time){
+                        if ( new Date(Date.parse(row.virtual_Line_log.start_time.toLocaleString())) >= filters.create_time && new Date(Date.parse(row.virtual_Line_log.start_time.toLocaleString())) <= filters.end_time){
                             result1 = true;
                         } else {
                             if (filters.create_time.toString() == "Invalid Date" || filters.end_time.toString() == "Invalid Date") {
@@ -175,7 +206,7 @@
             <div class="box-content box-padding">
                 <form class="form-inline">
                     <div class="form-group">
-                        <label class="sr-only" for="name">结束日期（起）</label>
+                        <label class="sr-only" for="name">开始日期（起）</label>
                     </div>
                     <div class="control-group">
                         <div class='datetimepicker input-append' id='datetimepicker'>
@@ -186,7 +217,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="sr-only" for="name">结束日期（止）</label>
+                        <label class="sr-only" for="name">开始日期（止）</label>
                     </div>
                     <div class="control-group">
                         @*<label class="control-label">截至时间</label>*@

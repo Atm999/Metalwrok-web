@@ -29,6 +29,18 @@
                 "showMethod": "fadeIn",//显示时的动画方式
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
+              function getLocalDateTime(date)
+            {
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hours = d.getHours();
+                var min = d.getMinutes();
+                var seconds = d.getSeconds();
+                var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
+                return localDate;
+            }
             $('#table').bootstrapTable({
                 url: '/Order/GetData',
                 method: 'get',
@@ -76,7 +88,17 @@
                     },
                 }, {
                     field: 'create_time',
-                    title: '日期'
+                        title: '日期',
+                     formatter: function (value, row, index)
+                    {
+                        var start_time = row.create_time.toString();
+                          if (start_time == "0001-01-01T08:00:00+08:00") {
+                              return "--"
+                          }  else {
+                              return getLocalDateTime(row.create_time);
+                          }
+                      
+                 },
                 }, {
                     field: 'auto',
                     title: '结束方式',
