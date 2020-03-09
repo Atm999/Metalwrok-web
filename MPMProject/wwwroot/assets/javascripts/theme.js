@@ -8,11 +8,18 @@
         setValidateForm();
         setSortable($(".sortable"));
         setSelect2();
-        $(".datetimepicker").datetimepicker();
-        $(".datepicker").datetimepicker({
-            pickTime: false
+        $(".datetimepicker").datetimepicker({
+            language:'zh-CN'
+        });
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm',
+            startView: 3,
+            minView: 3,
+            autoclose: true,
+            language: "zh-CN"
         });
         $(".timepicker").datetimepicker({
+            language: 'zh-CN',
             pickDate: false
         });
         $('.wysihtml5').wysihtml5();
