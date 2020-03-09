@@ -200,14 +200,11 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-               $("#firstTagSelects").attr('value', row.firstTagSelects);
-            $("#firstTagSelects").select2();
-
             document.getElementById("name_en").value = "";
             document.getElementById("name_tw").value = "";
             document.getElementById("name_cn").value = "";
             document.getElementById("description").value = "";
-            document.getElementById("code").value = "";
+            $("#firstTagSelects").val('' + 0 + '').select2();
         }
 
         function search() {
