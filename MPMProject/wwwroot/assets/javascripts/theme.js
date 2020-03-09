@@ -9,18 +9,36 @@
         setSortable($(".sortable"));
         setSelect2();
         $(".datetimepicker").datetimepicker({
-            language:'zh-CN'
+            format: 'yyyy-mm-dd hh:ii:ss',
+            language: 'zh-CN',
+            autoclose: true,
+            forceParse: true
         });
-        $('.form_datetime').datetimepicker({
+
+        $('.datepicker').datetimepicker({
             format: 'yyyy-mm',
             startView: 3,
             minView: 3,
             autoclose: true,
-            language: "zh-CN"
+            language: "zh-CN",
+            forceParse: true
+        });
+        $('.daypicker').datetimepicker({
+            format: 'yyyy-mm-dd',
+            startView: 2,
+            minView: 2,
+            autoclose: true,
+            language: "zh-CN",
+            forceParse: true
         });
         $(".timepicker").datetimepicker({
             language: 'zh-CN',
-            pickDate: false
+            format: 'hh:ii:ss',
+            autoclose: true,
+            startView: 1,
+            minView: 0,
+            maxView: 0,
+            forceParse: true
         });
         $('.wysihtml5').wysihtml5();
         $('.dd').nestable();
