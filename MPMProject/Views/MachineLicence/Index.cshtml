@@ -1,6 +1,58 @@
-﻿<!DOCTYPE html>
-<html>
+﻿
 <head>
+    <style>
+        .dashboard_target_box {
+            width: 500px;
+            height: 300px;
+            border: 3px dashed #E5E5E5;
+            text-align: center;
+            cursor: pointer;
+            margin-left:30%;
+            margin-top:30px;
+            margin-bottom:30px
+        }
+
+        .dashboard_target_box.over {
+            border: 3px dashed #000;
+            background: #ffa
+        }
+
+        .dashboard_target_messages_container {
+            display: inline-block;
+            margin: 60px 0 0;
+            position: relative;
+            text-align: center;
+            max-height:300px;
+            overflow: hidden;
+        }
+
+        .dashboard_target_box_message {
+            position: relative;
+            margin: 4px auto;
+            font: 15px/18px helvetica, arial, sans-serif;
+            font-size: 16px;
+            color: #999;
+            font-weight: normal;
+            width: 150px;
+            line-height: 20px
+        }
+
+        .dashboard_target_box.over #dtb-msg1 {
+            color: #000;
+            font-weight: bold
+        }
+
+        .dashboard_target_box.over #dtb-msg3 {
+            color: #ffa;
+            border-color: #ffa
+        }
+
+        #dtb-msg3 {
+            display: block;
+            border-top: 1px #EEE dotted;
+            padding: 8px 24px
+        }
+    </style>
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script>
@@ -8,18 +60,32 @@
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(9)').addClass('active');
 
-        });
-        function upload() {
-            var fileUpload = $("#files").get(0);
-            var files = fileUpload.files;
-            var data = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                data.append(files[i].name, files[i]);
-            }
-            if (files.length <= 0) {
-                toastr.error('请选择授权文档(.lic格式)!');
-            }
-            else {
+            //拖离
+            document.addEventListener('dragleave', function (e) { e.preventDefault(); });
+            //拖后放
+            document.addEventListener('drop', function (e) { e.preventDefault(); });
+            //拖进
+            document.addEventListener('dragenter', function (e) { e.preventDefault(); });
+            //拖来拖去
+            document.addEventListener('dragover', function (e) { e.preventDefault(); });
+
+            var box = document.getElementById('target_box'); //获得到框体
+
+            box.addEventListener("drop", function (e) {
+
+                var fileList = e.dataTransfer.files; //获取文件对象                
+
+                //检测是否是拖拽文件到页面的操作
+                if (fileList.length == 0) {
+                    return;
+                };
+                //检测文件是不是图片
+                if (fileList[0].name.indexOf('lic') === -1) {
+                    toastr.error('选择的授权文档格式有误，请重新上传文件(.lic格式)!');
+                    return;
+                };
+                var data = new FormData();
+                data.append(fileList[0].name, fileList[0]);
                 $.ajax({
                     type: "POST",
                     url: "/File/Post",
@@ -28,7 +94,6 @@
                     data: data,
                     success: function (data) {
                         if (data == "Fail") {
-                            console.log(document.getElementsByClassName("file-input-name")[0].innerText);
                             document.getElementsByClassName("file-input-name")[0].innerText = "";
 
                             toastr.error('授权文件只支持lic文档!');
@@ -43,11 +108,13 @@
                         }
                     },
                     error: function (data) {
-                        toastr.error('"授权失败！", '+ data + '');
+                        toastr.error('"授权失败！", ' + data + '');
                     }
                 });
-            }
-        }
+
+            }, false);
+        });
+
     </script>
 </head>
 <body>
@@ -59,8 +126,6 @@
                     <i class='icon-angle-right'></i>
                     <span>设备数量授权</span>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -78,14 +143,20 @@
                     </div>
                 </div>
                 <label class="sr-only" for="name">设备授权操作：</label>
-                <input type="file" id="files" name="files" placeholder="file" style="padding-top:12px" />
-                <input type="button" id="btn_fileUpload1" name="btn_fileUpload1" class="btn btn-primary" value="上传" onclick="upload()" />
+
+                <div id="target_box" class="dashboard_target_box">
+                    <div id="drop_zone_home" class="dashboard_target_messages_container">
+                        <img src="~/upload.png" style="width:60%;opacity:0.5" />
+                        <p id="dtb-msg1" class="dashboard_target_box_message" style="top:8px">
+                            请拖动授权文件到此区域上传
+                        </p>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
 </body>
-</html>
 
 
 
