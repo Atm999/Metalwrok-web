@@ -209,27 +209,33 @@
             var description = $('#descriptionLevel').val();
             var id = $('#editLayer').val();
 
-            $.ajax({
-                type: "POST",
-                url: "/LevelsConfig/AddLevel",
-                data: {
-                    name_en: name_en,
-                    name_cn: name_cn,
-                    name_tw: name_tw,
-                    description: description,
-                    id: id
-                },
-                success: function (msg) {
-                    if (msg == "Success") {
-                        toastr.success('添加层级成功!');
-                        window.location.href = "/LevelsConfig/Index";
-                    } else {
+            if (name_en == "" || name_cn == "" || name_tw == "") {
+                toastr.error("层级名称不能为空");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/AddLevel",
+                    data: {
+                        name_en: name_en,
+                        name_cn: name_cn,
+                        name_tw: name_tw,
+                        description: description,
+                        id: id
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('添加层级成功!');
+                            window.location.href = "/LevelsConfig/Index";
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                    toastr.error('执行失败!');
-                }
-            });
+                });
+            }
+
+            
 
         }
         //新增层级
@@ -500,62 +506,67 @@
             var area_layer_id = $('#modal_area_layer_id').val();
             var utc = $("#levelUTC").find("option:selected").val();
 
-            if (id != 0) {
-                $.ajax({
-                    type: "POST",
-                    url: "/LevelsConfig/UpdateGroup",
-                    data: {
-                        id: id,
-                        name_en: name_en,
-                        name_tw: name_tw,
-                        name_cn: name_cn,
-                        description: description,
-                        upper_id: upper_id,
-                        area_layer_id: area_layer_id,
-                        utc: utc
-                    },
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据修改成功!');
-                            $('#groupAddEditModal').modal('hide');
-                            $('#group').bootstrapTable('refresh');
-                            $('#levelTable').bootstrapTable('refresh');
-                        } else {
-                            toastr.error('执行失败!');
-                        }
-                    }, error: function (msg) {
-                        toastr.error('执行失败!');
-                    }
-                });
+            if (name_cn == "" || name_en == "" || name_tw == "") {
+                toastr.error("节点名称不能为空");
             } else {
-                $.ajax({
-                    type: "POST",
-                    url: "/LevelsConfig/AddGroup",
-                    data: {
-                        id: id,
-                        name_en: name_en,
-                        name_tw: name_tw,
-                        name_cn: name_cn,
-                        description: description,
-                        upper_id: upper_id,
-                        area_layer_id: area_layer_id,
-                        utc: utc
-                    },
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据新增成功!');
-                            $('#groupAddEditModal').modal('hide');
-                            $('#group').bootstrapTable('refresh');
-                            $('#levelTable').bootstrapTable('refresh');
-                        } else {
+                if (id != 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/LevelsConfig/UpdateGroup",
+                        data: {
+                            id: id,
+                            name_en: name_en,
+                            name_tw: name_tw,
+                            name_cn: name_cn,
+                            description: description,
+                            upper_id: upper_id,
+                            area_layer_id: area_layer_id,
+                            utc: utc
+                        },
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据修改成功!');
+                                $('#groupAddEditModal').modal('hide');
+                                $('#group').bootstrapTable('refresh');
+                                $('#levelTable').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
                             toastr.error('执行失败!');
                         }
-                    }, error: function (msg) {
-                        toastr.error('执行失败!');
-                    }
-                });
-
+                    });
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/LevelsConfig/AddGroup",
+                        data: {
+                            id: id,
+                            name_en: name_en,
+                            name_tw: name_tw,
+                            name_cn: name_cn,
+                            description: description,
+                            upper_id: upper_id,
+                            area_layer_id: area_layer_id,
+                            utc: utc
+                        },
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据新增成功!');
+                                $('#groupAddEditModal').modal('hide');
+                                $('#group').bootstrapTable('refresh');
+                                $('#levelTable').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
+                            toastr.error('执行失败!');
+                        }
+                    });
+                }
             }
+
+            
         }
 
         /**
@@ -976,36 +987,41 @@
             var name_tw = $('#twMachine').val();
             var name_en = $('#enMachine').val();
             var description = $('#descriptionMachine').val();
+            if (name_cn == "" || name_en == "" || name_tw == "") {
+                toastr.error("设备名称不能为空");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/UpdateMachine",
+                    data: {
+                        id: id,
+                        area_layer_id: area_layer_id,
+                        area_node_id: area_node_id,
+                        name_en: name_en,
+                        name_cn: name_cn,
+                        name_tw: name_tw,
+                        description: description
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            if (parseInt(id) > 0) {
+                                toastr.success('修改设备成功!');
+                            } else {
+                                toastr.success('新增设备成功!');
+                            }
+                            $('#machineAddEditModal').modal('hide');
+                            $('#machineAll').bootstrapTable('refresh');
 
-            $.ajax({
-                type: "POST",
-                url: "/LevelsConfig/UpdateMachine",
-                data: {
-                    id: id,
-                    area_layer_id: area_layer_id,
-                    area_node_id: area_node_id,
-                    name_en: name_en,
-                    name_cn: name_cn,
-                    name_tw: name_tw,
-                    description: description
-                },
-                success: function (msg) {
-                    if (msg == "Success") {
-                        if (parseInt(id) > 0) {
-                            toastr.success('修改设备成功!');
                         } else {
-                            toastr.success('新增设备成功!');
+                            toastr.error('执行失败!');
                         }
-                        $('#machineAddEditModal').modal('hide');
-                        $('#machineAll').bootstrapTable('refresh');
-
-                    } else {
+                    }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                    toastr.error('执行失败!');
-                }
-            });
+                });
+            }
+
+            
 
         }
 
