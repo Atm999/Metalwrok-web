@@ -209,27 +209,33 @@
             var description = $('#descriptionLevel').val();
             var id = $('#editLayer').val();
 
-            $.ajax({
-                type: "POST",
-                url: "/LevelsConfig/AddLevel",
-                data: {
-                    name_en: name_en,
-                    name_cn: name_cn,
-                    name_tw: name_tw,
-                    description: description,
-                    id: id
-                },
-                success: function (msg) {
-                    if (msg == "Success") {
-                        toastr.success('添加层级成功!');
-                        window.location.href = "/LevelsConfig/Index";
-                    } else {
+            if (name_en == "" || name_cn == "" || name_tw == "") {
+                toastr.error("层级名称不能为空");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/AddLevel",
+                    data: {
+                        name_en: name_en,
+                        name_cn: name_cn,
+                        name_tw: name_tw,
+                        description: description,
+                        id: id
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('添加层级成功!');
+                            window.location.href = "/LevelsConfig/Index";
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                    toastr.error('执行失败!');
-                }
-            });
+                });
+            }
+
+            
 
         }
         //新增层级
@@ -452,6 +458,7 @@
                 document.getElementById("enGroup").value = row.name_en;
                 document.getElementById("twGroup").value = row.name_tw;
                 document.getElementById("descriptionGroup").value = row.description;
+                $("#levelUTC").val('' + row.format + '').select2();
                 $("#modal_upper_id").val('' + row.upper_id + '').select2();
             },
             //删除
@@ -475,6 +482,9 @@
             document.getElementById("descriptionLabel").innerHTML = "群组（描述）";
             //群组下的层级增加层级内容下拉框
             document.getElementById("modalFatherSelect").style.display = "none";
+
+            document.getElementById("modalUTC").style.display = "block";
+            $('#group').bootstrapTable('refresh');
         }
         //群组新增
         function AddGroup() {
@@ -494,61 +504,69 @@
             var description = $('#descriptionGroup').val();
             var upper_id = $("#modal_upper_id").find("option:selected").val();
             var area_layer_id = $('#modal_area_layer_id').val();
+            var utc = $("#levelUTC").find("option:selected").val();
 
-            if (id != 0) {
-                $.ajax({
-                    type: "POST",
-                    url: "/LevelsConfig/UpdateGroup",
-                    data: {
-                        id: id,
-                        name_en: name_en,
-                        name_tw: name_tw,
-                        name_cn: name_cn,
-                        description: description,
-                        upper_id: upper_id,
-                        area_layer_id: area_layer_id
-                    },
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据修改成功!');
-                            $('#groupAddEditModal').modal('hide');
-                            $('#group').bootstrapTable('refresh');
-                            $('#levelTable').bootstrapTable('refresh');
-                        } else {
-                            toastr.error('执行失败!');
-                        }
-                    }, error: function (msg) {
-                        toastr.error('执行失败!');
-                    }
-                });
+            if (name_cn == "" || name_en == "" || name_tw == "") {
+                toastr.error("节点名称不能为空");
             } else {
-                $.ajax({
-                    type: "POST",
-                    url: "/LevelsConfig/AddGroup",
-                    data: {
-                        id: id,
-                        name_en: name_en,
-                        name_tw: name_tw,
-                        name_cn: name_cn,
-                        description: description,
-                        upper_id: upper_id,
-                        area_layer_id: area_layer_id
-                    },
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据新增成功!');
-                            $('#groupAddEditModal').modal('hide');
-                            $('#group').bootstrapTable('refresh');
-                            $('#levelTable').bootstrapTable('refresh');
-                        } else {
+                if (id != 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/LevelsConfig/UpdateGroup",
+                        data: {
+                            id: id,
+                            name_en: name_en,
+                            name_tw: name_tw,
+                            name_cn: name_cn,
+                            description: description,
+                            upper_id: upper_id,
+                            area_layer_id: area_layer_id,
+                            utc: utc
+                        },
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据修改成功!');
+                                $('#groupAddEditModal').modal('hide');
+                                $('#group').bootstrapTable('refresh');
+                                $('#levelTable').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
                             toastr.error('执行失败!');
                         }
-                    }, error: function (msg) {
-                        toastr.error('执行失败!');
-                    }
-                });
-
+                    });
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/LevelsConfig/AddGroup",
+                        data: {
+                            id: id,
+                            name_en: name_en,
+                            name_tw: name_tw,
+                            name_cn: name_cn,
+                            description: description,
+                            upper_id: upper_id,
+                            area_layer_id: area_layer_id,
+                            utc: utc
+                        },
+                        success: function (msg) {
+                            if (msg == "Success") {
+                                toastr.success('数据新增成功!');
+                                $('#groupAddEditModal').modal('hide');
+                                $('#group').bootstrapTable('refresh');
+                                $('#levelTable').bootstrapTable('refresh');
+                            } else {
+                                toastr.error('执行失败!');
+                            }
+                        }, error: function (msg) {
+                            toastr.error('执行失败!');
+                        }
+                    });
+                }
             }
+
+            
         }
 
         /**
@@ -567,7 +585,7 @@
                 "<div class='control-group'>" +
                 "<label class= 'control-label'>开始时间</label >" +
                 "<div class='input-append date timepicker' id='timepicker'>" +
-                "<input class='span12' type='text' id='fix_start_time" + fixIndex + "' name='fix_start_time' data-format='hh:mm:ss' placeholder='00:00:00' />" +
+                "<input class='span12' type='text' id='fix_start_time" + fixIndex + "' name='fix_start_time' data-format='hh:mm' placeholder='00:00'/>" +
                 "<span class='add-on'>" +
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-time'></i>" +
                 "</span>" +
@@ -576,7 +594,7 @@
                 "<div class='control-group'>" +
                 "<label class='control-label'>结束时间</label>" +
                 "<div class='input-append date timepicker' id='timepicker'>" +
-                "<input class='span12' type='text' id='fix_end_time" + fixIndex + "' name='fix_end_time' data-format='hh:mm:ss' placeholder='00:00:00' />" +
+                "<input class='span12' type='text' id='fix_end_time" + fixIndex + "' name='fix_end_time' data-format='hh:mm' placeholder='00:00'/>" +
                 "<span class='add-on'>" +
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-time'></i>" +
                 "</span>" +
@@ -600,7 +618,7 @@
                 "<h4>" + unFixIndex + "#</h4>" +
                 "<label class= 'control-label'> 开始时间</label >" +
                 "<div class='input-append date datetimepicker' id='datetimepicker'>" +
-                "<input class='span12' type='text' id='unfix_start_time" + unFixIndex + "' name='unfix_start_time' data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />" +
+                "<input class='span12' type='text' id='unfix_start_time" + unFixIndex + "' name='unfix_start_time' data-format='yyyy-MM-dd hh:mm' placeholder='2000-01-01 00:00' />" +
                 "<span class='add-on'>" +
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-calendar'></i>" +
                 "</span>" +
@@ -608,7 +626,7 @@
                 "<div class='control-group'>" +
                 "<label class='control-label'>结束时间</label>" +
                 "<div class='input-append date datetimepicker' id='datetimepicker'>" +
-                "<input class='span12' type='text' id='unfix_end_time" + unFixIndex + "' name='unfix_end_time' data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />" +
+                "<input class='span12' type='text' id='unfix_end_time" + unFixIndex + "' name='unfix_end_time' data-format='yyyy-MM-dd hh:mm' placeholder='2000-01-01 00:00' />" +
                 "<span class='add-on'>" +
                 "<i data-date-icon='icon-calendar' data-time-icon='icon-time' class='icon-calendar'></i>" +
                 "</span>" +
@@ -969,36 +987,41 @@
             var name_tw = $('#twMachine').val();
             var name_en = $('#enMachine').val();
             var description = $('#descriptionMachine').val();
+            if (name_cn == "" || name_en == "" || name_tw == "") {
+                toastr.error("设备名称不能为空");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/LevelsConfig/UpdateMachine",
+                    data: {
+                        id: id,
+                        area_layer_id: area_layer_id,
+                        area_node_id: area_node_id,
+                        name_en: name_en,
+                        name_cn: name_cn,
+                        name_tw: name_tw,
+                        description: description
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            if (parseInt(id) > 0) {
+                                toastr.success('修改设备成功!');
+                            } else {
+                                toastr.success('新增设备成功!');
+                            }
+                            $('#machineAddEditModal').modal('hide');
+                            $('#machineAll').bootstrapTable('refresh');
 
-            $.ajax({
-                type: "POST",
-                url: "/LevelsConfig/UpdateMachine",
-                data: {
-                    id: id,
-                    area_layer_id: area_layer_id,
-                    area_node_id: area_node_id,
-                    name_en: name_en,
-                    name_cn: name_cn,
-                    name_tw: name_tw,
-                    description: description
-                },
-                success: function (msg) {
-                    if (msg == "Success") {
-                        if (parseInt(id) > 0) {
-                            toastr.success('修改设备成功!');
                         } else {
-                            toastr.success('新增设备成功!');
+                            toastr.error('执行失败!');
                         }
-                        $('#machineAddEditModal').modal('hide');
-                        $('#machineAll').bootstrapTable('refresh');
-
-                    } else {
+                    }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                    toastr.error('执行失败!');
-                }
-            });
+                });
+            }
+
+            
 
         }
 
@@ -1008,6 +1031,9 @@
             document.getElementById("modal_area_layer_id").value = area_layer_id;
             //群组下的层级增加层级内容下拉框
             document.getElementById("modalFatherSelect").style.display = "block";
+
+            document.getElementById("modalUTC").style.display = "none";
+            
             if (area_layer_upper_id == 1) {
                 document.getElementById("fatherLevelName").innerHTML = "群组";
             }
@@ -1268,7 +1294,7 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" id="editLayer"/>
+                        <input type="hidden" id="editLayer" />                      
                         <div class="control-group">
                             <label class="control-label">层级名称（简中）</label>
                             <input class="span12" type="text" id="cnLevel" />
@@ -1314,12 +1340,44 @@
                         <input type="hidden" class="span12" id="idGroup" name="idGroup" />
                         <input type="hidden" class="span12" id="modal_area_layer_id" value="1" />
 
-                        <div id="modalFatherSelect" style="display: block;padding-bottom: 10px;">
+                        <div id="modalFatherSelect" style="display: none;padding-bottom: 10px;">
                             <div class="form-group">
                                 <label class="control-label" id="fatherLevelName"></label>
                             </div>
                             <div class="form-group">
                                 <select class="select2" id="modal_upper_id" style="width:100%">
+                                </select>
+                            </div>
+                        </div>
+                        <div id="modalUTC" style="display: block;padding-bottom: 10px;">
+                            <div class="control-group">
+                                <label class="control-label">时区</label>
+                            </div>
+                            <div class="control-group">
+                                <select class="select2" id="levelUTC" style="width:100%">
+                                    <option value="-11">UTC-11</option>
+                                    <option value="-10">UTC-10</option>
+                                    <option value="-9">UTC-9</option>
+                                    <option value="-8">UTC-8</option>
+                                    <option value="-7">UTC-7</option>
+                                    <option value="-6">UTC-6</option>
+                                    <option value="-5">UTC-5</option>
+                                    <option value="-4">UTC-4</option>
+                                    <option value="-3">UTC-3</option>
+                                    <option value="-2">UTC-2</option>
+                                    <option value="-1">UTC-1</option>
+                                    <option value="0">UTC+0</option>
+                                    <option value="1">UTC+1</option>
+                                    <option value="2">UTC+2</option>
+                                    <option value="3">UTC+3</option>
+                                    <option value="4">UTC+4</option>
+                                    <option value="5">UTC+5</option>
+                                    <option value="6">UTC+6</option>
+                                    <option value="7">UTC+7</option>
+                                    <option value="8" selected>UTC+8</option>
+                                    <option value="9">UTC+9</option>
+                                    <option value="10">UTC+10</option>
+                                    <option value="11">UTC+11</option>
                                 </select>
                             </div>
                         </div>
@@ -1384,8 +1442,8 @@
                             <hr class="hr-top" style="margin-right:-14px" />
                             <div class="control-group">
                                 <label class="control-label">开始时间</label>
-                                <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="day_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                <div class='input-append date timepicker'> 
+                                    <input class='span12' type="text" id="day_start_time" placeholder='00:00' disabled />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1393,8 +1451,8 @@
                             </div>
                             <div class="control-group">
                                 <label class="control-label">结束时间</label>
-                                <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="day_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                <div class='input-append date timepicker'>
+                                    <input class='span12' type="text" id="day_end_time" placeholder='00:00' disabled/>
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1408,7 +1466,7 @@
                             <div class="control-group">
                                 <label class="control-label">开始时间</label>
                                 <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="night_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <input class='span12' type="text" id="night_start_time" placeholder='00:00' disabled />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1417,7 +1475,7 @@
                             <div class="control-group">
                                 <label class="control-label">结束时间</label>
                                 <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="night_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <input class='span12' type="text" id="night_end_time" placeholder='00:00' disabled />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1433,7 +1491,7 @@
                             <div class="control-group">
                                 <label class="control-label">开始时间</label>
                                 <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="fix_start_time1" name="fix_start_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <input class='span12' type="text" id="fix_start_time1" name="fix_start_time" placeholder='00:00' disabled />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1442,7 +1500,7 @@
                             <div class="control-group">
                                 <label class="control-label">结束时间</label>
                                 <div class='input-append date timepicker' id='timepicker'>
-                                    <input class='span12' type="text" id="fix_end_time1" name="fix_end_time" data-format='hh:mm:ss' placeholder='00:00:00' />
+                                    <input class='span12' type="text" id="fix_end_time1" name="fix_end_time" placeholder='00:00' disabled />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-time"></i>
                                     </span>
@@ -1464,7 +1522,7 @@
                             <div class="control-group">
                                 <label class="control-label">开始时间</label>
                                 <div class='input-append date datetimepicker' id='datetimepicker'>
-                                    <input class='span12' type="text" id="unfix_start_time1" name="unfix_start_time" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                                    <input class='span12' type="text" id="unfix_start_time1" name="unfix_start_time" placeholder='2000-01-01 00:00' />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-calendar"></i>
                                     </span>
@@ -1473,7 +1531,7 @@
                             <div class="control-group">
                                 <label class="control-label">结束时间</label>
                                 <div class='input-append date datetimepicker' id='datetimepicker'>
-                                    <input class='span12' type="text" id="unfix_end_time1" name="unfix_end_time" data-format='yyyy-MM-dd hh:mm:ss' placeholder='2000-01-01 00:00:00' />
+                                    <input class='span12' type="text" id="unfix_end_time1" name="unfix_end_time" placeholder='2000-01-01 00:00' />
                                     <span class='add-on'>
                                         <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-calendar"></i>
                                     </span>

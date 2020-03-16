@@ -160,35 +160,43 @@
             Name.push($('#name').val());
             var name = Name.join(':');
             var description = $('#tagDescription').val();
-            
-            $.ajax({
-                type: "POST",
-                url: "/MachineBind/UpdateTagInfo",
-                data: {
-                    id: id,
-                    machine_id: machine_id,
-                    tag_type_id: tag_type_id,
-                    tag_type_sub_id: tag_type_sub_id,
-                    name: name,
-                    description: description
-                },
-                success: function (msg) {
-                    if (msg == "Success") {
-                        if (parseInt(id) > 0) {
-                            toastr.success('修改Tag点成功!');
-                        } else {
-                            toastr.success('新增Tag点成功!');
-                        }
-                        $('#myAddEditModal').modal('hide');
-                        $('#machineTagList').bootstrapTable('refresh');
 
-                    } else {
+            if (tag_type_id == -1 || tag_type_sub_id == -1) {
+                toastr.error("请选择标签");
+            } else if ($('#scadaId').val() == "" || $('#name').val() == "") {
+                toastr.error("SCADA_ID和名称均不能为空");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/MachineBind/UpdateTagInfo",
+                    data: {
+                        id: id,
+                        machine_id: machine_id,
+                        tag_type_id: tag_type_id,
+                        tag_type_sub_id: tag_type_sub_id,
+                        name: name,
+                        description: description
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            if (parseInt(id) > 0) {
+                                toastr.success('修改Tag点成功!');
+                            } else {
+                                toastr.success('新增Tag点成功!');
+                            }
+                            $('#myAddEditModal').modal('hide');
+                            $('#machineTagList').bootstrapTable('refresh');
+
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
-                }, error: function (msg) {
-                    toastr.error('执行失败!');
-                }
-            });
+                });
+            }
+            
+            
 
         }
         //父级名称切换后父级内容变化(获取父级名称下的内容)

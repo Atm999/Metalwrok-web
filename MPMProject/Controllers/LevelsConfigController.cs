@@ -153,23 +153,30 @@ namespace MPMProject.Controllers
             string groupUrl = url + "api/v1/configuration/public/area_node";
             string result = GetUrl(groupUrl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            if (Convert.ToInt32(jo["code"]) == 200)
+
+            string utcUrl = url + "api/v1/configuration/public/area_property/time_zone";
+            string utcResult = GetUrl(utcUrl);
+            JObject utcJo = (JObject)JsonConvert.DeserializeObject(utcResult);
+
+            if (Convert.ToInt32(jo["code"]) == 200 && Convert.ToInt32(utcJo["code"]) == 200)
             {
                 //当已有数据（area_layer_id > 0）或选择“-请选择-”（area_layer_id==-1）时
                 var areaNodeList = jo["data"].ToObject<IList<Model.area_node>>();
                 var areaNodeFatherList = jo["data"].ToObject<IList<Model.area_node>>();
+                var utcList = utcJo["data"].ToObject<IList<Model.area_property>>();
 
                 var datAreaNode1 = (from p in areaNodeList
-                                    where p.area_layer_id==area_layer_id
-                                    where p.upper_id==0
+                                    where p.area_layer_id==area_layer_id && p.upper_id == 0
+                                    join q in utcList
+                                    on p.id equals q.area_node_id
                                     orderby p.name_cn
-                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id,p.area_layer_id, area_node_name = "-" }).ToList();
+                                    select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id,p.area_layer_id,q.format, area_node_name = "-" }).ToList();
                 var datAreaNode2 = (from p in areaNodeList
                                    join q in areaNodeFatherList
                                    on p.upper_id equals q.id
                                    where p.area_layer_id == area_layer_id
                                    orderby p.name_cn
-                                   select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.upper_id, p.area_layer_id, area_node_name = q.name_cn }).ToList();
+                                   select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description, p.upper_id, p.area_layer_id,format="-", area_node_name = q.name_cn }).ToList();
                 var datAreaNode = datAreaNode1.Union(datAreaNode2);
                 return Json(datAreaNode);
 
@@ -198,6 +205,8 @@ namespace MPMProject.Controllers
         //群组新增
         public IActionResult AddGroup(area_node area_Node)
         {
+            string utc = Convert.ToString(HttpContext.Request.Form["utc"]).Replace("UTC", "");
+
             string groupUrl = url + "api/v1/configuration/public/area_node";
             string postData = "{{" +
                 "\"name_en\":\"{0}\"," +
@@ -211,7 +220,42 @@ namespace MPMProject.Controllers
             postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description,area_Node.upper_id, area_Node.area_layer_id);
             string result = PostUrl(groupUrl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            if (Convert.ToInt32(jo["code"]) == 200)
+
+            //若不是群组则直接跳过
+            if (Convert.ToInt32(jo["code"]) == 200 && area_Node.upper_id != 0)
+            {
+                return Json("Success");
+            }
+
+            //获取area_node
+            string areaNodeUrl = url + "api/v1/configuration/public/area_node";
+            string areaNodeResult = GetUrl(areaNodeUrl);
+            JObject areaNodeJo = (JObject)JsonConvert.DeserializeObject(areaNodeResult);
+
+            var areaNodeList = areaNodeJo["data"].ToObject<IList<Model.area_node>>();
+
+            var res = (from p in areaNodeList
+                       where p.name_cn == area_Node.name_cn && p.name_en == area_Node.name_en && p.name_tw == area_Node.name_tw
+                        && p.description == area_Node.description && p.area_layer_id == area_Node.area_layer_id && p.upper_id == area_Node.upper_id
+                       select new { p.id }).ToList();
+
+
+            string utcUrl = url + "api/v1/configuration/public/area_property";
+            string utcPostData = "{{" +
+                "\"name_en\":\"{0}\"," +
+                "\"name_cn\":\"{1}\"," +
+                "\"name_tw\":\"{2}\"," +
+                "\"description\":\"{3}\"," +
+                "\"format\":\"{4}\"," +
+                "\"area_node_id\":{5}" +
+                "}}";
+            //对于群组来说，upper_id和area_node_id均固定
+            utcPostData = string.Format(utcPostData, "time_zone", "时区", "时区", "时区", utc, res[0].id);
+            string utcResult = PostUrl(utcUrl, utcPostData);
+            JObject joUtc = (JObject)JsonConvert.DeserializeObject(utcResult);
+
+
+            if (Convert.ToInt32(jo["code"]) == 200 && Convert.ToInt32(joUtc["code"]) == 200)
             {
                 return Json("Success");
             }
@@ -223,6 +267,8 @@ namespace MPMProject.Controllers
         //群组修改
         public IActionResult UpdateGroup(area_node area_Node)
         {
+            string utc = Convert.ToString(HttpContext.Request.Form["utc"]).Replace("UTC","");
+
             string groupUrl = url + "api/v1/configuration/public/area_node";
             string postData = "{{" +
                 "\"id\":{0}," +
@@ -237,9 +283,46 @@ namespace MPMProject.Controllers
             postData = string.Format(postData, area_Node.id, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description, area_Node.upper_id, area_Node.area_layer_id);
             string result = PutUrl(groupUrl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            if (Convert.ToInt32(jo["code"]) == 200)
+
+            //若不是群组则直接跳过
+            if (Convert.ToInt32(jo["code"]) == 200 && area_Node.upper_id != 0)
             {
                 return Json("Success");
+            }
+
+            //获取所有时区
+            string allUTCUrl = url + "api/v1/configuration/public/area_property/time_zone";
+            string AllUTCResult = GetUrl(allUTCUrl);
+            JObject allUTCJo = (JObject)JsonConvert.DeserializeObject(AllUTCResult);           
+
+            if (Convert.ToInt32(jo["code"]) == 200 && Convert.ToInt32(allUTCJo["code"]) == 200)
+            {
+                var areaPropertyList = allUTCJo["data"].ToObject<IList<Model.area_property>>();
+
+                var res = (from p in areaPropertyList
+                           where p.area_node_id == area_Node.id
+                           select new { p.id}).ToList();
+
+                string utcUrl = url + "api/v1/configuration/public/area_property";
+                string utcPostData = "{{" +
+                    "\"id\":{0}," +
+                    "\"name_en\":\"{1}\"," +
+                    "\"name_cn\":\"{2}\"," +
+                    "\"name_tw\":\"{3}\"," +
+                    "\"description\":\"{4}\"," +
+                    "\"format\":\"{5}\"," +
+                    "\"area_node_id\":{6}" +
+                    "}}";
+                //对于群组来说，upper_id和area_node_id均固定
+                utcPostData = string.Format(utcPostData, res[0].id, "time_zone", "时区", "时区", "时区", utc, area_Node.id);
+                string utcResult = PutUrl(utcUrl, utcPostData);
+                JObject joUtc = (JObject)JsonConvert.DeserializeObject(utcResult);
+                if (Convert.ToInt32(joUtc["code"]) == 200) {
+                    return Json("Success");
+                }
+                else {
+                    return Json("Fail");
+                }
             }
             else
             {
@@ -370,43 +453,46 @@ namespace MPMProject.Controllers
                 }
                 else
                 {//新增
-                    areaPropertyShift.name_cn = "排班";
-                    areaPropertyShift.name_en = "shift";
-                    areaPropertyShift.name_tw = "排班";
-                    areaPropertyShift.description = "排班";
-                    areaPropertyShift.area_node_id = area_node_id;
+                    if (day_start_time!="" || day_end_time!="" || night_start_time != "" || night_end_time != "") {
+                        areaPropertyShift.name_cn = "排班";
+                        areaPropertyShift.name_en = "shift";
+                        areaPropertyShift.name_tw = "排班";
+                        areaPropertyShift.description = "排班";
+                        areaPropertyShift.area_node_id = area_node_id;
 
-                    area_property.Shift shift = new area_property.Shift();
-                    area_property.Day day = new area_property.Day();
-                    area_property.Day night = new area_property.Day();
-                    day.start = day_start_time;
-                    day.end = day_end_time;
-                    night.start = night_start_time;
-                    night.end = night_end_time;
-                    shift.day = day;
-                    shift.night = night;
+                        area_property.Shift shift = new area_property.Shift();
+                        area_property.Day day = new area_property.Day();
+                        area_property.Day night = new area_property.Day();
+                        day.start = day_start_time;
+                        day.end = day_end_time;
+                        night.start = night_start_time;
+                        night.end = night_end_time;
+                        shift.day = day;
+                        shift.night = night;
 
-                    areaPropertyShift.shift= shift;
+                        areaPropertyShift.shift = shift;
 
-                    areaPropertyShift.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyShift.shift));
-                    string shiftPostUrl = url + "api/v1/configuration/public/area_property";
-                    string shiftPostData = "{{" +
-                        "\"name_en\":\"{0}\"," +
-                        "\"name_cn\":\"{1}\"," +
-                        "\"name_tw\":\"{2}\"," +
-                        "\"description\":\"{3}\"," +
-                        "\"format\":{4}," +
-                        "\"area_node_id\":{5}" +
-                        "}}";
-                    //对于群组来说，upper_id和area_node_id均固定
-                    shiftPostData = string.Format(shiftPostData, areaPropertyShift.name_en, areaPropertyShift.name_cn, areaPropertyShift.name_tw,
-                        areaPropertyShift.description, areaPropertyShift.format, areaPropertyShift.area_node_id);
-                    string shiftPostResult = PostUrl(shiftPostUrl, shiftPostData);
-                    JObject joShiftPost = (JObject)JsonConvert.DeserializeObject(shiftPostResult);
-                    if (Convert.ToInt32(joShiftPost["code"]) != 200)
-                    {
-                        flag=false;
+                        areaPropertyShift.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyShift.shift));
+                        string shiftPostUrl = url + "api/v1/configuration/public/area_property";
+                        string shiftPostData = "{{" +
+                            "\"name_en\":\"{0}\"," +
+                            "\"name_cn\":\"{1}\"," +
+                            "\"name_tw\":\"{2}\"," +
+                            "\"description\":\"{3}\"," +
+                            "\"format\":{4}," +
+                            "\"area_node_id\":{5}" +
+                            "}}";
+                        //对于群组来说，upper_id和area_node_id均固定
+                        shiftPostData = string.Format(shiftPostData, areaPropertyShift.name_en, areaPropertyShift.name_cn, areaPropertyShift.name_tw,
+                            areaPropertyShift.description, areaPropertyShift.format, areaPropertyShift.area_node_id);
+                        string shiftPostResult = PostUrl(shiftPostUrl, shiftPostData);
+                        JObject joShiftPost = (JObject)JsonConvert.DeserializeObject(shiftPostResult);
+                        if (Convert.ToInt32(joShiftPost["code"]) != 200)
+                        {
+                            flag = false;
+                        }
                     }
+
                 }
 
                 //fixed_break新增与修改
@@ -446,42 +532,45 @@ namespace MPMProject.Controllers
                 }
                 else
                 {//新增
-                    areaPropertyFixedBreak.name_cn = "固定排休";
-                    areaPropertyFixedBreak.name_en = "fixed_break";
-                    areaPropertyFixedBreak.name_tw = "固定排休";
-                    areaPropertyFixedBreak.description = "固定排休";
-                    areaPropertyFixedBreak.area_node_id = area_node_id;
+                    if (fix_start_time[0]!="" || fix_end_time[0] != "") {
+                        areaPropertyFixedBreak.name_cn = "固定排休";
+                        areaPropertyFixedBreak.name_en = "fixed_break";
+                        areaPropertyFixedBreak.name_tw = "固定排休";
+                        areaPropertyFixedBreak.description = "固定排休";
+                        areaPropertyFixedBreak.area_node_id = area_node_id;
 
-                    for (int i = 0; i < fix_start_time.Length; i++)
-                    {
-                        area_property.Day fixedDay = new area_property.Day();
-                        fixedDay.start = fix_start_time[i];
-                        fixedDay.end = fix_end_time[i];
-                        fixedRest.Add(fixedDay);
-                    }
-                    area_property.FixBreak fixBreak = new area_property.FixBreak();
-                    fixBreak.rest = fixedRest;
-                    areaPropertyFixedBreak.fixBreak = fixBreak;
-                    areaPropertyFixedBreak.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyFixedBreak.fixBreak));
+                        for (int i = 0; i < fix_start_time.Length; i++)
+                        {
+                            area_property.Day fixedDay = new area_property.Day();
+                            fixedDay.start = fix_start_time[i];
+                            fixedDay.end = fix_end_time[i];
+                            fixedRest.Add(fixedDay);
+                        }
+                        area_property.FixBreak fixBreak = new area_property.FixBreak();
+                        fixBreak.rest = fixedRest;
+                        areaPropertyFixedBreak.fixBreak = fixBreak;
+                        areaPropertyFixedBreak.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyFixedBreak.fixBreak));
 
-                    string fixedBreakPostUrl = url + "api/v1/configuration/public/area_property";
-                    string fixedBreakPostData = "{{" +
-                        "\"name_en\":\"{0}\"," +
-                        "\"name_cn\":\"{1}\"," +
-                        "\"name_tw\":\"{2}\"," +
-                        "\"description\":\"{3}\"," +
-                        "\"format\":{4}," +
-                        "\"area_node_id\":{5}" +
-                        "}}";
-                    //对于群组来说，upper_id和area_node_id均固定
-                    fixedBreakPostData = string.Format(fixedBreakPostData, areaPropertyFixedBreak.name_en, areaPropertyFixedBreak.name_cn, areaPropertyFixedBreak.name_tw,
-                        areaPropertyFixedBreak.description, areaPropertyFixedBreak.format, areaPropertyFixedBreak.area_node_id);
-                    string fixedBreakPostResult = PostUrl(fixedBreakPostUrl, fixedBreakPostData);
-                    JObject joFixedBreakPost = (JObject)JsonConvert.DeserializeObject(fixedBreakPostResult);
-                    if (Convert.ToInt32(joFixedBreakPost["code"]) != 200)
-                    {
-                        flag = false;
+                        string fixedBreakPostUrl = url + "api/v1/configuration/public/area_property";
+                        string fixedBreakPostData = "{{" +
+                            "\"name_en\":\"{0}\"," +
+                            "\"name_cn\":\"{1}\"," +
+                            "\"name_tw\":\"{2}\"," +
+                            "\"description\":\"{3}\"," +
+                            "\"format\":{4}," +
+                            "\"area_node_id\":{5}" +
+                            "}}";
+                        //对于群组来说，upper_id和area_node_id均固定
+                        fixedBreakPostData = string.Format(fixedBreakPostData, areaPropertyFixedBreak.name_en, areaPropertyFixedBreak.name_cn, areaPropertyFixedBreak.name_tw,
+                            areaPropertyFixedBreak.description, areaPropertyFixedBreak.format, areaPropertyFixedBreak.area_node_id);
+                        string fixedBreakPostResult = PostUrl(fixedBreakPostUrl, fixedBreakPostData);
+                        JObject joFixedBreakPost = (JObject)JsonConvert.DeserializeObject(fixedBreakPostResult);
+                        if (Convert.ToInt32(joFixedBreakPost["code"]) != 200)
+                        {
+                            flag = false;
+                        }
                     }
+                    
                 }
 
                 //unfixed_break新增与修改
@@ -521,42 +610,45 @@ namespace MPMProject.Controllers
                 }
                 else
                 {//新增
-                    areaPropertyUnFixedBreak.name_cn = "非固定排休";
-                    areaPropertyUnFixedBreak.name_en = "unfixed_break";
-                    areaPropertyUnFixedBreak.name_tw = "非固定排休";
-                    areaPropertyUnFixedBreak.description = "非固定排休";
-                    areaPropertyUnFixedBreak.area_node_id = area_node_id;
+                    if (unfix_start_time[0] != "" || unfix_end_time[0] != "") {
+                        areaPropertyUnFixedBreak.name_cn = "非固定排休";
+                        areaPropertyUnFixedBreak.name_en = "unfixed_break";
+                        areaPropertyUnFixedBreak.name_tw = "非固定排休";
+                        areaPropertyUnFixedBreak.description = "非固定排休";
+                        areaPropertyUnFixedBreak.area_node_id = area_node_id;
 
-                    for (int i = 0; i < fix_start_time.Length; i++)
-                    {
-                        area_property.Day unFixedDay = new area_property.Day();
-                        unFixedDay.start = fix_start_time[i];
-                        unFixedDay.end = fix_end_time[i];
-                        unFixedRest.Add(unFixedDay);
-                    }
-                    area_property.FixBreak unFixBreak = new area_property.FixBreak();
-                    unFixBreak.rest = unFixedRest;
-                    areaPropertyUnFixedBreak.fixBreak = unFixBreak;
-                    areaPropertyUnFixedBreak.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyUnFixedBreak.fixBreak));
+                        for (int i = 0; i < unfix_start_time.Length; i++)
+                        {
+                            area_property.Day unFixedDay = new area_property.Day();
+                            unFixedDay.start = unfix_start_time[i];
+                            unFixedDay.end = unfix_end_time[i];
+                            unFixedRest.Add(unFixedDay);
+                        }
+                        area_property.FixBreak unFixBreak = new area_property.FixBreak();
+                        unFixBreak.rest = unFixedRest;
+                        areaPropertyUnFixedBreak.fixBreak = unFixBreak;
+                        areaPropertyUnFixedBreak.format = JsonConvert.SerializeObject(JsonConvert.SerializeObject(areaPropertyUnFixedBreak.fixBreak));
 
-                    string unFixedBreakPostUrl = url + "api/v1/configuration/public/area_property";
-                    string unFixedBreakPostData = "{{" +
-                        "\"name_en\":\"{0}\"," +
-                        "\"name_cn\":\"{1}\"," +
-                        "\"name_tw\":\"{2}\"," +
-                        "\"description\":\"{3}\"," +
-                        "\"format\":{4}," +
-                        "\"area_node_id\":{5}" +
-                        "}}";
-                    //对于群组来说，upper_id和area_node_id均固定
-                    unFixedBreakPostData = string.Format(unFixedBreakPostData, areaPropertyUnFixedBreak.name_en, areaPropertyUnFixedBreak.name_cn, areaPropertyUnFixedBreak.name_tw,
-                        areaPropertyUnFixedBreak.description, areaPropertyUnFixedBreak.format, areaPropertyUnFixedBreak.area_node_id);
-                    string unFixedBreakPostResult = PostUrl(unFixedBreakPostUrl, unFixedBreakPostData);
-                    JObject joUnFixedBreakPost = (JObject)JsonConvert.DeserializeObject(unFixedBreakPostResult);
-                    if (Convert.ToInt32(joUnFixedBreakPost["code"]) != 200)
-                    {
-                        flag = false;
+                        string unFixedBreakPostUrl = url + "api/v1/configuration/public/area_property";
+                        string unFixedBreakPostData = "{{" +
+                            "\"name_en\":\"{0}\"," +
+                            "\"name_cn\":\"{1}\"," +
+                            "\"name_tw\":\"{2}\"," +
+                            "\"description\":\"{3}\"," +
+                            "\"format\":{4}," +
+                            "\"area_node_id\":{5}" +
+                            "}}";
+                        //对于群组来说，upper_id和area_node_id均固定
+                        unFixedBreakPostData = string.Format(unFixedBreakPostData, areaPropertyUnFixedBreak.name_en, areaPropertyUnFixedBreak.name_cn, areaPropertyUnFixedBreak.name_tw,
+                            areaPropertyUnFixedBreak.description, areaPropertyUnFixedBreak.format, areaPropertyUnFixedBreak.area_node_id);
+                        string unFixedBreakPostResult = PostUrl(unFixedBreakPostUrl, unFixedBreakPostData);
+                        JObject joUnFixedBreakPost = (JObject)JsonConvert.DeserializeObject(unFixedBreakPostResult);
+                        if (Convert.ToInt32(joUnFixedBreakPost["code"]) != 200)
+                        {
+                            flag = false;
+                        }
                     }
+                    
                 }
 
                 if (flag)

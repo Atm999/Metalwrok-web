@@ -9,10 +9,10 @@
         setSortable($(".sortable"));
         setSelect2();
         $(".datetimepicker").datetimepicker({
-            format: 'yyyy-mm-dd hh:ii:ss',
+            format: 'yyyy-mm-dd hh:ii',
             language: 'zh-CN',
             autoclose: true,
-            forceParse: true
+            minuteStep: 1
         });
 
         $('.datepicker').datetimepicker({
@@ -20,25 +20,23 @@
             startView: 3,
             minView: 3,
             autoclose: true,
-            language: "zh-CN",
-            forceParse: true
+            language: "zh-CN"
         });
         $('.daypicker').datetimepicker({
             format: 'yyyy-mm-dd',
             startView: 2,
             minView: 2,
             autoclose: true,
-            language: "zh-CN",
-            forceParse: true
+            language: "zh-CN"
         });
         $(".timepicker").datetimepicker({
             language: 'zh-CN',
-            format: 'hh:ii:ss',
+            format: 'hh:ii',
             autoclose: true,
             startView: 1,
             minView: 0,
-            maxView: 0,
-            forceParse: true
+            maxView: 2,
+            minuteStep:1
         });
         $('.wysihtml5').wysihtml5();
         $('.dd').nestable();
