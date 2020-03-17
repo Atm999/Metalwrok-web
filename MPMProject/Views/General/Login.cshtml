@@ -28,7 +28,7 @@
                 if (userName != "" && passWord != "") {
                     $.ajax({
                         type: "POST",
-                        url: "/User/LoginHandle",
+                        url: "/General/LoginHandle",
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader("XSRF-TOKEN",
                                 $('input:hidden[name="__RequestVerificationToken"]').val());
