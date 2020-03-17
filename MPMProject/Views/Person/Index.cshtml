@@ -183,7 +183,7 @@
                                 $('#myEditModal').modal('hide');
                                 $('#table').bootstrapTable('refresh');
                             } else {
-                                toastr.error('执行失败!');
+                                toastr.error('执行失败!员工工号不允许重复');
                             }
                         }, error: function (msg) {
                             toastr.error('执行失败!');
@@ -202,7 +202,7 @@
                                 $('#myEditModal').modal('hide');
                                 $('#table').bootstrapTable('refresh');
                             } else {
-                                toastr.error('执行失败!');
+                                toastr.error('执行失败!员工工号不允许重复');
                             }
                         }, error: function (msg) {
                             toastr.error('执行失败!');

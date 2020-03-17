@@ -215,7 +215,7 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!当前虚拟线的预警类型已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -234,7 +234,7 @@
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!当前虚拟线的预警类型已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');

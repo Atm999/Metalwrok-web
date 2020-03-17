@@ -284,7 +284,7 @@
                             $("#wo").empty();
 
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!工单已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -305,7 +305,7 @@
                                getOptionWO();
                             $("#wo").empty();
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!工单已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');

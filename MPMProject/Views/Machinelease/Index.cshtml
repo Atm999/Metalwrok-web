@@ -201,7 +201,7 @@
                                 $('#myEditModal').modal('hide');
                                 $('#table').bootstrapTable('refresh');
                             } else {
-                                toastr.error('执行失败!');
+                                toastr.error('执行失败!一台设备只允许存在一种计算模式');
                             }
                         }, error: function (msg) {
                             toastr.error('执行失败!');
@@ -220,7 +220,7 @@
                                 $('#myEditModal').modal('hide');
                                 $('#table').bootstrapTable('refresh');
                             } else {
-                                toastr.error('执行失败!');
+                                toastr.error('执行失败!一台设备只允许存在一种计算模式');
                             }
                         }, error: function (msg) {
                             toastr.error('执行失败!');

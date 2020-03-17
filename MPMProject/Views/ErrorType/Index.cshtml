@@ -157,7 +157,7 @@
                             getOption();
                             $("#deptSelects").empty();
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!类别名称不允许重复');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -178,7 +178,7 @@
                             getOption();
                             $("#deptSelects").empty();
                         } else {
-                            toastr.error('执行失败!');
+                            toastr.error('执行失败!类别名称不允许重复');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
