@@ -11,7 +11,7 @@
         });
         $(function () {
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
+            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
             //父级名称下拉框
             GetFatherName("machineFatherSearch", "area_layer", 0);
             GetFatherName("machineFatherAdd", "area_layer", 0);
@@ -46,8 +46,18 @@
                     title: '描述'
                 }, {
                     field: 'actionEvent',
-                    title: '操作',
+                    title: '属性设置(班别,排休)',
                     formatter: groupActionFormatter,
+                    events: groupOperateEvents
+                }, {
+                    field: 'actionEvent',
+                    title: '设备绑定',
+                    formatter: groupActionFormatterB,
+                    events: groupOperateEvents
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: groupActionFormatters,
                     events: groupOperateEvents
                 }]
             });
@@ -125,10 +135,20 @@
                 }, {
                     field: 'description',
                     title: '描述'
+                },{
+                    field: 'actionEvent',
+                    title: '属性设置(班别,排休)',
+                    formatter: groupActionFormatter,
+                    events: groupOperateEvents
+                }, {
+                    field: 'actionEvent',
+                    title: '设备绑定',
+                    formatter: groupActionFormatterB,
+                    events: groupOperateEvents
                 }, {
                     field: 'actionEvent',
                     title: '操作',
-                    formatter: groupActionFormatter,
+                    formatter: groupActionFormatters,
                     events: groupOperateEvents
                 }]
             }); 
@@ -194,8 +214,13 @@
                     }
                 }, {
                     field: 'actionEvent',
-                    title: '操作',
+                    title: '标签点绑定',
                     formatter: machineActionFormatter,
+                    events: machineOperateEvents
+                }, {
+                    field: 'actionEvent',
+                    title: '操作',
+                    formatter: machineActionFormatters,
                     events: machineOperateEvents
                 }]
             });  
@@ -280,7 +305,23 @@
         function groupActionFormatter(value, row, index) {
             var result = "";
             result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
+            //result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+           // result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+           // result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+         function groupActionFormatterB(value, row, index) {
+            var result = "";
+           // result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
             result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+           // result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+           // result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+         function groupActionFormatters(value, row, index) {
+            var result = "";
+           // result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
+            //result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
             result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
             result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
@@ -820,6 +861,13 @@
         function machineActionFormatter(value, row, index) {
             var result = "";
             result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
+           // result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+           // result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+          function machineActionFormatters(value, row, index) {
+            var result = "";
+            //result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
             result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
