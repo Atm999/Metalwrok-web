@@ -21,4 +21,8 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class capacity_alertDto : capacity_alert
+    {
+        public notification_group notice_group { get; set; }
+    }
 }

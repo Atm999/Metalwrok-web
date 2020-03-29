@@ -16,6 +16,10 @@ namespace MPMProject.Controllers
         {
             return View();
         }
+        public IActionResult Indexs()
+        {
+            return View();
+        }
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/error_config_detail";

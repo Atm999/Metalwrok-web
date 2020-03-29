@@ -21,4 +21,9 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class quality_alertDto : quality_alert
+    {
+        public wo_config work_order { get; set; }
+        public notification_group notice_group { get; set; }
+    }
 }

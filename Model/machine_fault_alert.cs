@@ -21,4 +21,10 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class machine_fault_alertDto : machine_fault_alert
+    {
+        public error_type error_type { get; set; }
+        public error_type_detail error_type_detail { get; set; } 
+        public notification_group notice_group { get; set; }
+    }
 }

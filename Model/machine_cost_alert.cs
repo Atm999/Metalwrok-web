@@ -25,4 +25,9 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class machine_cost_alertDto : machine_cost_alert
+    {
+        public machine machine { get; set; }
+        public notification_group notice_group { get; set; }
+    }
 }

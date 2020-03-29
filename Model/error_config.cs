@@ -47,6 +47,10 @@ namespace Model
         /// 三级通知人员id
         /// </summary>
         public int level3_notification_group_id { get; set; }
+        /// <summary>
+        /// 执行逻辑  0--安灯逻辑  1--自定义有逻辑
+        /// </summary>
+        public int logic_type { get; set; }
 
     }
 }

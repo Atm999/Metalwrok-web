@@ -26,4 +26,9 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class machine_status_duration_alertDto : machine_status_duration_alert
+    {
+        public machine machine { get; set; }
+        public notification_group notice_group { get; set; }
+    }
 }

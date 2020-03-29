@@ -21,6 +21,57 @@ namespace MPMProject.Controllers
             string myurl = url + "api/v1/configuration/andon/utilization_rate_alert_detail";
             string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            var machineList = jo["data"].ToObject<IList<Model.utilization_rate_alertDto>>();
+
+            var purl = url + "api/v1/configuration/public/tag_extra";
+            var result1 = GetUrl(purl);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
+
+            var dat =
+                from p in
+                machineList
+                join
+                y in tag_info_extraList.Where(n => n.tag_type_sub_id == 15 || n.tag_type_sub_id == 16 || n.tag_type_sub_id == 17)
+                on p.machine_id equals y.target_id
+                into g
+                from o in g.DefaultIfEmpty()
+                select new
+                {
+                    p.id,
+                    p.machine_id,
+                    p.utilization_rate_type,
+                    p.notice_group_id,
+                    p.notice_type,
+                    p.maximum,
+                    p.minimum,
+                    p.enable,
+                    p.machine.name_cn,
+                    nname = p.notice_group.name_cn,
+                    o?.name,//o!=null?o.name:null
+                    o?.description,
+                    extraid = o?.id,
+                    o?.tag_type_sub_id
+                };
+            dat = dat.Where(tag_Info =>
+            {
+                if (tag_Info.tag_type_sub_id == null)
+                    return true; 
+                if (tag_Info.utilization_rate_type == 0)
+                {
+                    return tag_Info.tag_type_sub_id == 15;
+                }
+                else if (tag_Info.utilization_rate_type == 1)
+                {
+                    return tag_Info.tag_type_sub_id == 16;
+                }
+                else if (tag_Info.utilization_rate_type == 2)
+                {
+                    return tag_Info.tag_type_sub_id == 17;
+                }
+                else
+                    return true;
+            });
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -28,14 +79,59 @@ namespace MPMProject.Controllers
                     break;
                 case 400:
                     break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
+
             }
-            return Json(jo["data"]);
+            return Json(dat);
+        }
+        //Tag点修改/新增
+        public IActionResult UpdateTagInfo(tag_info_extra tag_Info)
+        {
+            if (tag_Info.utilization_rate_types == 0)
+            {
+                tag_Info.tag_type_sub_id = 15;
+            }
+            else if (tag_Info.utilization_rate_types == 1)
+            {
+                tag_Info.tag_type_sub_id = 16;
+            }
+            else if (tag_Info.utilization_rate_types == 2)
+            {
+                tag_Info.tag_type_sub_id = 17;
+            }
+            tag_Info.target_type = 0;
+            string tagInfoUrl = url + "api/v1/configuration/public/tag_extra";
+            int id = tag_Info.id;
+            //新增
+            if (id == 0)
+            {
+                var tagInfoPostData = JsonConvert.SerializeObject(tag_Info);
+                string tagInfoPostResult = PostUrl(tagInfoUrl, tagInfoPostData);
+                JObject joMachinePost = (JObject)JsonConvert.DeserializeObject(tagInfoPostResult);
+                if (Convert.ToInt32(joMachinePost["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }
+            else
+            {//修改
+                var tagInfoPostData = JsonConvert.SerializeObject(tag_Info);
+                string tagInfoPutResult = PutUrl(tagInfoUrl, tagInfoPostData);
+                JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(tagInfoPutResult);
+                if (Convert.ToInt32(joMachinePut["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+
+                else
+                {
+                    return Json("Fail");
+                }
+
+            }
         }
         public IActionResult Update([FromBody]utilization_rate_alert ec)
         {
@@ -94,7 +190,8 @@ namespace MPMProject.Controllers
                         break;
                 }
             }
-            else {
+            else
+            {
                 msg = "fail";
             }
             return Json(msg);

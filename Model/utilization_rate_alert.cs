@@ -30,4 +30,9 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class utilization_rate_alertDto : utilization_rate_alert
+    {
+        public machine machine { get; set; }
+        public notification_group notice_group { get; set; }
+    }
 }
