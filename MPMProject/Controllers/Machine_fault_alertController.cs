@@ -44,6 +44,7 @@ namespace MPMProject.Controllers
                     p.notice_group_id,
                     p.notice_type,
                     p.enable,
+                    p.error_type_detail_id,
                     nname = p.notice_group.name_cn,
                     o?.name,//o!=null?o.name:null
                     o?.description,
@@ -64,7 +65,7 @@ namespace MPMProject.Controllers
         public IActionResult UpdateTagInfo(tag_info_extra tag_Info)
         {
             tag_Info.tag_type_sub_id = 24;
-            tag_Info.target_type = 0;
+            tag_Info.target_type = 3;
             string tagInfoUrl = url + "api/v1/configuration/public/tag_extra";
             int id = tag_Info.id;
             //新增

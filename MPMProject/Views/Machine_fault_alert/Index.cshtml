@@ -136,7 +136,8 @@
                 if (row.extraid == null) {
                     document.getElementById('scadaId').value = "";
                     document.getElementById('name').value = "";
-                    document.getElementById('tagDescription').value= "";
+                    document.getElementById('tagDescription').value = "";
+
 
                 } else {
                        if (row.name != null) {
@@ -148,7 +149,7 @@
                 }
                 document.getElementById("tagDescription").value =row.description;
                 }
-               document.getElementById("machineId").value =row.machine_id;
+                document.getElementById("machineId").value = row.error_type_detail_id;
                 $('#myAddEditModal').modal('show');
             }
         };
@@ -507,7 +508,7 @@
                         <div class="modal-body">
                             <input class="span12" type="hidden" id="id" />
                             <input class="span12" type="hidden" id="tagId" />
-                            <input class="span12" type="hidden" id="machineId" value="@ViewBag.machine_id" />
+                            <input class="span12" type="hidden" id="machineId" />
                             <div class="control-group">
                                 <label class="control-label">Tag点名称(SCADA_ID:名称)</label>
                                 <div style="border: 2px dashed #b0adad;padding: 4px;">

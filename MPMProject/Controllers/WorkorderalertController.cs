@@ -20,6 +20,59 @@ namespace MPMProject.Controllers
             string myurl = url + "api/v1/configuration/andon/work_order_alert_detail";
             string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            var machineList = jo["data"].ToObject<IList<Model.work_order_alertDto>>();
+
+            var purl = url + "api/v1/configuration/public/tag_extra";
+            var result1 = GetUrl(purl);
+            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
+            var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
+
+            List<object> list = new List<object>();
+            foreach (var obj in machineList)
+            {
+                tag_info_extra tag_info = new tag_info_extra();
+                if (obj.alert_type == 0)
+                {
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 2 && x.target_id == obj.virtual_line_id && x.tag_type_sub_id == 19)
+                        .FirstOrDefault();
+                }
+                else if (obj.alert_type == 1)
+                {
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 2 && x.target_id == obj.virtual_line_id && x.tag_type_sub_id == 20)
+                        .FirstOrDefault();
+                }
+                else if (obj.alert_type == 2)
+                {
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 2 && x.target_id == obj.virtual_line_id && x.tag_type_sub_id == 21)
+                        .FirstOrDefault();
+                }
+                else if (obj.alert_type == 3)
+                {
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 2 && x.target_id == obj.virtual_line_id && x.tag_type_sub_id == 22)
+                        .FirstOrDefault();
+                }
+                object ob = new
+                {
+                    id = obj.id,
+                    virtual_line_id = obj.virtual_line_id,
+                    alert_type = obj.alert_type,
+                    notice_group_id = obj.notice_group,
+                    notice_type = obj.notice_type,
+                    enable = obj.enable,
+                    name_cn = obj.virtual_line.name_cn,
+                    nname = obj.notice_group.name_cn,
+                    name = tag_info?.name,
+                    description = tag_info?.description,
+                    extraid = tag_info?.id,
+                    tag_type_sub_id = tag_info?.tag_type_sub_id
+                };
+                list.Add(ob);
+            }
+
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -29,12 +82,63 @@ namespace MPMProject.Controllers
                     break;
                 case 410:
                     break;
-                case 411:
-                    break;
-                default:
-                    break;
+              
             }
-            return Json(jo["data"]);
+            return Json(list);
+        }
+        //Tag点修改/新增
+        public IActionResult UpdateTagInfo(tag_info_extra tag_Info)
+        {
+            if (tag_Info.utilization_rate_types == 0)
+            {
+                tag_Info.tag_type_sub_id = 19;
+            }
+            else if (tag_Info.utilization_rate_types == 1)
+            {
+                tag_Info.tag_type_sub_id = 20;
+            }
+            else if (tag_Info.utilization_rate_types == 2)
+            {
+                tag_Info.tag_type_sub_id =21;
+            }
+            else if (tag_Info.utilization_rate_types == 3)
+            {
+                tag_Info.tag_type_sub_id = 22;
+            }
+            tag_Info.target_type = 2;
+            string tagInfoUrl = url + "api/v1/configuration/public/tag_extra";
+            int id = tag_Info.id;
+            //新增
+            if (id == 0)
+            {
+                var tagInfoPostData = JsonConvert.SerializeObject(tag_Info);
+                string tagInfoPostResult = PostUrl(tagInfoUrl, tagInfoPostData);
+                JObject joMachinePost = (JObject)JsonConvert.DeserializeObject(tagInfoPostResult);
+                if (Convert.ToInt32(joMachinePost["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }
+            else
+            {//修改
+                var tagInfoPostData = JsonConvert.SerializeObject(tag_Info);
+                string tagInfoPutResult = PutUrl(tagInfoUrl, tagInfoPostData);
+                JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(tagInfoPutResult);
+                if (Convert.ToInt32(joMachinePut["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+
+                else
+                {
+                    return Json("Fail");
+                }
+
+            }
         }
         public IActionResult Update([FromBody]work_order_alert ec)
         {

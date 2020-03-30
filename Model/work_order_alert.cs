@@ -21,4 +21,9 @@ namespace Model
         public bool enable { get; set; }
        
     }
+    public class work_order_alertDto : work_order_alert
+    {
+        public virtual_line virtual_line { get; set; }
+        public notification_group notice_group { get; set; }
+    }
 }

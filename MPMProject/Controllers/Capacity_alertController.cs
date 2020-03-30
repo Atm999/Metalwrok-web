@@ -28,27 +28,58 @@ namespace MPMProject.Controllers
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
             var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
 
-            var dat =
-                  from p in
-                  machineList
-                  join
-                  y in tag_info_extraList.Where(n => n.tag_type_sub_id == 23 && n.target_id==1)
-                  on p.capacity equals y.target_id///????有问题的
-                  into g
-                  from o in g.DefaultIfEmpty()
-                  select new
-                  {
-                      p.id,
-                      p.date,
-                      p.capacity,
-                      p.notice_group_id,
-                      p.notice_type,
-                      p.enable,
-                      nname = p.notice_group.name_cn,
-                      o?.name,//o!=null?o.name:null
-                    o?.description,
-                      extraid = o?.id
-                  };
+            //var nurl = url + "api/v1/configuration/public/area_node";
+            //var nresult = GetUrl(nurl);
+            //JObject njo = (JObject)JsonConvert.DeserializeObject(nresult);
+            //var nodeList = njo["data"].ToObject<IList<Model.area_node>>();
+
+            //var datAreaNode = (from p in nodeList
+            //                   orderby p.id 
+            //                   select new { p.id, p.name_cn, p.name_en, p.name_tw, p.description,p.upper_id ,p.area_layer_id }).ToList();
+            //var dat =
+            //      from p in
+            //      machineList
+            //      join
+            //      y in tag_info_extraList.Where(n => n.tag_type_sub_id == 23 && n.target_type == 1)
+            //      on p.capacity equals y.target_id///????有问题的
+            //      into g
+            //      from o in g.DefaultIfEmpty()
+            //      select new
+            //      {
+            //          p.id,
+            //          p.date,
+            //          p.capacity,
+            //          p.notice_group_id,
+            //          p.notice_type,
+            //          p.enable,
+            //          nname = p.notice_group.name_cn,
+            //          o?.name,//o!=null?o.name:null
+            //          o?.description,
+            //          extraid = o?.id
+            //      };
+            List<object> list = new List<object>();
+            foreach (var p in machineList)
+            {
+                tag_info_extra o = new tag_info_extra();
+                    o = tag_info_extraList
+                        .Where(x => x.target_type == 1 && x.target_id == 0 && x.tag_type_sub_id == 23)
+                        .FirstOrDefault();
+              
+                object ob = new
+                {
+                    id=p.id,
+                    date= p.date,
+                    capacity=p.capacity,
+                    notice_group_id=p.notice_group_id,
+                    notice_type=p.notice_type,
+                    enable=p.enable,
+                    nname = p.notice_group.name_cn,
+                    name=o?.name,//o!=null?o.name:null
+                    description=o?.description,
+                    extraid = o?.id
+                };
+                list.Add(ob);
+            }
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -58,7 +89,7 @@ namespace MPMProject.Controllers
                     break;
 
             }
-            return Json(dat);
+            return Json(list);
         }
         //Tag点修改/新增
         public IActionResult UpdateTagInfo(tag_info_extra tag_Info)

@@ -28,50 +28,91 @@ namespace MPMProject.Controllers
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
             var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
 
-            var dat =
-                from p in
-                machineList
-                join
-                y in tag_info_extraList.Where(n => n.tag_type_sub_id == 15 || n.tag_type_sub_id == 16 || n.tag_type_sub_id == 17)
-                on p.machine_id equals y.target_id
-                into g
-                from o in g.DefaultIfEmpty()
-                select new
-                {
-                    p.id,
-                    p.machine_id,
-                    p.utilization_rate_type,
-                    p.notice_group_id,
-                    p.notice_type,
-                    p.maximum,
-                    p.minimum,
-                    p.enable,
-                    p.machine.name_cn,
-                    nname = p.notice_group.name_cn,
-                    o?.name,//o!=null?o.name:null
-                    o?.description,
-                    extraid = o?.id,
-                    o?.tag_type_sub_id
-                };
-            dat = dat.Where(tag_Info =>
+            List<object> list = new List<object>();
+            foreach (var obj in machineList)
             {
-                if (tag_Info.tag_type_sub_id == null)
-                    return true; 
-                if (tag_Info.utilization_rate_type == 0)
+                tag_info_extra tag_info = new tag_info_extra();
+                if (obj.utilization_rate_type == 0)
                 {
-                    return tag_Info.tag_type_sub_id == 15;
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 0 && x.target_id == obj.machine_id && x.tag_type_sub_id == 15)
+                        .FirstOrDefault();
                 }
-                else if (tag_Info.utilization_rate_type == 1)
+                else if (obj.utilization_rate_type == 1)
                 {
-                    return tag_Info.tag_type_sub_id == 16;
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 0 && x.target_id == obj.machine_id && x.tag_type_sub_id == 16)
+                        .FirstOrDefault();
                 }
-                else if (tag_Info.utilization_rate_type == 2)
+                else if (obj.utilization_rate_type == 2)
                 {
-                    return tag_Info.tag_type_sub_id == 17;
+                    tag_info = tag_info_extraList
+                        .Where(x => x.target_type == 0 && x.target_id == obj.machine_id && x.tag_type_sub_id == 17)
+                        .FirstOrDefault();
                 }
-                else
-                    return true;
-            });
+                object ob = new
+                {
+                    id = obj.id,
+                    machine_id = obj.machine_id,
+                    utilization_rate_type = obj.utilization_rate_type,
+                    notice_group_id = obj.notice_group,
+                    notice_type = obj.notice_type,
+                    maximum = obj.maximum,
+                    minimum = obj.minimum,
+                    enable = obj.enable,
+                    name_cn = obj.machine.name_cn,
+                    nname = obj.notice_group.name_cn,
+                    name = tag_info?.name,
+                    description = tag_info?.description,
+                    extraid = tag_info?.id,
+                    tag_type_sub_id = tag_info?.tag_type_sub_id
+                };
+                list.Add(ob);
+            }
+            //    var dat =
+            //        from p in
+            //        machineList
+            //        join
+            //        y in tag_info_extraList.Where(n => n.tag_type_sub_id == 15 || n.tag_type_sub_id == 16 || n.tag_type_sub_id == 17)
+            //        on p.machine_id equals y.target_id
+            //        into g
+            //        from o in g.DefaultIfEmpty()
+            //        select new
+            //        {
+            //            p.id,
+            //            p.machine_id,
+            //            p.utilization_rate_type,
+            //            p.notice_group_id,
+            //            p.notice_type,
+            //            p.maximum,
+            //            p.minimum,
+            //            p.enable,
+            //            p.machine.name_cn,
+            //            nname = p.notice_group.name_cn,
+            //            o?.name,//o!=null?o.name:null
+            //            o?.description,
+            //            extraid = o?.id,
+            //            o?.tag_type_sub_id
+            //        };
+            //    dat = dat.Where(tag_Info =>
+            //    {
+            //        if (tag_Info.tag_type_sub_id == null)
+            //            return true; 
+            //        if (tag_Info.utilization_rate_type == 0)
+            //        {
+            //            return tag_Info.tag_type_sub_id == 15;
+            //        }
+            //        else if (tag_Info.utilization_rate_type == 1)
+            //        {
+            //            return tag_Info.tag_type_sub_id == 16;
+            //        }
+            //        else if (tag_Info.utilization_rate_type == 2)
+            //        {
+            //            return tag_Info.tag_type_sub_id == 17;
+            //        }
+            //        else
+            //            return true;
+            //    });
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -81,7 +122,7 @@ namespace MPMProject.Controllers
                     break;
 
             }
-            return Json(dat);
+            return Json(list);
         }
         //Tag点修改/新增
         public IActionResult UpdateTagInfo(tag_info_extra tag_Info)

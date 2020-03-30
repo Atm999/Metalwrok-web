@@ -31,7 +31,7 @@ namespace MPMProject.Controllers
                 from p in
                 machineList
                 join
-                y in tag_info_extraList.Where(n => n.tag_type_sub_id == 24)
+                y in tag_info_extraList.Where(n => n.tag_type_sub_id == 25)
                 on p.work_order_id equals y.target_id
                 into g
                 from o in g.DefaultIfEmpty()
@@ -43,6 +43,7 @@ namespace MPMProject.Controllers
                     p.defective_number,
                     p.notice_group_id,
                     p.notice_type,
+                    p.work_order_id,
                     p.enable,
                     nname = p.notice_group.name_cn,
                     o?.name,//o!=null?o.name:null
@@ -64,7 +65,7 @@ namespace MPMProject.Controllers
         public IActionResult UpdateTagInfo(tag_info_extra tag_Info)
         {
             tag_Info.tag_type_sub_id = 25;
-            tag_Info.target_type = 0;
+            tag_Info.target_type = 4;
             string tagInfoUrl = url + "api/v1/configuration/public/tag_extra";
             int id = tag_Info.id;
             //新增
