@@ -15,10 +15,12 @@
                 dataType: "json",
                 url: "/StatusSetting/Getdateformula",
                 success: function (data) {
-                    oldid = data[0].id;
-                    oldformula = data[0].formula;
-                    document.getElementById('oldformula').innerHTML = oldformula;
-                    document.getElementById('oldid').innerHTML = oldid;
+                    if (data.length > 0) {
+                        oldid = data[0].id;
+                        oldformula = data[0].formula;
+                        document.getElementById('oldformula').innerHTML = oldformula;
+                        document.getElementById('oldid').innerHTML = oldid;
+                    }
                 }
             });
 
@@ -208,14 +210,13 @@
 
                         } else {
                             var set = {
-                                id: id,
+                                id:id,
                                 formula: str
                             };
                             $.ajax({
                                 type: "POST",
                                 url: "/StatusSetting/Updateformula",
                                 data: JSON.stringify(set),
-                                dataType: "json",
                                 contentType: "application/json;charset=utf-8",
                                 success: function (msg) {
                                     if (msg == "Success") {
@@ -228,10 +229,13 @@
                                             dataType: "json",
                                             url: "/StatusSetting/Getdateformula",
                                             success: function (data) {
+                                             
                                                 oldid = data[0].id;
                                                 oldformula = data[0].formula;
                                                 document.getElementById('oldformula').innerHTML = oldformula;
                                                 document.getElementById('oldid').innerHTML = oldid;
+                                             
+                                                
                                             }
                                         });
 
