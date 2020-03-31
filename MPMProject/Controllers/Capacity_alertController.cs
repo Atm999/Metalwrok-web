@@ -58,24 +58,24 @@ namespace MPMProject.Controllers
             //          extraid = o?.id
             //      };
             List<object> list = new List<object>();
+
+            tag_info_extra o = new tag_info_extra();
+            o = tag_info_extraList
+                .Where(x => x.target_type == 1 && x.target_id == 0 && x.tag_type_sub_id == 23)
+                .FirstOrDefault();
             foreach (var p in machineList)
             {
-                tag_info_extra o = new tag_info_extra();
-                    o = tag_info_extraList
-                        .Where(x => x.target_type == 1 && x.target_id == 0 && x.tag_type_sub_id == 23)
-                        .FirstOrDefault();
-              
                 object ob = new
                 {
-                    id=p.id,
-                    date= p.date,
-                    capacity=p.capacity,
-                    notice_group_id=p.notice_group_id,
-                    notice_type=p.notice_type,
-                    enable=p.enable,
+                    p.id,
+                    p.date,
+                    p.capacity,
+                    p.notice_group_id,
+                    p.notice_type,
+                    p.enable,
                     nname = p.notice_group.name_cn,
-                    name=o?.name,//o!=null?o.name:null
-                    description=o?.description,
+                    o?.name,//o!=null?o.name:null
+                    o?.description,
                     extraid = o?.id
                 };
                 list.Add(ob);
