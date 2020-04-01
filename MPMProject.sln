@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPMProject", "MPMProject\MPMProject.csproj", "{BB84525A-AA0A-48EF-B7E5-73782514E8E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPMProject", "MPMProject\MPMProject.csproj", "{BB84525A-AA0A-48EF-B7E5-73782514E8E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{D3F559F1-C34D-43CD-9BAC-536D00E418F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{D3F559F1-C34D-43CD-9BAC-536D00E418F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wise_Paas", "..\WebApplication1\WebApplication1\wise_paas_sso\Wise_Paas.csproj", "{FF52107B-B051-4A0B-BD1F-49D365CDD501}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF52107B-B051-4A0B-BD1F-49D365CDD501}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF52107B-B051-4A0B-BD1F-49D365CDD501}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF52107B-B051-4A0B-BD1F-49D365CDD501}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF52107B-B051-4A0B-BD1F-49D365CDD501}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

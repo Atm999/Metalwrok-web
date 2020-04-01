@@ -1,7 +1,7 @@
-﻿{
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:45443",
       "sslPort": 44316
@@ -12,16 +12,23 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "namespace": "metalwork",
+        "cluster": "eks005",
+        "datacenter": "hz",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ENSAAS_DOMAIN": "localhost",
+        "appID": "7ZFTRaJlkSWSKnA5FME3CuXqrt-ZUO9X-1585550289",
+        "workspace": "ccf46860-1052-4bb8-b8d5-3ddccc6efe6b",
+        "SSO_URL": "https://api-sso-ensaas.hz.wise-paas.com.cn/v4.0"
       }
     },
     "MPMProject": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }

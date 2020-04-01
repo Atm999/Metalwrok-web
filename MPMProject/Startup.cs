@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Model;
 using MPMProject.Controllers;
+using Wise_Paas.models;
+using Wise_Pass;
 
 namespace MPMProject
 {
@@ -22,10 +24,12 @@ namespace MPMProject
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
             try
             {
-                BaseController.url= Configuration.GetValue<string>("APIUrl");
+                EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
+                BaseController.url = "https://api-ifactory-metalwork-" +environmentInfo.cluster+"."+ environmentInfo.ensaas_domain;
+                //BaseController.url= Configuration.GetValue<string>("APIUrl");
+                //BaseController.url= "https://localhost:5001/";
             }
             catch (Exception ex)
             {
@@ -114,7 +118,7 @@ namespace MPMProject
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-
+            app.UseMiddleware(typeof(MiddleWare));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
