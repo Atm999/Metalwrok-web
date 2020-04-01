@@ -8,10 +8,12 @@
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
         getOption();
+        getOptionmachinestatus();
         getOptiongroup();
         $(document).ready(function () {
             $("#machine").select2();
             $("#machine_id").select2();
+            $("#machine_status").select2();
             $("#notice_group_id").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
 
@@ -351,6 +353,18 @@
                 }
             });
         }
+        function getOptionmachinestatus() {
+            $.ajax({
+                type: "get",
+                url: '/Machine_status_alert/Getmachinestatus',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machine_status").append('<option  value=' + data[i].status_name + '>' + data[i].status_name + '</option>');
+                    }
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -425,10 +439,16 @@
                                 <label class="control-label">状态</label>
                                 <select class="select2 span12" id="machine_status" name="machine_status" style="width:100%">
                                     <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            @*<div class="control-group">
+                                <label class="control-label">状态</label>
+                                <select class="select2 span12" id="machine_status" name="machine_status" style="width:100%">
+                                    <option value="0">请选择</option>
                                     <option value="Run">Run</option>
                                     <option value="Error">Error</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="control-group">
                                 <label class="control-label">通知方式</label>
                                 <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
