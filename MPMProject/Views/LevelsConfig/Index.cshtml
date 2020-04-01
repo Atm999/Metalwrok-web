@@ -45,17 +45,17 @@
                     field: 'description',
                     title: '描述'
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEventA',
                     title: '属性设置(班别,排休)',
-                    formatter: groupActionFormatter,
+                    formatter: groupActionFormatterA,
                     events: groupOperateEvents
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEventB',
                     title: '设备绑定',
                     formatter: groupActionFormatterB,
                     events: groupOperateEvents
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEvents',
                     title: '操作',
                     formatter: groupActionFormatters,
                     events: groupOperateEvents
@@ -136,17 +136,17 @@
                     field: 'description',
                     title: '描述'
                 },{
-                    field: 'actionEvent',
+                    field: 'actionEventA',
                     title: '属性设置(班别,排休)',
-                    formatter: groupActionFormatter,
+                    formatter: groupActionFormatterA,
                     events: groupOperateEvents
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEventB',
                     title: '设备绑定',
                     formatter: groupActionFormatterB,
                     events: groupOperateEvents
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEvents',
                     title: '操作',
                     formatter: groupActionFormatters,
                     events: groupOperateEvents
@@ -213,12 +213,12 @@
                             }
                     }
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEventA',
                     title: '标签点绑定',
-                    formatter: machineActionFormatter,
+                    formatter: machineActionFormatterA,
                     events: machineOperateEvents
                 }, {
-                    field: 'actionEvent',
+                    field: 'actionEvents',
                     title: '操作',
                     formatter: machineActionFormatters,
                     events: machineOperateEvents
@@ -302,30 +302,25 @@
         }
 
         //群组及层级的操作栏格式化
-        function groupActionFormatter(value, row, index) {
+        function groupActionFormatterA(value, row, index) {
             var result = "";
-            result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
-            //result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-           // result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-           // result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a id='settingGroup' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
             return result;
         }
-         function groupActionFormatterB(value, row, index) {
+        function groupActionFormatterB(value, row, index) {
             var result = "";
-           // result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
-            result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-           // result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-           // result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a id='bindingGroup' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
             return result;
         }
-         function groupActionFormatters(value, row, index) {
+        function groupActionFormatters(value, row, index) {
             var result = "";
            // result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
             //result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-            result += "<a id='editGroup' href='javascript:;' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a id='deleteGroup' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a id='editGroup' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a id='deleteGroup' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
+
         //群组事件操作
         window.groupOperateEvents = {
             //属性设置
@@ -370,9 +365,9 @@
                                 document.getElementById('day_start_time').value = msg["shift"]["day"]["start"];
                                 document.getElementById('day_end_time').value = msg["shift"]["day"]["end"];
                                 document.getElementById('night_start_time').value = msg["shift"]["night"]["start"];
-                                document.getElementById('night_end_time').value = msg["shift"]["night"]["end"]; 
-                            }      
-                        } 
+                                document.getElementById('night_end_time').value = msg["shift"]["night"]["end"];
+                            }
+                        }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
                     }
@@ -858,7 +853,7 @@
          * 设备级操作
          */
         //设备操作栏的格式化
-        function machineActionFormatter(value, row, index) {
+        function machineActionFormatterA(value, row, index) {
             var result = "";
             result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
            // result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
@@ -868,8 +863,8 @@
           function machineActionFormatters(value, row, index) {
             var result = "";
             //result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
-            result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a id='machineEdit' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a id='machineDelete' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
         //Tag点绑定，设备编辑，设备删除
