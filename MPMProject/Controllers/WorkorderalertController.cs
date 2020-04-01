@@ -57,18 +57,18 @@ namespace MPMProject.Controllers
                 }
                 object ob = new
                 {
-                    id = obj.id,
-                    virtual_line_id = obj.virtual_line_id,
-                    alert_type = obj.alert_type,
-                    notice_group_id = obj.notice_group,
-                    notice_type = obj.notice_type,
-                    enable = obj.enable,
-                    name_cn = obj.virtual_line.name_cn,
+                    obj.id,
+                    obj.virtual_line_id,
+                    obj.alert_type,
+                    obj.notice_group_id,
+                    obj.notice_type,
+                    obj.enable,
+                    obj.virtual_line.name_cn,
                     nname = obj.notice_group.name_cn,
-                    name = tag_info?.name,
-                    description = tag_info?.description,
+                    tag_info?.name,
+                    tag_info?.description,
                     extraid = tag_info?.id,
-                    tag_type_sub_id = tag_info?.tag_type_sub_id
+                    tag_info?.tag_type_sub_id
                 };
                 list.Add(ob);
             }

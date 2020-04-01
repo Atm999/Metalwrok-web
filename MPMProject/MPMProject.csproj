@@ -42,7 +42,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebApplication1\WebApplication1\wise_paas_sso\Wise_Paas.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
@@ -51,5 +50,15 @@
     <Folder Include="wwwroot\Files\Files\" />
     <Folder Include="wwwroot\grafanaUIframe\loginSpecial\images\" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Wise_Paas">
+      <HintPath>..\Wise_Paas.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

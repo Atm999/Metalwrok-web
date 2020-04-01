@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Model;
 using Wise_Paas;
-using Wise_Pass;
 
 namespace MPMProject.Controllers
 {

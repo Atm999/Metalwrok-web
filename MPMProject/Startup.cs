@@ -27,9 +27,9 @@ namespace MPMProject
             try
             {
                 EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
-                BaseController.url = "https://api-ifactory-metalwork-" +environmentInfo.cluster+"."+ environmentInfo.ensaas_domain;
-                //BaseController.url= Configuration.GetValue<string>("APIUrl");
-                //BaseController.url= "https://localhost:5001/";
+                //BaseController.url = "https://api-ifactory-metalwork-" +environmentInfo.cluster+"."+ environmentInfo.ensaas_domain;
+                BaseController.url = Configuration.GetValue<string>("APIUrl");
+                //BaseController.url = "https://localhost:5001/";
             }
             catch (Exception ex)
             {

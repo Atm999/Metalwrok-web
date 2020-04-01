@@ -20,15 +20,15 @@ namespace MPMProject
         {
             try
             {
-                if (context.Request.Path.Value != "/General/LoginHandle")
-                {
-                    bool re = Integration.CheckRole(context, "Metalwork");
-                    //如果没有权限
-                    if (!re)
-                    {
-                        context.Request.Path = "/General/Login";
-                    }
-                }
+                //if (context.Request.Path.Value != "/General/LoginHandle")
+                //{
+                //    bool re = Integration.CheckRole(context, "Metalwork");
+                //    //如果没有权限
+                //    if (!re)
+                //    {
+                //        context.Request.Path = "/General/Login";
+                //    }
+                //}
                 await next(context);
             }
             catch (Exception ex)
