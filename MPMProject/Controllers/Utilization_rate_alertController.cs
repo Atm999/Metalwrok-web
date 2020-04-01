@@ -69,50 +69,6 @@ namespace MPMProject.Controllers
                 };
                 list.Add(ob);
             }
-            //    var dat =
-            //        from p in
-            //        machineList
-            //        join
-            //        y in tag_info_extraList.Where(n => n.tag_type_sub_id == 15 || n.tag_type_sub_id == 16 || n.tag_type_sub_id == 17)
-            //        on p.machine_id equals y.target_id
-            //        into g
-            //        from o in g.DefaultIfEmpty()
-            //        select new
-            //        {
-            //            p.id,
-            //            p.machine_id,
-            //            p.utilization_rate_type,
-            //            p.notice_group_id,
-            //            p.notice_type,
-            //            p.maximum,
-            //            p.minimum,
-            //            p.enable,
-            //            p.machine.name_cn,
-            //            nname = p.notice_group.name_cn,
-            //            o?.name,//o!=null?o.name:null
-            //            o?.description,
-            //            extraid = o?.id,
-            //            o?.tag_type_sub_id
-            //        };
-            //    dat = dat.Where(tag_Info =>
-            //    {
-            //        if (tag_Info.tag_type_sub_id == null)
-            //            return true; 
-            //        if (tag_Info.utilization_rate_type == 0)
-            //        {
-            //            return tag_Info.tag_type_sub_id == 15;
-            //        }
-            //        else if (tag_Info.utilization_rate_type == 1)
-            //        {
-            //            return tag_Info.tag_type_sub_id == 16;
-            //        }
-            //        else if (tag_Info.utilization_rate_type == 2)
-            //        {
-            //            return tag_Info.tag_type_sub_id == 17;
-            //        }
-            //        else
-            //            return true;
-            //    });
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
@@ -120,7 +76,6 @@ namespace MPMProject.Controllers
                     break;
                 case 400:
                     break;
-
             }
             return Json(list);
         }

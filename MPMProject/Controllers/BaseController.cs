@@ -9,35 +9,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Model;
+using Wise_Paas;
+using Wise_Pass;
 
 namespace MPMProject.Controllers
 {
     public class BaseController : Controller
     {
         public static string url = "";
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            try
-            {
-                return;
+        //public override void OnActionExecuting(ActionExecutingContext filterContext)
+        //{
+        //    try
+        //    {
+        //        return;
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            base.OnActionExecuting(filterContext);
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //    base.OnActionExecuting(filterContext);
+        //}
 
-        public override void OnActionExecuted(ActionExecutedContext context)
-        {
-            base.OnActionExecuted(context);
-        }
+        //public override void OnActionExecuted(ActionExecutedContext context)
+        //{
+        //    base.OnActionExecuted(context);
+        //}
 
-        public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-        {
-            return base.OnActionExecutionAsync(context, next);
-        }
+        //public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        //{
+        //    return base.OnActionExecutionAsync(context, next);
+        //}
         /// <summary>
         /// http post方法
         /// </summary>
@@ -53,7 +55,13 @@ namespace MPMProject.Controllers
                 req.Method = "POST";
                 req.Timeout = 80000;
                 req.ContentType = "application/json";
-                //req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                string token =  Cookies.GetEIToken(HttpContext);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    string authorization = "{0} {1}";
+                    authorization = string.Format(authorization, "Bearer", token);
+                    req.Headers.Add("Authorization", authorization);
+                }
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 req.ContentLength = data.Length;
                 using (Stream reqStream = req.GetRequestStream())
@@ -84,6 +92,13 @@ namespace MPMProject.Controllers
             string result = "";
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.Method = "POST";
+            string token = Cookies.GetEIToken(HttpContext);
+            if (!string.IsNullOrEmpty(token))
+            {
+                string authorization = "{0} {1}";
+                authorization = string.Format(authorization, "Bearer", token);
+                req.Headers.Add("Authorization", authorization);
+            }
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
             Stream stream = resp.GetResponseStream();
             //获取内容
@@ -100,7 +115,7 @@ namespace MPMProject.Controllers
             /// <param name="postData">抛送数据</param>
             /// <returns></returns>
             public string PutUrl(string url, string postData)
-        {
+            {
             string result = "";
             try
             {
@@ -109,6 +124,13 @@ namespace MPMProject.Controllers
                 req.Timeout = 80000;
                 req.ContentType = "application/json";
                 req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                string token = Cookies.GetEIToken(HttpContext);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    string authorization = "{0} {1}";
+                    authorization = string.Format(authorization, "Bearer", token);
+                    req.Headers.Add("Authorization", authorization);
+                }
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 req.ContentLength = data.Length;
                 using (Stream reqStream = req.GetRequestStream())
@@ -150,6 +172,13 @@ namespace MPMProject.Controllers
                 req.Method = "GET";
                 req.ContentType = "text/html;charset=UTF-8";
                 req.Timeout = 80000;
+                string token = Cookies.GetEIToken(HttpContext);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    string authorization = "{0} {1}";
+                    authorization = string.Format(authorization, "Bearer", token);
+                    req.Headers.Add("Authorization", authorization);
+                }
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 Stream myResponseStream = resp.GetResponseStream();
                 StreamReader reader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
@@ -180,6 +209,13 @@ namespace MPMProject.Controllers
                 req.Method = "Delete";
                 req.ContentType = "text/html;charset=UTF-8";
                 req.Timeout = 80000;
+                string token = Cookies.GetEIToken(HttpContext);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    string authorization = "{0} {1}";
+                    authorization = string.Format(authorization, "Bearer", token);
+                    req.Headers.Add("Authorization", authorization);
+                }
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 Stream myResponseStream = resp.GetResponseStream();
                 StreamReader reader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
