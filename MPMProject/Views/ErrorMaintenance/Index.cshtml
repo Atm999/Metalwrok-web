@@ -10,7 +10,7 @@
         getOption();
           getOptionWO();
         getOptionError();
-        getOptionErrorDetail();
+        //getOptionErrorDetail();
         $(document).ready(function () {
             $("#machine_name").select2();
             $("#error_type_name").select2();
@@ -128,6 +128,22 @@
                     events: operateEvents
                 }]
             });
+
+             $("#error_type_name").select2();
+            $("#error_type_name").on("select2:select", function () {
+                var typeid = $(this).val();
+                $.ajax({
+                    type: "get",
+                    url: '/ErrorMaintenance/Getdetail?typeid=' + typeid,
+                    async: true,
+                    success: function (data) {
+                         $("#error_type_detail_name").empty();
+                        for (var i = 0; i < data.length; i++) {
+                        $("#error_type_detail_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+                    }
+                    }
+                });
+            });
         });
 
         //操作栏的格式化
@@ -143,8 +159,10 @@
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
                  document.getElementById("error_config_id").value = row.error_config_id;
-                 $("#error_type_name").attr('value', row.error_type_name);
-                $("#error_type_name").select2(); error_type_detail_name
+                // $("#error_type_name").attr('value', row.error_type_name);
+                //$("#error_type_name").select2(); 
+                $("#error_type_name").attr('text', row.error_type_name);
+                $("#error_type_name").select2(); 
                   $("#error_type_detail_name").attr('value', row.error_type_detail_name);
                 $("#error_type_detail_name").select2();
                 document.getElementById("defectives_count").value = row.defectives_count;
@@ -185,7 +203,8 @@
         function finish() {
             var id = $('#id').val();
             var error_config_id = $('#error_config_id').val();
-            var error_type_name = $('#error_type_name').val();
+          //  var error_type_name = $('#error_type_name').val();
+            var error_type_name=$("#error_type_name").find("option:selected").text();
             var error_type_detail_name = $('#error_type_detail_name').val();
             var defectives_count = $('#defectives_count').val();
             var description = $('#description').val();
@@ -285,24 +304,24 @@
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        $("#error_type_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+                        $("#error_type_name").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                          $("#error_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
         }
-        function getOptionErrorDetail() {
-            $.ajax({
-                type: "get",
-                url: '/ErrorMaintenance/Geterrordetail',
-                async: true,
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#error_type_detail_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
-                    }
-                }
-            });
-        }
+        //function getOptionErrorDetail() {
+        //    $.ajax({
+        //        type: "get",
+        //        url: '/ErrorMaintenance/Geterrordetail',
+        //        async: true,
+        //        success: function (data) {
+        //            for (var i = 0; i < data.length; i++) {
+        //                $("#error_type_detail_name").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+        //            }
+        //        }
+        //    });
+        //}
 
     </script>
 </head>
@@ -387,6 +406,7 @@
                                     <option value="0">请选择</option>
                                 </select>
                             </div>
+
                             <div class="control-group">
                                 <label class="control-label">异常代码说明</label>
                                 <select class="select2 span12" id="error_type_detail_name" style="width:100%">

@@ -146,5 +146,29 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
+
+        public JsonResult Getdetail(int typeid)
+        {
+            var purl = url + "api/v1/configuration/andon/error_type_detail";
+            var result1 = GetUrl(purl);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+            var list = jo["data"].ToObject<IList<error_type_detail>>();
+            var data = list.Where(p => p.error_type_id == typeid);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json(data);
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json(data);
+        }
     }
 }
