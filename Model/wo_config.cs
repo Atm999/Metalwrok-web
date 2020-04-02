@@ -49,7 +49,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-       public DateTime create_time { get; set; }
+       public DateTime? create_time { get; set; }
         public class woVirtualLine : wo_config
         {
             public IList<virtual_line> virtual_Line { get; set; }

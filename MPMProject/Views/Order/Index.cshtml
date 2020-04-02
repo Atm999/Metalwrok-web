@@ -90,13 +90,16 @@
                     field: 'create_time',
                         title: '日期',
                      formatter: function (value, row, index)
-                    {
-                        var start_time = row.create_time.toString();
+                     {
+                         if (value != null) {
+                            var start_time = row.create_time.toString();
                           if (start_time == "0001-01-01T08:00:00+08:00") {
                               return "--"
                           }  else {
                               return getLocalDateTime(row.create_time);
                           }
+                         }
+                      
                       
                  },
                 }, {

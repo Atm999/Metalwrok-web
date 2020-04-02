@@ -39,7 +39,7 @@ namespace Model
         /// <summary>
         /// 开始时间
         /// </summary>
-        public DateTime start_time { get; set; }
+        public DateTime ? start_time { get; set; }
         /// <summary>
         /// 替代者
         /// </summary>
@@ -47,7 +47,7 @@ namespace Model
         /// <summary>
         /// 签到时间
         /// </summary>
-        public DateTime arrival_time { get; set; }
+        public DateTime ? arrival_time { get; set; }
         /// <summary>
         /// 异常类型名称
         /// </summary>
@@ -59,7 +59,7 @@ namespace Model
         /// <summary>
         /// 解除时间
         /// </summary>
-        public DateTime release_time { get; set; }
+        public DateTime ? release_time { get; set; }
 
         public string name { get; set; }
 
