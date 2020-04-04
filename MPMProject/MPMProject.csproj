@@ -42,7 +42,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebApplication1\WebApplication1\wise_paas_sso\Wise_Paas.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
@@ -50,6 +49,13 @@
   <ItemGroup>
     <Folder Include="wwwroot\Files\Files\" />
     <Folder Include="wwwroot\grafanaUIframe\loginSpecial\images\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Wise_Paas">
+      <HintPath>..\..\WebApplication1\WebApplication1\wise_paas_sso\bin\Release\netstandard2.0\Wise_Paas.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

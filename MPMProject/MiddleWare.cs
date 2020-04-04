@@ -43,7 +43,6 @@ namespace MPMProject
             {
                 return;
             }
-
             await WriteExceptionAsync(context, exception).ConfigureAwait(false);
         }
 

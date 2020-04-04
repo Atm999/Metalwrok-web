@@ -17,29 +17,6 @@ namespace MPMProject.Controllers
     public class BaseController : Controller
     {
         public static string url = "";
-        //public override void OnActionExecuting(ActionExecutingContext filterContext)
-        //{
-        //    try
-        //    {
-        //        return;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //    base.OnActionExecuting(filterContext);
-        //}
-
-        //public override void OnActionExecuted(ActionExecutedContext context)
-        //{
-        //    base.OnActionExecuted(context);
-        //}
-
-        //public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-        //{
-        //    return base.OnActionExecutionAsync(context, next);
-        //}
         /// <summary>
         /// http post方法
         /// </summary>

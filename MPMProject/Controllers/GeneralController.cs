@@ -43,7 +43,7 @@ namespace MPMProject.Controllers
         public IActionResult Logout()
         {
             Integration.Logout(HttpContext);
-            return View("Views/User/logout.cshtml");
+            return RedirectToAction("index", "General");
         }
 
         /// <summary>

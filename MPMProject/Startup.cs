@@ -21,13 +21,27 @@ namespace MPMProject
 {
     public class Startup
     {
+        public bool IsCloud = true;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             try
             {
                 EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
-                BaseController.url = "https://api-ifactory-metalwork-" +environmentInfo.cluster+"."+ environmentInfo.ensaas_domain;
+                //EnSaaS 4.0 环境
+                if (environmentInfo.cluster != null)
+                {
+                    BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
+                }
+                //docker 环境
+                else
+                {
+                    IsCloud = false;
+                    BaseController.url = "http://ifactory_metalwork-api:80/";
+                }
+
+
+                //BaseController.url = "https://api-ifactory-mw-"+environmentInfo.@namespace+"-"+environmentInfo.cluster+"."+ environmentInfo.ensaas_domain+"/";
                 //BaseController.url= Configuration.GetValue<string>("APIUrl");
                 //BaseController.url= "https://localhost:5001/";
             }
@@ -118,7 +132,9 @@ namespace MPMProject
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseMiddleware(typeof(MiddleWare));
+            if (IsCloud)
+                //只有是云端环境才需要启动权限中间件
+                app.UseMiddleware(typeof(MiddleWare));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
