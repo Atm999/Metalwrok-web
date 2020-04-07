@@ -128,10 +128,48 @@ namespace MPMProject.Controllers
             {
                 throw ex;
             }
-
-
             return result;
         }
+
+        /// <summary>
+        /// http put方法
+        /// </summary>
+        /// <param name="url">url地址</param>
+        /// <param name="postData">抛送数据</param>
+        /// <returns></returns>
+        public string PutUrl(string url)
+        {
+            string result = "";
+            try
+            {
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.Method = "Put";
+                req.Timeout = 80000;
+                req.ContentType = "application/json";
+                req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                string token = Cookies.GetEIToken(HttpContext);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    string authorization = "{0} {1}";
+                    authorization = string.Format(authorization, "Bearer", token);
+                    req.Headers.Add("Authorization", authorization);
+                }
+                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+                Stream stream = resp.GetResponseStream();
+                //获取响应内容
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    result = reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+
 
         /// <summary>
         /// http get方法

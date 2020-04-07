@@ -10,10 +10,11 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using MPMProject.Models;
 using Wise_Paas;
+using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class GeneralController : Controller
+    public class GeneralController : BaseController
     {
         public IActionResult Index()
         {
@@ -26,12 +27,41 @@ namespace MPMProject.Controllers
         }
         public IActionResult LoginHandle(string userName, string passWord)
         {
-            if (Integration.Login(HttpContext, userName, passWord, "Metalwork"))
+            if(GlobalVar.IsCloud)
             {
-                return Json("Success");
+                if (Integration.Login(HttpContext, userName, passWord, "Metalwork"))
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Failed");
+                }
             }
             else
             {
+                string myurl = url + "api/v1/configuration/public/user?user={0}&password={1}";
+                myurl = string.Format(myurl, userName, passWord);
+                string result = PutUrl(myurl);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                switch (Convert.ToInt32(jo["code"]))
+                {
+                    case 200:
+                        if(jo["data"] != null)
+                        {
+                            SetCookies( jo["data"][0]["name"].ToString(), jo["data"][0]["role"].ToString());
+                            return Json("Success");
+                        } 
+                        break;
+                    case 400:
+                        break;
+                    case 410:
+                        break;
+                    case 411:
+                        break;
+                    default:
+                        break;
+                }
                 return Json("Failed");
             }
         }
@@ -42,7 +72,15 @@ namespace MPMProject.Controllers
         /// <returns></returns>
         public IActionResult Logout()
         {
-            Integration.Logout(HttpContext);
+            if (GlobalVar.IsCloud)
+            {
+                Integration.Logout(HttpContext);
+                
+            }
+            else
+            {
+                DeleteCookies();
+            }
             return RedirectToAction("index", "General");
         }
 
@@ -57,6 +95,21 @@ namespace MPMProject.Controllers
             if (string.IsNullOrEmpty(value))
                 value = string.Empty;
             return value;
+        }
+
+        public  void SetCookies(string userName, string role)
+        {
+            CookieOptions co = new CookieOptions();
+            co.IsEssential = true;
+            co.Expires = DateTime.Now.AddHours(1);
+            HttpContext.Response.Cookies.Append("userName", userName, co);
+            HttpContext.Response.Cookies.Append("role", role, co);
+        }
+
+        public void DeleteCookies()
+        {
+            HttpContext.Response.Cookies.Delete("userName");
+            HttpContext.Response.Cookies.Delete("role");
         }
     }
 }

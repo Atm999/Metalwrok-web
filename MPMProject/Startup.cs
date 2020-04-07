@@ -21,7 +21,6 @@ namespace MPMProject
 {
     public class Startup
     {
-        public bool IsCloud = true;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,21 +28,22 @@ namespace MPMProject
             {
                 EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
                 //EnSaaS 4.0 环境
-                if (environmentInfo.cluster != null)
-                {
-                    BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
-                }
-                //docker 环境
-                else
-                {
-                    IsCloud = false;
-                    BaseController.url = "http://ifactory_metalwork-api:80/";
-                }
+                //if (environmentInfo.cluster != null)
+                //{
+                //    BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
+                //    //BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
+                //}
+                ////docker 环境
+                //else
+                //{
+                //    GlobalVar.IsCloud = false;
+                //    BaseController.url = Environment.GetEnvironmentVariable("METAL-API");
+                //    //BaseController.url = "http://ifactory_metalwork-api:80/";
+                //}
+                GlobalVar.IsCloud = false;
+                BaseController.url = "https://localhost:5001/";
 
 
-                //BaseController.url = "https://api-ifactory-mw-"+environmentInfo.@namespace+"-"+environmentInfo.cluster+"."+ environmentInfo.ensaas_domain+"/";
-                //BaseController.url= Configuration.GetValue<string>("APIUrl");
-                //BaseController.url= "https://localhost:5001/";
             }
             catch (Exception ex)
             {
@@ -132,9 +132,7 @@ namespace MPMProject
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            if (IsCloud)
-                //只有是云端环境才需要启动权限中间件
-                app.UseMiddleware(typeof(MiddleWare));
+            app.UseMiddleware(typeof(MiddleWare));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -22,11 +22,24 @@ namespace MPMProject
             {
                 if (context.Request.Path.Value != "/General/LoginHandle")
                 {
-                    bool re = Integration.CheckRole(context, "Metalwork");
-                    //如果没有权限
-                    if (!re)
+                    //云端登录处理
+                    if(GlobalVar.IsCloud)
                     {
-                        context.Request.Path = "/General/Login";
+                        bool re = Integration.CheckRole(context, "Metalwork");
+                        //如果没有权限
+                        if (!re)
+                        {
+                            context.Request.Path = "/General/Login";
+                        }
+                    }
+                    //docker登录处理
+                    else
+                    {
+                        context.Request.Cookies.TryGetValue("userName", out string value);
+                        if (string.IsNullOrEmpty(value))
+                        {
+                            context.Request.Path = "/General/Login";
+                        }
                     }
                 }
                 await next(context);
