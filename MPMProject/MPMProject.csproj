@@ -54,8 +54,11 @@
 
   <ItemGroup>
     <Reference Include="Wise_Paas">
-      <HintPath>..\..\WebApplication1\WebApplication1\wise_paas_sso\bin\Release\netstandard2.0\Wise_Paas.dll</HintPath>
+      <HintPath>..\Wise_Paas.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -42,7 +42,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public DateTime start_time { get; set; }
+        public DateTime ? start_time { get; set; }
         /// <summary>
         /// 标准数量
         /// </summary>

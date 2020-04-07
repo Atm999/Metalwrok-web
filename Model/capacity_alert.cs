@@ -8,7 +8,7 @@ namespace Model
     {
 
         public int id { get; set; }
-        public DateTime date { get; set; }
+        public DateTime? date { get; set; }
         /// <summary>
         /// 月标准产能
         /// </summary>
