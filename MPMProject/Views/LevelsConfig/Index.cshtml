@@ -304,12 +304,12 @@
         //群组及层级的操作栏格式化
         function groupActionFormatterA(value, row, index) {
             var result = "";
-            result += "<a id='settingGroup' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
+            result += "<a class='sxsz' id='settingGroup' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
             return result;
         }
         function groupActionFormatterB(value, row, index) {
             var result = "";
-            result += "<a id='bindingGroup' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+            result += "<a class='bingding' id='bindingGroup' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
             return result;
         }
         function groupActionFormatters(value, row, index) {
@@ -855,7 +855,7 @@
         //设备操作栏的格式化
         function machineActionFormatterA(value, row, index) {
             var result = "";
-            result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
+            result += "<a id='tagBind' class='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
            // result += "<a id='machineEdit' href='javascript:;' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
            // result += "<a id='machineDelete' href='javascript:;' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
@@ -1227,7 +1227,7 @@
                             </a>
                         </li>
                         <!--添加层级-->
-                        <li>
+                        <li class="licj">
                             <a class="btn btn-primary" data-toggle='modal' data-target='#myAddLevelModal' onclick="addNewLevel()">
                                 <i class='icon-plus'></i>
                                 添加层级
