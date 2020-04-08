@@ -31,6 +31,14 @@ namespace MPMProject.Controllers
             {
                 if (Integration.Login(HttpContext, userName, passWord, "Metalwork"))
                 {
+                    string myurl = url + "api/v1/configuration/public/user";
+                    wise_paas_user wise_Paas_User = new wise_paas_user();
+                    wise_Paas_User.name = userName;
+                    wise_Paas_User.password = passWord;
+                    wise_Paas_User.role = userName;
+                    var postData = JsonConvert.SerializeObject(wise_Paas_User);
+                    string result = PostUrl(myurl, postData);
+                    
                     return Json("Success");
                 }
                 else
@@ -50,6 +58,7 @@ namespace MPMProject.Controllers
                         if(jo["data"] != null)
                         {
                             SetCookies( jo["data"][0]["name"].ToString(), jo["data"][0]["role"].ToString());
+                            GlobalVar.role = jo["data"][0]["role"].ToString();
                             return Json("Success");
                         } 
                         break;
