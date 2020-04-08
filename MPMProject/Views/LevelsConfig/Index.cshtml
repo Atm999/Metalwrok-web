@@ -316,8 +316,8 @@
             var result = "";
            // result += "<a id='settingGroup' href='javascript:;' title='属性设置' data-toggle='modal' data-target='#mySetModal' style='font-size:32px;'><span class='icon-cog'></span></a>";
             //result += "<a id='bindingGroup' href='javascript:;' title='设备绑定' data-toggle='modal' data-target='#myBindModal' style='font-size:32px;'><span class='icon-sitemap'></span></a>";
-            result += "<a id='editGroup' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a id='deleteGroup' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='edit ml10'; id='editGroup' title='编辑' data-toggle='modal' data-target='#groupAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10'; id='deleteGroup' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
@@ -863,8 +863,8 @@
           function machineActionFormatters(value, row, index) {
             var result = "";
             //result += "<a id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
-            result += "<a id='machineEdit' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a id='machineDelete' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='edit ml10';  id='machineEdit' title='编辑' data-toggle='modal' data-target='#machineAddEditModal' style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  id='machineDelete' title='删除' data-toggle='modal' data-target='#myDelModal' style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
         //Tag点绑定，设备编辑，设备删除
