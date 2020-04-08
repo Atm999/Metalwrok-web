@@ -57,9 +57,9 @@
     <link href='~/assets/stylesheets/demo.css' media='all' rel='stylesheet' type='text/css' />
     <!-- / toastr -->
     <link href="~/assets/stylesheets/plugins/toastr/toastr.css" rel="stylesheet" />
-    @*@if (BaseController.url=="") {*@ 
+    @if (GlobalVar.role== "Viewer") {
     <link href="~/assets/stylesheets/plugins/Validate.css" rel="stylesheet" />
-    @*}*@
+    }
     
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
