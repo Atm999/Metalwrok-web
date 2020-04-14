@@ -7,8 +7,8 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-          getOption();
-          getOptiongroup();
+        getOption();
+        getOptiongroup();
         $(document).ready(function () {
             $("#virtual_line_id").select2();
             $("#virtual_line").select2();
@@ -18,7 +18,7 @@
         });
 
         $(function () {
-             $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
 
@@ -58,68 +58,71 @@
                     field: 'name_cn',
                     title: '虚拟线'
                 }, {
+                    field: 'maximum',
+                    title: '上限预警'
+                }, {
+                    field: 'minimum',
+                    title: '下限预警'
+                }, {
                     field: 'alert_type',
-                        title: '预警类型',
-                      formatter: function (value, row, index)
-                    {
+                    title: '预警类型',
+                    formatter: function (value, row, index) {
                         var alert_type = row.alert_type;
-                          if (alert_type == 0) {
-                              return "瓶颈站"
-                          } else if (alert_type == 1) {
-                              return "工单完成";
-                          } else if (alert_type == 2) {
-                              return "逾期未完成";
-                          } else if (alert_type == 3) {
-                              return "工单完成";
-                         } else {
-                             return "--";
-                         }
+                        if (alert_type == 0) {
+                            return "平衡率阈值预警"
+                        } else if (alert_type == 1) {
+                            return "工单完成";
+                        } else if (alert_type == 2) {
+                            return "逾期未完成";
+                        } else if (alert_type == 3) {
+                            return "工单完成";
+                        } else {
+                            return "--";
+                        }
 
-                 },
+                    },
                 }, {
                     field: 'notice_type',
-                        title: '通知方式',
-                     formatter: function (value, row, index)
-                    {
+                    title: '通知方式',
+                    formatter: function (value, row, index) {
                         var notice_type = row.notice_type;
-                         if (notice_type == 0) {
-                             return "微信"
-                         } else if (notice_type == 1) {
-                             return "邮件";
-                         } else if (notice_type == 2) {
-                             return "微信&邮件";
-                         } else {
-                             return "--";
-                         }
+                        if (notice_type == 0) {
+                            return "微信"
+                        } else if (notice_type == 1) {
+                            return "邮件";
+                        } else if (notice_type == 2) {
+                            return "微信&邮件";
+                        } else {
+                            return "--";
+                        }
 
-                 },
+                    },
                 }, {
                     field: 'nname',
                     title: '通知群组'
                 }, {
                     field: 'enable',
-                        title: '启用',
-                      formatter: function (value, row, index)
-                    {
+                    title: '启用',
+                    formatter: function (value, row, index) {
                         var enable = row.enable;
-                          if (enable == true) {
-                              return "是"
-                          } else if (enable == false) {
-                              return "否";
-                          } else {
-                              return "--";
-                          }
+                        if (enable == true) {
+                            return "是"
+                        } else if (enable == false) {
+                            return "否";
+                        } else {
+                            return "--";
+                        }
 
-                 },
-                },{
+                    },
+                }, {
                     field: 'name',
                     title: 'Tag名称'
-                },{
+                }, {
                     field: 'actionEvents',
                     title: '标签点绑定',
                     formatter: machineActionFormatters,
                     events: machineOperateEvents
-                    }, {
+                }, {
                     field: 'actionEvent',
                     title: '操作',
                     align: 'center',
@@ -137,31 +140,33 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
-         function machineActionFormatters(value, row, index) {
-             var result = "";
+      
+        function machineActionFormatters(value, row, index) {
+            var result = "";
             result += "<a class='tagBind' id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             return result;
         };
+      
         window.machineOperateEvents = {
             "click #tagBind": function (e, value, row, index) {
                 document.getElementById("id").value = row.extraid;
                 if (row.extraid == null) {
                     document.getElementById('scadaId').value = "";
                     document.getElementById('name').value = "";
-                    document.getElementById('tagDescription').value= "";
+                    document.getElementById('tagDescription').value = "";
 
                 } else {
-                       if (row.name != null) {
-                    var names = row.name.split(":");
-                    if (names.length >= 1)
-                        document.getElementById("scadaId").value = names[0];
-                    if (names.length >= 2)
-                        document.getElementById("name").value = names[1];
-                }
-                document.getElementById("tagDescription").value =row.description;
+                    if (row.name != null) {
+                        var names = row.name.split(":");
+                        if (names.length >= 1)
+                            document.getElementById("scadaId").value = names[0];
+                        if (names.length >= 2)
+                            document.getElementById("name").value = names[1];
+                    }
+                    document.getElementById("tagDescription").value = row.description;
                 }
                 document.getElementById("machineId").value = row.virtual_line_id;
-                 document.getElementById("utilization_rate_types").value =row.alert_type;
+                document.getElementById("utilization_rate_types").value = row.alert_type;
                 $('#myAddEditModal').modal('show');
             }
         };
@@ -178,7 +183,8 @@
                 $("#enable").select2();
                 $("#notice_group_id").attr('value', row.notice_group_id);
                 $("#notice_group_id").select2();
-
+                document.getElementById("maximum").value = row.maximum;
+                document.getElementById("minimum").value = row.minimum;
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -186,13 +192,13 @@
                 $('#myDelModal').modal('show');
             }
         };
-         //设备新增修改动作的提交
+        //设备新增修改动作的提交
         function machineConfirm() {
             var id = $('#id').val();
             var virtual_line_id = $('#machineId').val();
-            var utilization_rate_types= $('#utilization_rate_types').val();
+            var utilization_rate_types = $('#utilization_rate_types').val();
             var tag_type_id = 4;
-            var tag_type_sub_id =0;
+            var tag_type_sub_id = 0;
 
             var Name = new Array();
             Name.push($('#scadaId').val());
@@ -209,20 +215,20 @@
                     data: {
                         id: id,
                         target_id: virtual_line_id,
-                        tag_type_id:tag_type_id,
+                        tag_type_id: tag_type_id,
                         tag_type_sub_id: tag_type_sub_id,
                         name: name,
-                        utilization_rate_types:utilization_rate_types,
+                        utilization_rate_types: utilization_rate_types,
                         description: description
                     },
                     success: function (msg) {
                         if (msg == "Success") {
                             if (parseInt(id) > 0) {
                                 toastr.success('修改Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             } else {
                                 toastr.success('新增Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             }
                             $('#myAddEditModal').modal('hide');
                             $('#machineTagList').bootstrapTable('refresh');
@@ -235,16 +241,16 @@
                     }
                 });
             }
-            
-            
+
+
 
         }
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-
-
-               $("#virtual_line_id").val('' + 0 + '').select2();
+            document.getElementById("maximum").value = 0;
+            document.getElementById("minimum").value = 0;
+            $("#virtual_line_id").val('' + 0 + '').select2();
             $("#alert_type").val('' + -1 + '').select2();
             $("#notice_type").val('' + -1 + '').select2();
             $("#enable").val('' + 0 + '').select2();
@@ -277,6 +283,8 @@
         }
         function finish() {
             var id = $('#id').val();
+            var maximum = $('#maximum').val();
+            var minimum = $('#minimum').val();
             var virtual_line_id = $('#virtual_line_id').val();
             var alert_type = $('#alert_type').val();
             var notice_type = $('#notice_type').val();
@@ -285,8 +293,10 @@
 
             var ec = {
                 id: id,
+                maximum: parseInt(maximum),
+                minimum: parseInt(minimum),
                 virtual_line_id: parseInt(virtual_line_id),
-                alert_type:parseInt(alert_type),
+                alert_type: parseInt(alert_type),
                 notice_type: parseInt(notice_type),
                 enable: eval(enable),
                 notice_group_id: parseInt(notice_group_id),
@@ -359,6 +369,7 @@
                 }
             });
         }
+       
         function getOptiongroup() {
             $.ajax({
                 type: "get",
@@ -371,6 +382,7 @@
                 }
             });
         }
+     
     </script>
 </head>
 <body>
@@ -445,13 +457,20 @@
                                 <label class="control-label">预警类型</label>
                                 <select class="select2 span12" id="alert_type" name="alert_type" style="width:100%">
                                     <option value="-1">请选择</option>
-                                    <option value="0">瓶颈站</option>
+                                    <option value="0">平衡率阈值预警</option>
                                     <option value="1">工单完成</option>
                                     <option value="2">逾期未完成</option>
                                     <option value="3">超过标准工时</option>
                                 </select>
                             </div>
-
+                            <div class="control-group">
+                                <label class="control-label">上限预警</label>
+                                <input class="span12" type="text" id="maximum" name="maximum" />
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">下限预警</label>
+                                <input class="span12" type="text" id="minimum" name="minimum" />
+                            </div>
                             <div class="control-group">
                                 <label class="control-label">通知方式</label>
                                 <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
@@ -529,9 +548,9 @@
                         </div>
                         <div class="modal-body">
                             <input class="span12" type="hidden" id="utilization_rate_types" />
-                            <input class="span12" type="hidden" id="id" />
+                            @*<input class="span12" type="hidden" id="id" />*@
                             <input class="span12" type="hidden" id="tagId" />
-                            <input class="span12" type="hidden" id="machineId"/>
+                            <input class="span12" type="hidden" id="machineId" />
                             <div class="control-group">
                                 <label class="control-label">Tag点名称(SCADA_ID:名称)</label>
                                 <div style="border: 2px dashed #b0adad;padding: 4px;">
@@ -558,6 +577,7 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
             </div>
+          
         </div>
     </div>
 </body>

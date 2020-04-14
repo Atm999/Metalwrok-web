@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static Model.virtual_line;
+
 namespace MPMProject.Controllers
 {
     public class WorkorderalertController : BaseController
@@ -60,6 +62,8 @@ namespace MPMProject.Controllers
                     obj.id,
                     obj.virtual_line_id,
                     obj.alert_type,
+                    obj.minimum,
+                    obj.maximum,
                     obj.notice_group_id,
                     obj.notice_type,
                     obj.enable,
@@ -86,6 +90,7 @@ namespace MPMProject.Controllers
             }
             return Json(list);
         }
+      
         //Tag点修改/新增
         public IActionResult UpdateTagInfo(tag_info_extra tag_Info)
         {

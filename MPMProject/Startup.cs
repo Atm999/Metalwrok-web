@@ -31,7 +31,8 @@ namespace MPMProject
                 if (environmentInfo.cluster != null)
                 {
                     GlobalVar.IsCloud = true;
-                    BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
+                    BaseController.url = "https://api-ifactory-metal.wise-paas.cn/";
+                    // BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
                     //BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
                 }
                 //docker 环境
@@ -133,7 +134,7 @@ namespace MPMProject
             app.UseCookiePolicy();
             app.UseAuthentication();
             //权限中间件
-            app.UseMiddleware(typeof(MiddleWare));
+            //app.UseMiddleware(typeof(MiddleWare));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

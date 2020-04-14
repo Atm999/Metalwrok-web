@@ -41,6 +41,50 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
+
+        //Tag点修改/新增
+        public IActionResult UpdateTagInfo(tag_info tag_Info)
+        {
+            string myurls = url + "api/v1/configuration/public/tag_type_sub";
+            string results = GetUrl(myurls);
+            JObject jos = (JObject)JsonConvert.DeserializeObject(results);
+            var typeList = jos["data"].ToObject<IList<Model.tag_type_sub>>();
+            var list = typeList.FirstOrDefault(p => p.name_cn == tag_Info.namecn);
+            tag_Info.tag_type_sub_id = list.id;
+            string tagInfoUrl = url + "api/v1/configuration/public/tag";
+            int id = tag_Info.id;
+            //新增
+            if (id == 0)
+            {
+                var tagInfoPostData = JsonConvert.SerializeObject(tag_Info);
+                string tagInfoPostResult = PostUrl(tagInfoUrl, tagInfoPostData);
+                JObject joMachinePost = (JObject)JsonConvert.DeserializeObject(tagInfoPostResult);
+                if (Convert.ToInt32(joMachinePost["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+                else
+                {
+                    return Json("Fail");
+                }
+            }
+            else
+            {//修改
+                var tagInfoPutData = JsonConvert.SerializeObject(tag_Info); 
+                string tagInfoPutResult = PutUrl(tagInfoUrl, tagInfoPutData);
+                JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(tagInfoPutResult);
+                if (Convert.ToInt32(joMachinePut["code"]) == 200)
+                {
+                    return Json("Success");
+                }
+
+                else
+                {
+                    return Json("Fail");
+                }
+
+            }
+        }
         public IActionResult Update([FromBody]error_config ec)
         {
             string msg = "";

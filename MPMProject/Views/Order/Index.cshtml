@@ -9,9 +9,11 @@
     <script type='text/javascript'>
         getOption();
         getOptionWO();
+
         $(document).ready(function () {
             $("#lineidSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+
         });
 
         $(function () {
@@ -29,8 +31,7 @@
                 "showMethod": "fadeIn",//显示时的动画方式
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
-              function getLocalDateTime(date)
-            {
+            function getLocalDateTime(date) {
                 var d = new Date(date);
                 var year = d.getFullYear();
                 var month = d.getMonth() + 1;
@@ -66,7 +67,7 @@
                 }, {
                     field: 'standard_num',
                     title: '标准数量'
-                    }
+                }
                     //, {
                     //field: 'virtual_Line.name_en',
                     //title: '虚拟线'
@@ -88,20 +89,19 @@
                     },
                 }, {
                     field: 'create_time',
-                        title: '日期',
-                     formatter: function (value, row, index)
-                     {
-                         if (value != null) {
+                    title: '日期',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
                             var start_time = row.create_time.toString();
-                          if (start_time == "0001-01-01T08:00:00+08:00") {
-                              return "--"
-                          }  else {
-                              return getLocalDateTime(row.create_time);
-                          }
-                         }
-                      
-                      
-                 },
+                            if (start_time == "0001-01-01T08:00:00+08:00") {
+                                return "--"
+                            } else {
+                                return getLocalDateTime(row.create_time);
+                            }
+                        }
+
+
+                    },
                 }, {
                     field: 'auto',
                     title: '结束方式',
@@ -133,11 +133,16 @@
                             return "未结单";
                         } else if (status == 4) {
                             return "--";
-                        }else {
+                        } else {
                             return "";
                         }
                     },
 
+                }, {
+                    field: 'actionEventB',
+                    title: '平衡率公式',
+                    formatter: actionFormatterB,
+                    events: operateEventsB
                 }, {
                     field: 'actionEvent',
                     title: '操作',
@@ -147,6 +152,7 @@
                     events: operateEvents
                 }]
             });
+
 
             ///虚拟线联动时候，查询该虚拟线下有几台设备
             $("#lineidSelect").select2();
@@ -163,6 +169,7 @@
                 });
             });
         });
+
         //操作栏的格式化
         function actionFormatter(value, row, index) {
             var id = value;
@@ -171,7 +178,53 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
+        //操作栏的格式化
+        function actionFormatterB(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a class='Binding m110' href='javascript:;'  title='平衡率公式'  style='font-size:32px;'><span class='icon-sitemap'></span></a>";
+            return result;
+        }
+        window.operateEventsB = {
+            'click .Binding': function (e, value, row, index) {
+                document.getElementById("group_id").value = row.virtual_line_id;
+                document.getElementById("id").value = row.id;
+                document.getElementById("work_order").value = row.work_order;
+                document.getElementById("part_num").value = row.part_num;
+                document.getElementById("shiftSelect").value = row.shift;
+                document.getElementById("standard_num").value = row.standard_num;
+                document.getElementById("autoSelect").value = row.auto;
+                document.getElementById("order_index").value = row.order_index;
+                document.getElementById("wostatusSelect").value = row.status;
+                document.getElementById("standard_time").value = row.standard_time;
+                document.getElementById("create_times").value = row.create_time;
+                var group_id = $("#group_id").val();
+                var id = $("#id").val();
+                var M = "";
 
+                $.ajax({
+                    type: "POST",
+                    url: "/Order/GetmachineList?group_id=" + group_id + "&id=" + id,
+                    async: true,
+                    success: function (data) {
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                M += data[i].name_en+";";
+                            }
+                            document.getElementById('oldformula').innerHTML = M;
+                        }
+                        else {
+                            toastr.error('执行失败!');
+                        }
+                    }
+                });
+
+              
+                $('#machineModal').modal('show');
+                $("#machineSelects").empty();
+                getOptionB();
+            }
+        };
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
@@ -185,7 +238,7 @@
                 $("#autoSelect").select2();
                 if (row.status == 2) {
                     alert("执行中的工单不允许修改");
-                     toastr.error('执行失败!');
+                    toastr.error('执行失败!');
                 } else {
 
                     $("#wostatusSelect").attr('value', row.status);
@@ -205,7 +258,6 @@
 
             }
         };
-
         function clean() {
             $('#myEditModal').modal('show');
             $("#labeltext").text("");
@@ -216,12 +268,11 @@
             document.getElementById("standard_time").value = "";
             document.getElementById("order_index").value = 0;
             $("#shiftSelect").val('' + 0 + '').select2();
-            $("#autoSelect").val('' + 0+ '').select2();
+            $("#autoSelect").val('' + 0 + '').select2();
             $("#wostatusSelect").val('' + -1 + '').select2();
             $("#lineidSelect").val('' + 0 + '').select2();
 
         }
-
         function Delete() {
             var id = $('#id').val();
             var person = {
@@ -283,7 +334,7 @@
                             toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
-                              getOptionWO();
+                            getOptionWO();
                             $("#wo").empty();
 
                         } else {
@@ -305,7 +356,7 @@
                             toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
-                               getOptionWO();
+                            getOptionWO();
                             $("#wo").empty();
                         } else {
                             toastr.error('执行失败!工单已存在');
@@ -357,21 +408,90 @@
                 }
             });
         }
-         function getOptionWO() {
+        function getOptionWO() {
             $.ajax({
                 type: "get",
                 url: '/Order/GetData',
                 async: true,
                 success: function (data) {
-                     $("#namecn").empty();
-                      $("#namecn").append('<option  value=' + 0 + '>请选择</option>');
+                    $("#namecn").empty();
+                    $("#namecn").append('<option  value=' + 0 + '>请选择</option>');
                     for (var i = 0; i < data.length; i++) {
                         $("#wo").append('<option  value=' + data[i].work_order + '>' + data[i].work_order + '</option>');
                     }
                 }
             });
         }
-
+        function getOptionB() {
+            var group_id = $("#group_id").val();
+            $.ajax({
+                type: "get",
+                url: '/Order/Getmachine?group_id=' + group_id,
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#machineSelects").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                    }
+                }
+            });
+        }
+        function MachineBind() {
+            var virtualLine_id = $("#group_id").val();
+            var id = $("#id").val();
+            var work_order = $('#work_order').val();
+            var part_num = $('#part_num').val();
+            var standard_num = $('#standard_num').val();
+            var shiftSelect = $('#shiftSelect').val();
+            var autoSelect = $('#autoSelect').val();
+            var wostatusSelect = $('#wostatusSelect').val();
+            var standard_time = $('#standard_time').val();
+            var order_index = $('#order_index').val();
+            var create_time = $('#create_times').val();
+            var machineList = document.getElementById('machineSelects').getElementsByTagName('option');
+            var machine = new Array();
+            for (var i = 0; i < machineList.length; i++) {
+                if (machineList[i].selected) {
+                    machine.push(machineList[i].value);
+                }
+            }
+            var Machine = machine.join(',');
+            $.ajax({
+                type: "POST",
+                url: "/Order/AddMachine",
+                async: true,
+                data: {
+                    id: id,
+                    work_order: work_order,
+                    part_num: part_num,
+                    standard_num: standard_num,
+                    shift: parseInt(shiftSelect),
+                    auto: Boolean(autoSelect),
+                    status: parseInt(wostatusSelect),
+                    virtual_line_id: parseInt(virtualLine_id),
+                    standard_time: standard_time,
+                    order_index: order_index,
+                    create_time: create_time,
+                    Machine: Machine
+                },
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('设备绑定成功!');
+                        $('#machineModal').modal('hide');
+                        $('#table').bootstrapTable('refresh', { url: "/Order/GetData" });
+                        $("#machineSelects").empty();
+                        getOption();
+                    }
+                    else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+        }
+        function resush() {
+            $('#table').bootstrapTable('refresh', { url: "/Order/GetData" });
+        }
     </script>
 </head>
 <body>
@@ -379,7 +499,7 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a  style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
+                    <a style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
                     <i class='icon-angle-right'></i>
                     <span>工单信息</span>
                 </div>
@@ -468,7 +588,7 @@
                         </div>
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
-
+                            <input type="hidden" class="span12" id="create_times" name="create_times" />
                             <div class="control-group">
                                 <label class="control-label">工单</label>
                                 <input class="span12" type="text" id="work_order" name="work_order" />
@@ -553,6 +673,42 @@
                             </button>
                             <button type="button" onclick="Delete()" class="btn btn-primary">
                                 是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 设备绑定模态框（Modal） -->
+            <div class="modal fade" id="machineModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myBindLabel">
+                                平衡率公式
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="control-group">
+                                <label class="control-label">原平衡率公式：</label>
+                                <label class="span12" type="text" id="oldformula"></label>
+                            </div>
+
+                            <input class='span12' type="hidden" id="group_id" />
+                            <div class="control-group">
+                                <select class="select2 span12" id="machineSelects" multiple="" style="width:100%"></select>
+                            </div>
+                            <hr class="hr-top" style="margin-right:-14px" />
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" onclick="resush()" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="MachineBind()">
+                                确认
                             </button>
                         </div>
                     </div><!-- /.modal-content -->

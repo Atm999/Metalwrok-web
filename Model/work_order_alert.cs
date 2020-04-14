@@ -8,18 +8,28 @@ namespace Model
     {
 
         public int id { get; set; }
-        public int virtual_line_id { get; set; }
+        public int  virtual_line_id { get; set; }
         /// <summary>
         /// 异常类型 0 瓶颈站 1工单完成 2逾期未完成 3 超过标准工时
         /// </summary>
-        public int alert_type { get; set; }
-        public int notice_type { get; set; }
-        public int notice_group_id { get; set; }
+        public int  alert_type { get; set; }
+        public int  notice_type { get; set; }
+        public int  notice_group_id { get; set; }
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool enable { get; set; }
-       
+        public bool  enable { get; set; }
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public int  maximum { get; set; }
+        /// <summary>
+        /// 最小值
+        /// </summary>
+        public int  minimum { get; set; }
+
+      
+
     }
     public class work_order_alertDto : work_order_alert
     {
