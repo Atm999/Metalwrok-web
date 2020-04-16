@@ -67,7 +67,7 @@ namespace MPMProject
             response.ContentType = context.Request.Headers["Accept"];
 
             response.ContentType = "application/json";
-            await response.WriteAsync(JsonConvert.SerializeObject("")).ConfigureAwait(false);
+            await response.WriteAsync(JsonConvert.SerializeObject(exception.Message)).ConfigureAwait(false);
         }
 
     }

@@ -29,8 +29,8 @@ namespace MPMProject.Controllers
             //由于设备为末节点，将其id全部设为-1
             int id = -1;
             //根节点
-            List<object> final = new List<object>() { new { name = "根节点", id = 0, upper_id = "-" } };
-
+            //List<object> final = new List<object>() { new { name = "根节点", id = 0, upper_id = "-" } };
+            List<object> final = new List<object>() { };
             //配置的节点
             var areaLayerUrl = url + "api/v1/configuration/public/area_layer";
             var resAreaLayer = GetUrl(areaLayerUrl);

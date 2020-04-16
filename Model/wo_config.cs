@@ -50,6 +50,7 @@ namespace Model
         /// 
         /// </summary>
        public DateTime? create_time { get; set; }
+       public string lbr_formula { get; set; }
         public class woVirtualLine : wo_config
         {
             public IList<virtual_line> virtual_Line { get; set; }

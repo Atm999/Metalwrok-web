@@ -217,7 +217,7 @@ namespace MPMProject.Controllers
                 "\"area_layer_id\":{5}" +
                 "}}";
             //对于群组来说，upper_id和area_layer_id均固定
-            postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node.description,area_Node.upper_id, area_Node.area_layer_id);
+            postData = string.Format(postData, area_Node.name_en, area_Node.name_cn, area_Node.name_tw, area_Node?.description,area_Node.upper_id, area_Node.area_layer_id);
             string result = PostUrl(groupUrl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
 
@@ -235,8 +235,7 @@ namespace MPMProject.Controllers
             var areaNodeList = areaNodeJo["data"].ToObject<IList<Model.area_node>>();
 
             var res = (from p in areaNodeList
-                       where p.name_cn == area_Node.name_cn && p.name_en == area_Node.name_en && p.name_tw == area_Node.name_tw
-                        && p.description == area_Node.description && p.area_layer_id == area_Node.area_layer_id && p.upper_id == area_Node.upper_id
+                       where p.name_en == area_Node.name_en
                        select new { p.id }).ToList();
 
 
