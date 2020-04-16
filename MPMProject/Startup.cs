@@ -26,25 +26,25 @@ namespace MPMProject
             Configuration = configuration;
             try
             {
-                EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
-                //EnSaaS 4.0 环境
-                if (environmentInfo.cluster != null)
-                {
-                    GlobalVar.IsCloud = true;
-                   // BaseController.url = "https://api-ifactory-metal.wise-paas.cn/";
-                     BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
-                    //BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
-                }
-                //docker 环境
-                else
-                {
-                    GlobalVar.IsCloud = false;
-                    BaseController.url = Environment.GetEnvironmentVariable("METAL-API");
-                    //BaseController.url = "http://ifactory_metalwork-api:80/";
-                }
+                //EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
+                ////EnSaaS 4.0 环境
+                //if (environmentInfo.cluster != null)
+                //{
+                //    GlobalVar.IsCloud = true;
+                //    BaseController.url = "https://api-ifactory-metal.wise-paas.cn/";
+                //    // BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
+                //    //BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
+                //}
+                ////docker 环境
+                //else
+                //{
+                //    GlobalVar.IsCloud = false;
+                //    BaseController.url = Environment.GetEnvironmentVariable("METAL-API");
+                //    //BaseController.url = "http://ifactory_metalwork-api:80/";
+                //}
                 //GlobalVar.IsCloud = false;
                 //BaseController.url = "https://localhost:5001/";
-
+                BaseController.url = "https://api-ifactory-metal.wise-paas.cn/";
             }
             catch (Exception ex)
             {
@@ -134,7 +134,7 @@ namespace MPMProject
             app.UseCookiePolicy();
             app.UseAuthentication();
             //权限中间件
-            app.UseMiddleware(typeof(MiddleWare));
+            //app.UseMiddleware(typeof(MiddleWare));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

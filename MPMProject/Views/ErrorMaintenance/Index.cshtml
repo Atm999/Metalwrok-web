@@ -22,7 +22,7 @@
 
 
         $(function () {
-             $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
@@ -95,26 +95,32 @@
                 }, {
                     field: 'start_time',
                     title: '发生时间',
-                    formatter: function (value, row, index) {
-                        var start_time = row.start_time.toString();
-                        if (start_time == "0001-01-01T08:00:00+08:00") {
-                            return "--"
-                        } else {
-                            return getLocalDateTime(row.start_time);
-                        }
-
+                        formatter: function (value, row, index) {
+                            if (row.start_time == "" || row.start_time == null) {
+                                return "--"
+                            } else {
+                                var start_time = row.start_time.toString();
+                                if (start_time == "0001-01-01T08:00:00+08:00") {
+                                    return "--"
+                                } else {
+                                    return getLocalDateTime(row.start_time);
+                                }
+                            }
                     },
                 }, {
                     field: 'release_time',
                     title: '解除时间',
                     formatter: function (value, row, index) {
-                        var release_time = row.release_time.toString();
-                        if (release_time == "0001-01-01T08:00:00+08:00") {
+                        if (row.release_time == "" || row.release_time == null) {
                             return "--"
                         } else {
-                            return getLocalDateTime(row.release_time);
+                            var release_time = row.release_time.toString();
+                            if (release_time == "") {
+                                return "--"
+                            } else {
+                                return getLocalDateTime(row.release_time);
+                            }
                         }
-
                     },
                 }, {
                     field: 'actionEvent',
