@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: portal-mw-web
+spec:
+  rules:
+  - host: portal-mw-web.metalwork.eks005.en.internal
+    http:
+      paths:
+      - backend:
+          serviceName: portal-mw-web
+          servicePort: 80

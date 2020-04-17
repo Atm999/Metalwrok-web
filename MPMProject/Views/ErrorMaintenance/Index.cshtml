@@ -108,11 +108,15 @@
                     field: 'release_time',
                     title: '解除时间',
                     formatter: function (value, row, index) {
-                        var release_time = row.release_time.toString();
-                        if (release_time == "0001-01-01T08:00:00+08:00") {
+                        if (row.release_time == "" || row.release_time == null) {
                             return "--"
                         } else {
-                            return getLocalDateTime(row.release_time);
+                            var release_time = row.release_time.toString();
+                            if (release_time == "") {
+                                return "--"
+                            } else {
+                                return getLocalDateTime(row.release_time);
+                            }
                         }
 
                     },

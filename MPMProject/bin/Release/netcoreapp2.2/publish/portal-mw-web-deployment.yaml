@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-mw-web
+  labels:
+    app: portal-mw-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portal-mw-web
+  template:
+    metadata:
+      labels:
+        app: portal-mw-web
+    spec:   
+      containers:
+      - name: portal-mw-web
+        image: harbor.arfa.wise-paas.com/sunsx/portal-metalwork-web:v0.0.1
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "100m"
+            ephemeral-storage: "512Mi"
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+        env:        
+        - name: ENSAAS_SERVICES
+          valueFrom:
+            secretKeyRef:
+              name: ifactory-metalwork-secret
+              key: ENSAAS_SERVICES
+        - name: ENSAAS_DOMAIN
+          value: hz.wise-paas.com.cn
+        - name: SSO_URL
+          value: http://api.sso.ensaas.en.internal/v4.0
+        ports:
+        - containerPort: 5000
+          name: "portal-mw-web"
