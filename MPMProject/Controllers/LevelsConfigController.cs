@@ -18,6 +18,20 @@ namespace MPMProject.Controllers
 
         public IActionResult Index()
         {
+            //每次访问这个页面都会将账密写进数据库  by CC.X
+            if(GlobalVar.user_name != "" && GlobalVar.password != "")
+            {
+                string myurl = url + "api/v1/configuration/public/user";
+                wise_paas_user wise_Paas_User = new wise_paas_user();
+                wise_Paas_User.name = GlobalVar.user_name;
+                wise_Paas_User.password = GlobalVar.password;
+                wise_Paas_User.role = "";
+                var postData = JsonConvert.SerializeObject(wise_Paas_User);
+                string result = PostUrl(myurl, postData);
+            }
+
+
+
             //用于machine tag点绑定后tab页聚焦
             if (!string.IsNullOrEmpty(Request.Query["tab"]))
             {

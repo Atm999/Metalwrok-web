@@ -31,14 +31,8 @@ namespace MPMProject.Controllers
             {
                 if (Integration.Login(HttpContext, userName, passWord, "Metalwork"))
                 {
-                    string myurl = url + "api/v1/configuration/public/user";
-                    wise_paas_user wise_Paas_User = new wise_paas_user();
-                    wise_Paas_User.name = userName;
-                    wise_Paas_User.password = passWord;
-                    wise_Paas_User.role = userName;
-                    var postData = JsonConvert.SerializeObject(wise_Paas_User);
-                    string result = PostUrl(myurl, postData);
-                    
+                    GlobalVar.user_name = userName;
+                    GlobalVar.password = passWord;              
                     return Json("Success");
                 }
                 else

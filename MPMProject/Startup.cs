@@ -118,7 +118,6 @@ namespace MPMProject
             app.UseCors("AllowSpecificOrigin");
 
             app.UseStaticFiles(new StaticFileOptions()
-
             {
 
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/Files")),

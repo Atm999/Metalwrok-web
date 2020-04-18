@@ -13,8 +13,8 @@
             $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
             $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
             //父级名称下拉框
-            GetFatherName("machineFatherSearch", "area_layer", 0);
-            GetFatherName("machineFatherAdd", "area_layer", 0);
+            GetFatherName("machineFatherSearch", "area_layer", -1);
+            GetFatherName("machineFatherAdd", "area_layer", -1);
             //群组
             $('#group').bootstrapTable({
                 url: '/LevelsConfig/GetGroup',
@@ -885,9 +885,7 @@
 
                 $("#machineFatherAdd").val('' + row.area_layer_id + '').select2();
                 $("#machineFatherContentAdd").empty();
-                GetFatherName("machineFatherContentAdd", "area_node", row.area_layer_id);
-                $("#machineFatherContentAdd").val('' + row.area_node_id + '').select2();
-
+                GetFatherName("machineFatherContentAdd", "area_node", row.area_layer_id, row.area_node_id);
             },
             //设备删除
             "click #machineDelete": function (e, value, row, index) {
@@ -964,11 +962,11 @@
         function machineRefresh() {
             $('#machineAll').bootstrapTable('refresh');
             //父级名称下拉框
-            GetFatherName("machineFatherSearch", "area_layer", 0);
+            GetFatherName("machineFatherSearch", "area_layer", 0, -1);
             getMachineListForSearch();
         }
         //获取父级名称 area_layer
-        function GetFatherName(machineFatherName, urlPara, area_layer_id) {
+        function GetFatherName(machineFatherName, urlPara, area_layer_id, area_node_id) {
             $.ajax({
                 type: "POST",
                 url: '/LevelsConfig/GetLevel',
@@ -977,15 +975,21 @@
                     area_layer_id: area_layer_id
                 },
                 success: function (data) {
-                    $("#machineFatherSearch").empty();
-                    $("#machineFatherSearch").append('<option  value=-1>-请选择-</option>');
-                    $("#machineFatherContentSearch").empty();
-                    $("#machineFatherContentSearch").append('<option  value=-1>-请选择-</option>');
+                    if (machineFatherName == "machineFatherSearch") {
+                        $("#machineFatherSearch").empty();
+                        $("#machineFatherSearch").append('<option  value=-1>-请选择-</option>');
+                        $("#machineFatherContentSearch").empty();
+                        $("#machineFatherContentSearch").append('<option  value=-1>-请选择-</option>');
+                    }
                     if (machineFatherName == 'machineFatherAdd') {
                         $("#" + machineFatherName + "").append('<option  value=-1>-请选择-</option>');
                     }
                     for (var i = 0; i < data.length; i++) {
-                        $("#" + machineFatherName+"").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        if (data[i].id == area_node_id) {
+                            $("#" + machineFatherName + "").append('<option  value=' + data[i].id + ' selected>' + data[i].name_cn + '</option>');
+                        } else {
+                            $("#" + machineFatherName + "").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        }
                     }
                 }
             });
@@ -1017,7 +1021,7 @@
             document.getElementById("descriptionMachine").value = "";
             //获取选项
             $('#machineFatherAdd').empty();
-            GetFatherName("machineFatherAdd", "area_layer", 0);
+            GetFatherName("machineFatherAdd", "area_layer", -1);
             $('#machineFatherContentAdd').empty();
             $("#machineFatherContentAdd").append('<option  value=-1>-请选择-</option>');
         }
@@ -1237,11 +1241,11 @@
                     <div class='tab-content'>
                         <!--群组-->
                         <div class='@if (ViewBag.tab==1) {<text>tab-pane</text> }else{<text>tab-pane active</text> }' id='tab1'>
-                            <div style="padding:10px 0px">
+                            @*<div style="padding:10px 0px">
                                 <div class="form-group">
                                     <button class="btn btn-primary" data-toggle='modal' data-target='#groupAddEditModal' onclick="AddGroup()"><span class="icon-plus"> 新增</span></button>
                                 </div>
-                            </div>
+                            </div>*@
                             <table class="table" id="group"></table>
                         </div>
                         <!--各层级-->

@@ -9,5 +9,7 @@ namespace MPMProject
     {
         public static bool IsCloud = false;
         public static string role = "";
+        public static string user_name = "";
+        public static string password = "";
     }
 }
