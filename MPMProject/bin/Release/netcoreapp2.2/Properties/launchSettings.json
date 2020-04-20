@@ -16,6 +16,7 @@
         "cluster": "eks005",
         "datacenter": "hz",
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "METALWORK_API": "http://api-metalwork-metalwork-eks005.hz.wise-paas.com.cn/",
         "ENSAAS_DOMAIN": "localhost",
         "appID": "7ZFTRaJlkSWSKnA5FME3CuXqrt-ZUO9X-1585550289",
         "workspace": "ccf46860-1052-4bb8-b8d5-3ddccc6efe6b",
