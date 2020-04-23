@@ -38,7 +38,7 @@ namespace MPMProject.Controllers
             var date = DateTime.Now;
             var data = list.Where(p => p.substitutes == null).ToList();//已接单不显示
             var  etities=data.Join(lists, p => p.error_config_id, n => ((error_config)n).id, (p, n) =>new {p,n })
-                              .Where(p=> Convert.ToDateTime(p.p.start_time).AddMinutes(p.n.timeout_setting)>=date)
+                              .Where(p=> Convert.ToDateTime(p.p.start_time).AddMinutes(Convert.ToDouble(p.n.timeout_setting))>=date)
                               .Select(q=>q.p);
            
             return Json(etities);
