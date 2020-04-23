@@ -262,5 +262,28 @@ namespace MPMProject.Controllers
             }
             return Json(jo["data"]);
         }
+
+        public JsonResult GetAndonLogic()
+        {
+            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string result = GetUrl(myurl);
+            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+            switch (Convert.ToInt32(jo["code"]))
+            {
+                case 200:
+                    Json(jo["data"]);
+                    break;
+                case 400:
+                    break;
+                case 410:
+                    break;
+                case 411:
+                    break;
+                default:
+                    break;
+            }
+            return Json(jo["data"]);
+        }
+
     }
 }

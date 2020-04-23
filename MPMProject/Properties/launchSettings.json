@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/MPMProject",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:45443",
       "sslPort": 44316
@@ -29,7 +33,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      "applicationUrl": "https://localhost:5002;http://localhost:5000"
+    },
+    "local": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "METALWORK-API": "https://localhost:5001/"
+      },
+      "applicationUrl": "https://localhost:5002"
     }
   }
 }
