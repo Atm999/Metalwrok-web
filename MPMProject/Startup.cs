@@ -45,7 +45,6 @@ namespace MPMProject
                 }
                 //GlobalVar.IsCloud = false;
                 //BaseController.url = "https://api-ifactory-metal.wise-paas.cn/";
-
             }
             catch (Exception ex)
             {
