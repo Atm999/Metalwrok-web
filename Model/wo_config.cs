@@ -50,7 +50,7 @@ namespace Model
         /// 
         /// </summary>
        public DateTime? create_time { get; set; }
-       public string lbr_formula { get; set; }
+        public string lbr_formula { get; set; }
         public class woVirtualLine : wo_config
         {
             public IList<virtual_line> virtual_Line { get; set; }
@@ -58,6 +58,11 @@ namespace Model
         public class woMachinecurlog: wo_config
         {
             public IList<wo_machine_cur_log> Wo_machine_cur_log { get; set; } 
+        }
+
+        public class woMachine : wo_config
+        {
+            public IList<machine> Machines { get; set; }
         }
 
     }

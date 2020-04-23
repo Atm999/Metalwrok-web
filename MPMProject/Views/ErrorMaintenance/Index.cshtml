@@ -26,10 +26,10 @@
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
             $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(11)').addClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(11)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(11)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(11)').removeClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(10)').addClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(10)').removeClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(10)').removeClass('active');
+            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(10)').removeClass('active');
 
 
             toastr.options = {
@@ -95,14 +95,17 @@
                 }, {
                     field: 'start_time',
                     title: '发生时间',
-                    formatter: function (value, row, index) {
-                        var start_time = row.start_time.toString();
-                        if (start_time == "0001-01-01T08:00:00+08:00") {
-                            return "--"
-                        } else {
-                            return getLocalDateTime(row.start_time);
-                        }
-
+                        formatter: function (value, row, index) {
+                            if (row.start_time == "" || row.start_time == null) {
+                                return "--"
+                            } else {
+                                var start_time = row.start_time.toString();
+                                if (start_time == "0001-01-01T08:00:00+08:00") {
+                                    return "--"
+                                } else {
+                                    return getLocalDateTime(row.start_time);
+                                }
+                            }
                     },
                 }, {
                     field: 'release_time',
@@ -118,7 +121,6 @@
                                 return getLocalDateTime(row.release_time);
                             }
                         }
-
                     },
                 }, {
                     field: 'actionEvent',
