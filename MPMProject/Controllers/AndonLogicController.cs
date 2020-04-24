@@ -18,7 +18,7 @@ namespace MPMProject.Controllers
 
         public JsonResult GetData()
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string myurl = url + "api/v1/configuration/andon/andon_logic_detail";
             string result = GetUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
