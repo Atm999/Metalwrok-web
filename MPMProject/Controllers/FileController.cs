@@ -16,9 +16,9 @@ namespace MPMProject.Controllers
     [EnableCors("AllowSpecificOrigin")]
     public class FileController : BaseController
     {
-        private IHostingEnvironment hostingEnv;
+        private IWebHostEnvironment hostingEnv;
         string[] fileFormatArray = { "lic" };
-        public FileController(IHostingEnvironment env)
+        public FileController(IWebHostEnvironment env)
         {
             this.hostingEnv = env;
         }

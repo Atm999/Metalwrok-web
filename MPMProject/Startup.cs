@@ -16,6 +16,7 @@ using Model;
 using MPMProject.Controllers;
 using Wise_Paas.models;
 using Wise_Pass;
+using Microsoft.Extensions.Hosting;
 
 namespace MPMProject
 {
@@ -68,8 +69,8 @@ namespace MPMProject
             {
                 options.AddPolicy("any", builder =>
                 {
-                    builder.AllowAnyOrigin()//允许所有站点跨域请求
-                   .AllowAnyMethod()//允许所有请求方法
+                    //builder.AllowAnyOrigin()//允许所有站点跨域请求
+                    builder.AllowAnyMethod()//允许所有请求方法
                    .AllowAnyHeader()//允许所有请求头
                    .AllowCredentials();//允许Cookie信息
                 });
@@ -97,11 +98,12 @@ namespace MPMProject
             });
             #endregion
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -134,11 +136,12 @@ namespace MPMProject
             app.UseAuthentication();
             //权限中间件
             app.UseMiddleware(typeof(MiddleWare));
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=LevelsConfig}/{action=Index}/{id?}");
+                    pattern: "{controller=LevelsConfig}/{action=Index}/{id?}");
             });
         }
     }

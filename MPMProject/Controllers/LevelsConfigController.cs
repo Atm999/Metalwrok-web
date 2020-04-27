@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Model;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace MPMProject.Controllers
 {

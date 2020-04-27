@@ -14,8 +14,8 @@ namespace MPMProject.Controllers
     [EnableCors("AllowSpecificOrigin")]
     public class MachineLicenceController : BaseController
     {
-        private IHostingEnvironment hostingEnv;
-        public MachineLicenceController(IHostingEnvironment env)
+        private IWebHostEnvironment hostingEnv;
+        public MachineLicenceController(IWebHostEnvironment env)
         {
             this.hostingEnv = env;
         }
