@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -26,8 +27,7 @@ namespace MPMProject.Controllers
             switch (Convert.ToInt32(jo["code"]))
             {
                 case 200:
-                    Json(jo["data"]);
-                    break;
+                    return Json(jo["data"].ToObject<List<tag_type>>());
                 case 400:
                     break;
                 case 410:
@@ -37,7 +37,7 @@ namespace MPMProject.Controllers
                 default:
                     break;
             }
-            return Json(jo["data"]);
+            return Json("failed");
         }
     }
 }

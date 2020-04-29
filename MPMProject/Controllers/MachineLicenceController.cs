@@ -11,14 +11,14 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    [EnableCors("AllowSpecificOrigin")]
+    //[EnableCors("AllowSpecificOrigin")]
     public class MachineLicenceController : BaseController
     {
-        private IWebHostEnvironment hostingEnv;
-        public MachineLicenceController(IWebHostEnvironment env)
-        {
-            this.hostingEnv = env;
-        }
+        //private IWebHostEnvironment hostingEnv;
+        //public MachineLicenceController(IWebHostEnvironment env)
+        //{
+        //    this.hostingEnv = env;
+        //}
         public IActionResult Index()
         {
             var licenceUrl = url + "api/v1/configuration/public/licence";
