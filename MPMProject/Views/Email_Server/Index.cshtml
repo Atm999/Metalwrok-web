@@ -95,10 +95,10 @@
             var port = $('#port').val();
             var user_name = $('#user_name').val();
             var password = $('#password').val();
-            var dept = {
-                 id: id,
+             var dept = {
+                 id: parseInt(id),
                  host: host,
-                 port:port,
+                 port:parseInt(port),
                  user_name: user_name,
                  password:password
              };

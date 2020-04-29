@@ -142,7 +142,7 @@
         function Delete() {
             var id = $('#id').val();
             var lease = {
-                id: id
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -182,11 +182,11 @@
                 var type = $('#type').val();
                 var total_price = $('#total_price').val();
                 var lease = {
-                    id: id,
-                    machine_id: machine_id,
-                    unit_price: parseInt(unit_price),
+                    id: parseInt(id),
+                    machine_id: parseInt(machine_id),
+                    unit_price: parseFloat(unit_price),
                     type: parseInt(type),
-                    total_price: total_price
+                    total_price:parseInt( total_price)
                 };
                 if (id != 0) {
                     $.ajax({

@@ -213,12 +213,12 @@
                     type: "POST",
                     url: "/Workorderalert/UpdateTagInfo",
                     data: {
-                        id: id,
-                        target_id: virtual_line_id,
-                        tag_type_id: tag_type_id,
-                        tag_type_sub_id: tag_type_sub_id,
+                        id: parseInt(id),
+                        target_id: parseInt(virtual_line_id),
+                        tag_type_id: parseInt(tag_type_id),
+                        tag_type_sub_id: parseInt( tag_type_sub_id),
                         name: name,
-                        utilization_rate_types: utilization_rate_types,
+                        utilization_rate_types: parseInt( utilization_rate_types),
                         description: description
                     },
                     success: function (msg) {
@@ -259,7 +259,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -292,7 +292,7 @@
             var notice_group_id = $('#notice_group_id').val();
 
             var ec = {
-                id: id,
+                id: parseInt( id),
                 maximum: parseInt(maximum),
                 minimum: parseInt(minimum),
                 virtual_line_id: parseInt(virtual_line_id),

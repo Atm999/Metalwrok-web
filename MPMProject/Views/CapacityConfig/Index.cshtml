@@ -98,7 +98,7 @@
     function Delete() {
         var id = $('#id').val();
         var person = {
-            id: id
+            id: parseInt(id)
         };
         $.ajax({
             type: "POST",
@@ -124,12 +124,13 @@
         var id = $('#id').val();
         var date = $('#date').val();
         var capacity = $('#capacity').val();
-     
+       
+      
         var ec = {
-            id: id,
-            date: date,
+            id: parseInt(id),
+            date:new Date(date),
             capacity: parseInt(capacity),
-          
+           
         };
         if (id != 0) {
             $.ajax({

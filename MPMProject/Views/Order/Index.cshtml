@@ -276,7 +276,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -310,17 +310,17 @@
             var standard_time = $('#standard_time').val();
             //var order_index = $('#order_index').val();
             var wo = {
-                id: id,
+                id: parseInt( id),
                 work_order: work_order,
                 part_num: part_num,
-                standard_num: standard_num,
+                standard_num: parseInt(standard_num),
                 shift: parseInt(shiftSelect),
                 auto: Boolean(autoSelect),
                 status: parseInt(wostatusSelect),
                 virtual_line_id: parseInt(lineidSelect),
                 standard_time: standard_time,
                 //order_index: order_index
-                order_index: 0
+                order_index: parseInt(0)
 
             };
             if (id != 0) {
@@ -461,17 +461,17 @@
                 url: "/Order/AddMachine",
                 async: true,
                 data: {
-                    id: id,
+                    id: parseInt(id),
                     work_order: work_order,
                     part_num: part_num,
-                    standard_num: standard_num,
+                    standard_num:parseInt( standard_num),
                     shift: parseInt(shiftSelect),
                     auto: Boolean(autoSelect),
                     status: parseInt(wostatusSelect),
                     virtual_line_id: parseInt(virtualLine_id),
                     standard_time: standard_time,
                     //order_index: order_index,
-                    order_index: 0,
+                    order_index: parseInt(0),
                     create_time: create_time,
                     Machine: Machine
                 },

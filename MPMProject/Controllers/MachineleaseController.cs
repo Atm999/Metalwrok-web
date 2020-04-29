@@ -18,45 +18,13 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/oee/machine_lease_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<machineleases>.Get(myurl, HttpContext));
         }
 
         public JsonResult Getmachine()
         {
             string myurl = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<machine>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]machinelease lease)

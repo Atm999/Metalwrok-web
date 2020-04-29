@@ -192,10 +192,10 @@
                     type: "POST",
                     url: "/Machine_status_alert/UpdateTagInfo",
                     data: {
-                        id: id,
-                        target_id: machine_id,
-                        tag_type_id:tag_type_id,
-                        tag_type_sub_id: tag_type_sub_id,
+                        id: parseInt(id),
+                        target_id: parseInt(machine_id),
+                        tag_type_id: parseInt(tag_type_id),
+                        tag_type_sub_id: parseInt( tag_type_sub_id),
                         name: name,
                         description: description
                     },
@@ -235,7 +235,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -266,7 +266,7 @@
             var notice_group_id = $('#notice_group_id').val();
            
             var ec = {
-                id: id,
+                id: parseInt( id),
                 machine_id: parseInt(machine_id),
                 machine_status: machine_status,
                 notice_type: parseInt(notice_type),

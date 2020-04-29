@@ -20,14 +20,10 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/work_order_alert_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var machineList = jo["data"].ToObject<IList<Model.work_order_alertDto>>();
+            var machineList = CommonHelper<work_order_alertDto>.Get(myurl, HttpContext); 
 
             var purl = url + "api/v1/configuration/public/tag_extra";
-            var result1 = GetUrl(purl);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
+            var tag_info_extraList = CommonHelper<tag_info_extra>.Get(purl, HttpContext); 
 
             List<object> list = new List<object>();
             foreach (var obj in machineList)
@@ -76,18 +72,7 @@ namespace MPMProject.Controllers
                 };
                 list.Add(ob);
             }
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-              
-            }
+           
             return Json(list);
         }
       
@@ -149,9 +134,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/work_order_alert";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.work_order_alert>>();
+            var typeList = CommonHelper<work_order_alert>.Get(myurl1, HttpContext);
             var list = typeList.Where(p => p.id != ec.id);
 
             var lists = list.Any(p => p.virtual_line_id == ec.virtual_line_id && p.alert_type == ec.alert_type);
@@ -180,9 +163,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/work_order_alert";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.work_order_alert>>();
+            var typeList = CommonHelper<work_order_alert>.Get(myurl1, HttpContext); 
 
             var list = typeList.Any(p => p.virtual_line_id == ec.virtual_line_id && p.alert_type == ec.alert_type);
             if (list == false)//没有重复的
@@ -233,46 +214,15 @@ namespace MPMProject.Controllers
         public JsonResult GetVline()
         {
             var purl = url + "api/v1/configuration/work_order/virtual_line";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+          
+            return Json(CommonHelper<virtual_line>.Get(purl, HttpContext));
         }
 
         public JsonResult Getgroup()
         {
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+
+            return Json(CommonHelper<notification_group>.Get(myurl, HttpContext));
         }
     }
 }

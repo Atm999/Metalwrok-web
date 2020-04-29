@@ -21,23 +21,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<notification_groupPerson>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]notification_group group)
@@ -46,7 +30,7 @@ namespace MPMProject.Controllers
             string myurl1 = url + "api/v1/configuration/andon/error_type";
             string result1 = GetUrl(myurl1);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.notification_group>>();
+            var typeList = CommonHelper<notification_group>.Get(myurl1, HttpContext);
             var list = typeList.Where(p => p.id != group.id);
 
             var lists = list.Any(p => p.name_cn == group.name_cn || p.name_en == group.name_en || p.name_tw == group.name_tw);
@@ -79,7 +63,7 @@ namespace MPMProject.Controllers
             string myurl1 = url + "api/v1/configuration/andon/notification_group";
             string result1 = GetUrl(myurl1);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.notification_group>>();
+            var typeList = CommonHelper<notification_group>.Get(myurl1, HttpContext);
 
             var list = typeList.Any(p => p.name_cn == group.name_cn || p.name_en == group.name_en || p.name_tw == group.name_tw);
             if (list == false)//没有重复的
@@ -131,14 +115,12 @@ namespace MPMProject.Controllers
         {
             List<Person> machines = new List<Person>();
             var purl = url + "api/v1/configuration/public/person";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
+           
 
-            var list = jo["data"].ToObject<IList<Person>>();
+            var list = CommonHelper<Person>.Get(purl, HttpContext);
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
-            var mylist = myjo["data"].ToObject<IList<notification_groupPerson>>();
+          
+            var mylist = CommonHelper<notification_groupPerson>.Get(myurl, HttpContext); 
             var data = mylist.FirstOrDefault(p => p.id == group_id).person;
             var otherPersons=list.Where(p=>!data.Select(q=>q.person_id).Contains(p.id));
             return Json(otherPersons);
@@ -172,24 +154,8 @@ namespace MPMProject.Controllers
         public JsonResult GetmachineList(int group_id)
         {
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var list = jo["data"].ToObject<IList<notification_groupPerson>>();
+            var list = CommonHelper<notification_groupPerson>.Get(myurl, HttpContext);
             var data = list.FirstOrDefault(p => p.id == group_id).person;
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
             return Json(data);
         }
 

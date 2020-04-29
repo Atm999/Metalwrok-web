@@ -19,66 +19,30 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
           var  purl = url + "api/v1/configuration/public/person";
-            string result1 = GetUrl(purl);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-
             string myurl = url + "api/v1/configuration/public/dept";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
 
-            var personList = jo1["data"].ToObject<IList<Model.Person>>();
-            var deptList = jo["data"].ToObject<IList<Model.dept>>();
+            var personList = CommonHelper<Person>.Get(purl, HttpContext); 
+            var deptList = CommonHelper<dept>.Get(myurl, HttpContext); 
             //var dat = (from p in subList
             //          join q in typeList
             //          on p.tag_type_id equals q.id
             //          select new { p.id, p.name_cn, p.name_en, p.name_tw, typeName = q.name_cn }).ToList();
             var jo2 = personList.Join(deptList, p => p.dept_id, p => (p as Model.dept).id, (p, q) => new { p.id, p.user_name, p.id_num, p.user_level, deptName = q.name_cn, p.dept_id, p.email,p.wechart,p.mobile_phone }).ToList();
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo2);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
             return Json(jo2);
         }
         public JsonResult Getdept()
         {
             var purl = url + "api/v1/configuration/public/dept";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+          
+            return Json(CommonHelper<dept>.Get(purl, HttpContext)); 
         }
 
         public IActionResult Update([FromBody]Person person)
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/public/person";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.Person>>();
+         
+            var typeList = CommonHelper<Person>.Get(myurl1, HttpContext);
             var list = typeList.Where(p => p.id_num != person.id_num);
 
             var lists = list.Any(p => p.id_num == person.id_num);
@@ -114,9 +78,8 @@ namespace MPMProject.Controllers
             person.user_position = "";
             string msg = "";
             string myurl1 = url + "api/v1/configuration/public/person";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.Person>>();
+          
+            var typeList = CommonHelper<Person>.Get(myurl1, HttpContext); 
             var list = typeList.Any(p => p.id_num == person.id_num);
             if (list == false)
             {

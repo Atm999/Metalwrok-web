@@ -16,7 +16,7 @@ namespace Model
         /// <summary>
         /// 预警模式 0:月费用超支预警 1:余额不足预警
         /// </summary>
-        public string alert_mode { get; set; }
+        public int alert_mode { get; set; }
         public int notice_type { get; set; }
         public int notice_group_id { get; set; }
         /// <summary>

@@ -62,13 +62,16 @@
                     title: '设备列表',
                     formatter: function (value, row, index) {
                         var machines = row.machines;
-                        var MList = new Array(machines.length);
-                        var i = 0;
-                        machines.forEach(v => {
-                            MList[i] = v.name_cn;
-                            i++;
-                        });
-                        return MList.toString();
+                        if (machines != undefined) {
+                            var MList = new Array(machines.length);
+                            var i = 0;
+                            machines.forEach(v => {
+                                MList[i] = v.name_cn;
+                                i++;
+                            });
+                            return MList.toString();
+                        }
+
                     },
                 }, {
                     field: 'description',
@@ -145,8 +148,8 @@
                     type: "POST",
                     url: "/VirtualLine/DeleteMachine",
                     data: {
-                        id: id,
-                        group_id: group_id
+                        id: parseInt(id),
+                        group_id: parseInt(group_id)
                     },
                     success: function (msg) {
                         if (msg == "Success") {
@@ -209,7 +212,7 @@
         function Delete() {
             var id = $('#id').val();
             var dept = {
-                id: id
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -238,7 +241,7 @@
             var name_cn = $('#name_cn').val();
             var description = $('#description').val();
             var dept = {
-                id: id,
+                id: parseInt(id),
                 name_en: name_en,
                 name_tw: name_tw,
                 name_cn: name_cn,
@@ -321,8 +324,8 @@
                 type: "POST",
                 url: "/VirtualLine/AddMachine",
                 data: {
-                    id: 0,
-                    virtualLine_id: virtualLine_id,
+                    id: parseInt(0),
+                    virtualLine_id: parseInt(virtualLine_id),
                     Machine: Machine
                 },
                 success: function (msg) {

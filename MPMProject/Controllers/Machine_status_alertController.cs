@@ -19,14 +19,10 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/machine_status_alert_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var machineList = jo["data"].ToObject<IList<Model.machine_status_alertDto>>();
+            var machineList = CommonHelper<machine_status_alertDto>.Get(myurl, HttpContext);
 
             var purl = url + "api/v1/configuration/public/tag_extra";
-            var result1 = GetUrl(purl);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
+            var tag_info_extraList = CommonHelper<tag_info_extra>.Get(purl, HttpContext);
 
             var dat =
                 from p in
@@ -64,23 +60,13 @@ namespace MPMProject.Controllers
             //           select new { p.id,p.machine_id,p.machine_status,p.notice_group_id,p.notice_type,p.enable, q.name_cn,nname=a.name_cn, z?.name, z?.description, extraid = z?.id }).ToList();
 
 
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-            }
             return Json(dat);
         }
         public IActionResult Update([FromBody]machine_status_alert ec)
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/machine_status_alert";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.machine_status_alert>>();
+            var typeList = CommonHelper<machine_status_alert>.Get(myurl1, HttpContext);
             var list = typeList.Where(p => p.id != ec.id);
 
             var lists = list.Any(p => p.machine_id == ec.machine_id && p.machine_status == ec.machine_status);
@@ -113,7 +99,7 @@ namespace MPMProject.Controllers
             string myurl1 = url + "api/v1/configuration/andon/machine_status_alert";
             string result1 = GetUrl(myurl1);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.machine_status_alert>>();
+            var typeList = CommonHelper<machine_status_alert>.Get(myurl1, HttpContext); 
 
             var list = typeList.Any(p => p.machine_id == ec.machine_id && p.machine_status == ec.machine_status);
             if (list == false)//没有重复的
@@ -167,15 +153,18 @@ namespace MPMProject.Controllers
             }
             else
             {//修改
-                string tagInfoPutData = "{{" +
-                                "\"id\":{0}," +
-                                "\"description\":\"{1}\"," +
-                                "\"tag_type_sub_id\":{2}," +
-                                "\"target_id\":{3}," +
-                                "\"name\":\"{4}\"," +
-                                 "\"target_type\":{5}," +
-                                "}}";
-                tagInfoPutData = string.Format(tagInfoPutData, id, tag_Info.description, tag_Info.tag_type_sub_id, tag_Info.target_id, tag_Info.name, 0);
+                //string tagInfoPutData = "{{" +
+                //                "\"id\":{0}," +
+                //                "\"description\":\"{1}\"," +
+                //                "\"tag_type_sub_id\":{2}," +
+                //                "\"target_id\":{3}," +
+                //                "\"name\":\"{4}\"," +
+                //                 "\"target_type\":{5}," +
+                //                "}}";
+                //tagInfoPutData = string.Format(tagInfoPutData, id, tag_Info.description, tag_Info.tag_type_sub_id, tag_Info.target_id, tag_Info.name, 0);
+
+                var tagInfoPutData = JsonConvert.SerializeObject(tag_Info);
+                //string tagInfoPostResult = PostUrl(tagInfoUrl, tagInfoPostData);
                 string tagInfoPutResult = PutUrl(tagInfoUrl, tagInfoPutData);
                 JObject joMachinePut = (JObject)JsonConvert.DeserializeObject(tagInfoPutResult);
                 if (Convert.ToInt32(joMachinePut["code"]) == 200)
@@ -215,68 +204,22 @@ namespace MPMProject.Controllers
         public JsonResult Getmachine()
         {
             var purl = url + "api/v1/configuration/public/machine";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+           
+            return Json(CommonHelper<machine>.Get(purl, HttpContext));
         }
 
         public JsonResult Getgroup()
         {
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+          
+             return Json(CommonHelper<notification_group>.Get(myurl, HttpContext));
         }
         
         public JsonResult Getmachinestatus()
         {
             string myurl = url + "api/v1/configuration/oee/status_setting";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+          
+            return Json(CommonHelper<status_setting>.Get(myurl, HttpContext));
         }
 
     }

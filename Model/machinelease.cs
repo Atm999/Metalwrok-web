@@ -18,4 +18,8 @@ namespace Model
 
 
     }
+    public class machineleases : machinelease  
+    {
+        public machine machine { get; set; }
+    }
 }

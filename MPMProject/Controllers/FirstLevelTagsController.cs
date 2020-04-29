@@ -22,22 +22,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/public/tag_type";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    return Json(jo["data"].ToObject<List<tag_type>>());
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json("failed");
+            return Json(CommonHelper<tag_type>.Get(myurl,HttpContext));
         }
     }
 }

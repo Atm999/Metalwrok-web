@@ -27,5 +27,10 @@ namespace Model
         /// 
         /// </summary>
         public string access_token { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime create_time { get; set; }
     }
 }

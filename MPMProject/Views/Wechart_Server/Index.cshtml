@@ -80,7 +80,7 @@
                 document.getElementById("corp_id").value = row.corp_id;
                 document.getElementById("apply_agentid").value = row.apply_agentid;
                 document.getElementById("apply_secret").value = row.apply_secret;
-                 document.getElementById("access_token").value = row.access_token;
+                document.getElementById("access_token").value = row.access_token;
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -97,13 +97,13 @@
             var apply_agentid = $('#apply_agentid').val();
              var apply_secret = $('#apply_secret').val();
              var access_token = $('#access_token').val();
-            var dept = {
-                 id: id,
+             var dept = {
+                 id: parseInt(id),
                  apply_name: apply_name,
                  corp_id:corp_id,
                  apply_agentid: apply_agentid,
-                apply_secret: apply_secret,
-                 access_token:access_token
+                 apply_secret: apply_secret,
+                 access_token: access_token,
              };
              if (id != 0) {
                  $.ajax({

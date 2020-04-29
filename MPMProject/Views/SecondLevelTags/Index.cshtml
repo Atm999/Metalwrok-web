@@ -93,11 +93,9 @@
         };
         function Delete() {
             var id = $('#id').val();
-            if (id <= 13) {
-                toastr.error('执行失败!基本数据不允许删除');
-            } else {
+          
                 var dept = {
-                    id: id
+                    id: parseInt(id)
                 };
                 $.ajax({
                     type: "POST",
@@ -117,7 +115,6 @@
                         toastr.error('执行失败!');
                     }
                 });
-            }
         }
         function finish() {
             var id = $('#id').val();
@@ -127,17 +124,14 @@
             var name_cn = $('#name_cn').val();
             var description = $('#description').val();
             var sub = {
-                id: id,
-                tag_type_id: tag_type_id,
+                id: parseInt(id),
+                tag_type_id: parseInt(tag_type_id),
                 name_en: name_en,
                 name_tw: name_tw,
                 name_cn: name_cn,
                 description: description
             };
             if (id != 0) {
-                if (id <= 13) {
-                    toastr.error('执行失败!基本数据不允许修改');
-                } else {
                     $.ajax({
                         type: "POST",
                         url: "/SecondLevelTags/Update",
@@ -156,7 +150,7 @@
                             toastr.error('执行失败!');
                         }
                     });
-                }
+              
             } else {
                 $.ajax({
                     type: "POST",

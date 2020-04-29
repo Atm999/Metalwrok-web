@@ -23,23 +23,8 @@ namespace MPMProject.Controllers
         public  JsonResult GetData()
         {
             string  geturl = url + "api/v1/configuration/public/dept";
-            string result = GetUrl(geturl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]); 
+            return Json(CommonHelper<dept>.Get(geturl, HttpContext));
+            
         }
 
         public IActionResult Update([FromBody]dept dept) 
@@ -93,8 +78,7 @@ namespace MPMProject.Controllers
             if (list == false)//没有重复的
             {
                 string addurl = url + "api/v1/configuration/public/dept";
-                string postData = "{{\"id\":{0},\"name_en\":\"{1}\",\"name_cn\":\"{2}\",\"name_tw\":\"{3}\",\"description\":\"{4}\"}}";
-                postData = string.Format(postData, dept.id, dept.name_en, dept.name_cn, dept.name_tw, dept.description);
+                var postData = JsonConvert.SerializeObject(dept);
                 string result = PostUrl(addurl, postData);
                 JObject jo = (JObject)JsonConvert.DeserializeObject(result);
                 switch (Convert.ToInt32(jo["code"]))
@@ -102,14 +86,7 @@ namespace MPMProject.Controllers
                     case 200:
                         msg = "Success";
                         break;
-                    case 400:
-                        break;
-                    case 410:
-                        break;
-                    case 411:
-                        break;
-                    default:
-                        break;
+                    
                 }
             }
             else {

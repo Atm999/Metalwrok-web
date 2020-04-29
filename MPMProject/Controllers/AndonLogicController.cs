@@ -19,23 +19,8 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/andon_logic_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            var  ne = CommonHelper<andon_logicgroup>.Get(myurl, HttpContext);
+            return Json(ne);
         }
 
         public IActionResult Update([FromBody]andon_logic ec)

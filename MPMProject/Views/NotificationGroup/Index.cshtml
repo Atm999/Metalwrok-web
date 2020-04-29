@@ -67,13 +67,16 @@
                     title: '人员列表',
                     formatter: function (value, row, index) {
                         var persons = row.person;
-                        var PList = new Array(persons.length);
+                        if (persons != undefined) {
+                            var PList = new Array(persons.length);
                         var i = 0;
                         persons.forEach(v => {
                             PList[i] = v.user_name;
                             i++;
                         });
                         return PList.toString();
+                        }
+                        
                     },
                 }, {
                     field: 'description',
@@ -137,8 +140,8 @@
                     type: "POST",
                     url: "/NotificationGroup/DeleteMachine",
                     data: {
-                        id: id,
-                        group_id: group_id
+                        id: parseInt(id),
+                        group_id: parseInt( group_id)
                     },
                     success: function (msg) {
                         if (msg == "Success") {
@@ -201,7 +204,7 @@
         function Delete() {
             var id = $('#id').val();
             var dept = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -230,7 +233,7 @@
             var name_cn = $('#name_cn').val();
             var description = $('#description').val();
             var dept = {
-                id: id,
+                id: parseInt( id),
                 name_en: name_en,
                 name_tw: name_tw,
                 name_cn: name_cn,
@@ -305,8 +308,8 @@
             var group_id = $('#id').val();
             var machineSelects = $('#machineSelects').val();
             var group = {
-                group_id: group_id,
-                person_id: machineSelects
+                group_id: parseInt( group_id),
+                person_id:parseInt( machineSelects)
 
             };
             $.ajax({
@@ -343,8 +346,8 @@
                 type: "POST",
                 url: "/NotificationGroup/AddPerson",
                 data: {
-                    id: 0,
-                    group_id: group_id,
+                    id: parseInt(0),
+                    group_id: parseInt( group_id),
                     Machine: Machine
                 },
                 success: function (msg) {

@@ -29,4 +29,14 @@ namespace Model
         /// </summary>
         public int notice_type { get; set; }
     }
+
+    public class andon_logicgroup : andon_logic 
+    {
+        public notification_group level1_notification_group { get; set; }
+        public notification_group level2_notification_group { get; set; }
+
+        public notification_group level3_notification_group { get; set; }
+
+    }
+   
 }

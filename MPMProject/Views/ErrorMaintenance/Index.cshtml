@@ -181,7 +181,7 @@
         function Delete() {
             var id = $('#id').val();
             var error = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -212,11 +212,11 @@
             var defectives_count = $('#defectives_count').val();
             var description = $('#description').val();
             var dept = {
-                id: id,
-                error_config_id: error_config_id,
+                id: parseInt(id),
+                error_config_id: parseInt( error_config_id),
                 error_type_name: error_type_name,
                 error_type_detail_name: error_type_detail_name,
-                defectives_count: defectives_count,
+                defectives_count: parseInt( defectives_count),
                 description: description
             };
 

@@ -242,7 +242,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -274,7 +274,7 @@
             var notice_group_id = $('#notice_group_id').val();
 
             var ec = {
-                id: id,
+                id: parseInt( id),
                 machine_id: parseInt(machine_id),
                 machine_status: machine_status,
                 duration:parseInt(duration),

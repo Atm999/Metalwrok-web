@@ -21,23 +21,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<virtual_lineMachine>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]virtual_line line)
@@ -176,14 +160,9 @@ namespace MPMProject.Controllers
         {
             List<machine> machines = new List<machine>();
             var purl = url + "api/v1/configuration/public/machine";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            var list = jo["data"].ToObject<IList<machine>>();
+            var list = CommonHelper<machine>.Get(purl, HttpContext);
             string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(myurl);
-            JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
-            var mylist = myjo["data"].ToObject<IList<virtual_lineMachine>>();
+            var mylist = CommonHelper<virtual_lineMachine>.Get(myurl, HttpContext);
             var data = mylist.FirstOrDefault(p => p.id == group_id).Machines;
             var otherPersons = list.Where(p => !data.Select(q => q.machine_id).Contains(p.id));
             return Json(otherPersons);
@@ -193,24 +172,8 @@ namespace MPMProject.Controllers
         public JsonResult GetmachineList(int group_id)
         {
             string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var list = jo["data"].ToObject<IList<virtual_lineMachine>>();
+            var list = CommonHelper<virtual_lineMachine>.Get(myurl, HttpContext);
             var data = list.FirstOrDefault(p => p.id == group_id).Machines;
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
             return Json(data);
         }
 

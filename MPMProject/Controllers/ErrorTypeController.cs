@@ -20,32 +20,15 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/error_type";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+         
+            return Json(CommonHelper<error_type>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]error_type type)
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/error_type";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.error_type>>();
+            var typeList = CommonHelper<error_type>.Get(myurl1, HttpContext); 
             var list = typeList.Where(p => p.id != type.id);
 
             var lists = list.Any(p => p.name_cn == type.name_cn || p.name_en == type.name_en || p.name_tw == type.name_tw);
@@ -76,9 +59,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/error_type";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.error_type>>();
+            var typeList = CommonHelper<error_type>.Get(myurl1, HttpContext); 
 
             var list = typeList.Any(p => p.name_cn == type.name_cn || p.name_en == type.name_en || p.name_tw == type.name_tw);
             if (list == false)//没有重复的

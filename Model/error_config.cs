@@ -38,4 +38,16 @@ namespace Model
         public int andon_logic_id { get; set; }
 
     }
+
+    public class config : error_config
+    {
+        public tag_type_sub type { get; set; }
+        public Person response_person { get; set; }
+
+        public machine machine { get; set; }
+
+        public andon_logic andon_logic { get; set; }
+
+        public tag_info tag { get; set; }
+    }
 }

@@ -20,23 +20,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {//
             string myurl = url + "api/v1/configuration/andon/error_log?status=3";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<error_log>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]error_log log)
@@ -86,88 +70,25 @@ namespace MPMProject.Controllers
         public JsonResult Getmachine()
         {
             string myurl = url + "api/v1/configuration/public/machine";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<machine>.Get(myurl, HttpContext));
         }
         public JsonResult Geterror()
         {
             string myurl = url + "api/v1/configuration/andon/error_type";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<error_type>.Get(myurl, HttpContext));
         }
         public JsonResult Geterrordetail()
         {
             string myurl = url + "api/v1/configuration/andon/error_type_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<error_type_detail>.Get(myurl, HttpContext));
         }
 
         public JsonResult Getdetail(int typeid)
         {
             var purl = url + "api/v1/configuration/andon/error_type_detail";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-            var list = jo["data"].ToObject<IList<error_type_detail>>();
+            var list = CommonHelper<error_type_detail>.Get(purl, HttpContext); 
             var data = list.Where(p => p.error_type_id == typeid);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(data);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
+
             return Json(data);
         }
     }

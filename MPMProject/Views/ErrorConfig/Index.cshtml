@@ -18,7 +18,7 @@
             $("#response_person_id").select2();
             $("#tag_type_sub_id").select2();
             $("#andon_logic").select2();
-            
+
             //$("#level1_notification_group_id").select2();
             //$("#level2_notification_group_id").select2();
             //$("#level3_notification_group_id").select2();
@@ -69,7 +69,7 @@
                 }, {
                     field: 'type.name_cn',
                     title: '异常名称'
-                },  {
+                }, {
                     field: 'trigger_out_color',
                     title: '触发灯颜色',
                     formatter: function (value, row, index) {
@@ -82,17 +82,20 @@
                             return "红";
                         } else if (tp == 8) {
                             return "蓝";
-                        }else {
+                        } else {
                             return "--";
                         }
                     },
                 }, {
                     field: 'tag',
                     title: '绑定的标签',
-                    formatter: function (value, row, index) {
-                        var M = row.machine.name_en;
-                        var T = row.type.name_en;
-                        return T + ":" + M;
+                        formatter: function (value, row, index) {
+                            if (row.machine != undefined && row.type != undefined) {
+                            var M = row.machine.name_en;
+                            var T = row.type.name_en;
+                            return T + ":" + M;
+                        }
+
                     },
                 }, {
                     field: 'tag.name',
@@ -236,7 +239,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -268,19 +271,19 @@
             var tag_type_sub_id = $('#tag_type_sub_id').val();
             var trigger_out_color = $('#trigger_out_color').val();
             var andon_logic = $('#andon_logic').val();
-            
+
             //var level1_notification_group_id = $('#level1_notification_group_id').val();
             //var level2_notification_group_id = $('#level2_notification_group_id').val();
             //var level3_notification_group_id = $('#level3_notification_group_id').val();
             //var timeout_setting = $('#timeout_setting').val();
             var ec = {
-                id: id,
+                id: parseInt(id),
                 machine_id: parseInt(machine_id),
                 response_person_id: parseInt(response_person_id),
                 andon_logic_id: parseInt(andon_logic),
                 //notice_type: parseInt(notice_type),
                 logic_type: parseInt(logic_type),
-                alert_active:true,
+                alert_active: Boolean(true),
                 //alert_active: Boolean(alert_active),
                 tag_type_sub_id: parseInt(tag_type_sub_id),
                 trigger_out_color: parseInt(trigger_out_color),
@@ -418,12 +421,12 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorConfig/UpdateTagInfo?namecn=" + namecn + "&id=" + id + "&machine_id=" + machine_id+"&tag_type_sub_id="+tag_type_sub_id+"&name="+name+"&description="+description,
+                    url: "/ErrorConfig/UpdateTagInfo?namecn=" + namecn + "&id=" + id + "&machine_id=" + machine_id + "&tag_type_sub_id=" + tag_type_sub_id + "&name=" + name + "&description=" + description,
                     //async: true,
                     //processData: false,
                     //contentType: false,
                     data: JSON.stringify(ec),
-                     dataType: "json",
+                    dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {

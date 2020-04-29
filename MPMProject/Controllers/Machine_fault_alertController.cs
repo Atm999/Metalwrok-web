@@ -18,14 +18,10 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/machine_fault_alert_detail";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var machineList = jo["data"].ToObject<IList<Model.machine_fault_alertDto>>();
+            var machineList = CommonHelper<machine_fault_alertDto>.Get(myurl, HttpContext); 
 
             var purl = url + "api/v1/configuration/public/tag_extra";
-            var result1 = GetUrl(purl);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var tag_info_extraList = jo1["data"].ToObject<IList<Model.tag_info_extra>>();
+            var tag_info_extraList = CommonHelper<tag_info_extra>.Get(purl, HttpContext); 
 
             var dat =
                 from p in
@@ -50,15 +46,6 @@ namespace MPMProject.Controllers
                     o?.description,
                     extraid = o?.id
                 };
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-            }
             return Json(dat);
         }
         //Tag点修改/新增
@@ -105,9 +92,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/machine_fault_alert";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.machine_fault_alert>>();
+            var typeList = CommonHelper<machine_fault_alert>.Get(myurl1, HttpContext);
             var list = typeList.Where(p => p.id != ec.id);
 
             var lists = list.Any(p => p.error_type_detail_id == ec.error_type_detail_id );
@@ -137,9 +122,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/andon/machine_fault_alert";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.machine_fault_alert>>();
+            var typeList = CommonHelper<machine_fault_alert>.Get(myurl1, HttpContext); 
 
             var list = typeList.Any(p => p.error_type_detail_id == ec.error_type_detail_id );
             if (list == false)//没有重复的
@@ -190,67 +173,20 @@ namespace MPMProject.Controllers
         public JsonResult GetError()
         {
             var purl = url + "api/v1/configuration/andon/error_type";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            
+            return Json(CommonHelper<error_type>.Get(purl, HttpContext));
         }
         public JsonResult GetErrorDetail()
         {
             var purl = url + "api/v1/configuration/andon/error_type_detail";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+           
+            return Json(CommonHelper<error_type_detail>.Get(purl, HttpContext));
         }
         public JsonResult Getgroup()
         {
             string myurl = url + "api/v1/configuration/andon/notification_group";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+           
+            return Json(CommonHelper<notification_group>.Get(myurl, HttpContext));
         }
     }
 }

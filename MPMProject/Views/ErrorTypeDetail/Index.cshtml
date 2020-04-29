@@ -118,7 +118,7 @@
         function Delete() {
             var id = $('#id').val();
             var dept = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -149,8 +149,8 @@
             var code = $('#code').val();
             var description = $('#description').val();
             var sub = {
-                id: id,
-                error_type_id: error_type_id,
+                id: parseInt(id),
+                error_type_id: parseInt( error_type_id),
                 name_en: name_en,
                 name_tw: name_tw,
                 name_cn: name_cn,

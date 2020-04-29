@@ -115,7 +115,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: id
+                id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
@@ -161,8 +161,8 @@
                 var wechart = $('#wechart').val();
                 var mobile_phone = $('#mobile_phone').val();
                 var person = {
-                    id: id,
-                    dept_id: dept_id,
+                    id: parseInt( id),
+                    dept_id: parseInt(dept_id),
                     user_name: user_name,
                     id_num: id_num,
                     user_level: user_level,

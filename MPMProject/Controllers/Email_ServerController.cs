@@ -23,23 +23,7 @@ namespace MPMProject.Controllers
         public  JsonResult GetData()
         {
             string geturl = url + "api/v1/configuration/public/Email_Server";
-            string result = GetUrl(geturl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]); 
+            return Json(CommonHelper<email_server>.Get(geturl, HttpContext)); 
         }
 
         public IActionResult Update([FromBody]email_server email) 

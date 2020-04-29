@@ -22,41 +22,22 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/work_order/wo_config";
-            string result = GetUrl(myurl);
-            JObject jo= (JObject)JsonConvert.DeserializeObject(result);
-            var list = jo["data"].ToObject<IList<wo_config>>();
+
+            var list = CommonHelper<wo_config>.Get(myurl, HttpContext);
             var data = list.Where(p => p.status != 3);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
             return Json(data);
         }
         //虚拟线下设备查询
         public JsonResult GetmachineList(int group_id, int id)
         {
             var purl = url + "api/v1/configuration/work_order/virtual_line";
-            var result1 = GetUrl(purl);
-            JObject jos = (JObject)JsonConvert.DeserializeObject(result1);
-            var lists = jos["data"].ToObject<IList<virtual_lineMachine>>();
+            var lists = CommonHelper<virtual_lineMachine>.Get(purl, HttpContext);
             //查询当前虚拟线的设备list
             var data = lists.FirstOrDefault(p => p.id == group_id).Machines;
 
             List<machine> ma = new List<machine>();
             string myurl = url + "api/v1/configuration/work_order/wo_config";
-            string result = GetUrl(myurl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            var list = jo["data"].ToObject<IList<wo_config>>();
+            var list = CommonHelper<wo_config>.Get(myurl, HttpContext); 
             //查询该工单下设备的id
             string idlist = list.FirstOrDefault(p => p.id == id).lbr_formula;
             string [] Machine = idlist.Split(';');
@@ -79,16 +60,11 @@ namespace MPMProject.Controllers
         {
             List<machine> machines = new List<machine>();
             var purl = url + "api/v1/configuration/public/machine";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            var list = jo["data"].ToObject<IList<machine>>();
+         
+            var list = CommonHelper<machine>.Get(purl, HttpContext); 
             string myurl = url + "api/v1/configuration/work_order/virtual_line";
-            string result = GetUrl(myurl);
-            JObject myjo = (JObject)JsonConvert.DeserializeObject(result);
-            var mylist = myjo["data"].ToObject<IList<virtual_lineMachine>>();
+            var mylist = CommonHelper<virtual_lineMachine>.Get(myurl, HttpContext); 
             var data = mylist.FirstOrDefault(p => p.id == group_id).Machines;
-            //var otherPersons = list.Where(p => !data.Select(q => q.machine_id).Contains(p.id));
             return Json(data);
         }
         public IActionResult AddMachine(int id, int virtual_line_id, string work_order, string part_num, int standard_num, int shift, bool auto, int status ,string standard_time,int order_index,DateTime create_time)
@@ -247,46 +223,15 @@ namespace MPMProject.Controllers
             var purl = url + "api/v1/configuration/work_order/virtual_line";
             var result1 = GetUrl(purl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<virtual_line>.Get(purl, HttpContext));
         }
 
         public JsonResult GetmachineCount(int lineid)
         {
             var purl = url + "api/v1/configuration/work_order/virtual_line";
-            var result1 = GetUrl(purl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result1);
-            var list = jo["data"].ToObject<IList<virtual_lineMachine>>();
+            var list = CommonHelper<virtual_lineMachine>.Get(purl, HttpContext); 
             var data = list.FirstOrDefault(p => p.id == lineid).Machines;
             Count = data.Count();
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-                case 410:
-                    break;
-                case 411:
-                    break;
-                default:
-                    break;
-            }
             return Json(data.Count());
         }
 

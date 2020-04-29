@@ -19,18 +19,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string geturl = url + "api/v1/configuration/work_order/capacity_config";
-            string result = GetUrl(geturl);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(result);
-            switch (Convert.ToInt32(jo["code"]))
-            {
-                case 200:
-                    Json(jo["data"]);
-                    break;
-                case 400:
-                    break;
-
-            }
-            return Json(jo["data"]);
+            return Json(CommonHelper<capacityconfig>.Get(geturl, HttpContext)); 
         }
      
         public IActionResult Update([FromBody]capacityconfig ec)
@@ -39,7 +28,8 @@ namespace MPMProject.Controllers
             string myurl1 = url + "api/v1/configuration/work_order/capacity_config";
             string result1 = GetUrl(myurl1);
             JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.capacityconfig>>();
+
+            var typeList = CommonHelper<capacityconfig>.Get(myurl1, HttpContext); 
             var list = typeList.Where(p => p.id != ec.id);
 
             var lists = list.Any(p => p.date == ec.date);
@@ -69,9 +59,7 @@ namespace MPMProject.Controllers
         {
             string msg = "";
             string myurl1 = url + "api/v1/configuration/work_order/capacity_config";
-            string result1 = GetUrl(myurl1);
-            JObject jo1 = (JObject)JsonConvert.DeserializeObject(result1);
-            var typeList = jo1["data"].ToObject<IList<Model.capacityconfig>>();
+            var typeList = CommonHelper<capacityconfig>.Get(myurl1, HttpContext);
 
             var list = typeList.Any(p => p.date == ec.date);
             if (list == false)//没有重复的
