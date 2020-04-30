@@ -100,6 +100,7 @@
         var person = {
             id: parseInt(id)
         };
+       
         $.ajax({
             type: "POST",
             url: "/CapacityConfig/Delete",
@@ -259,6 +260,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" class="span12" id="id" name="id" />
+                        <input type="hidden" class="span12" id="datehidden" name="id" />
                         <div class="form-group">
                             <label class="sr-only" for="name">日期</label>
                         </div>
