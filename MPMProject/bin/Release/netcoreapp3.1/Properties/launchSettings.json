@@ -39,7 +39,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "METALWORK-API": "http://localhost:9001/"
+        "METALWORK-API": "http://172.21.168.9:9001/"
       },
       "applicationUrl": "https://localhost:5002"
     }

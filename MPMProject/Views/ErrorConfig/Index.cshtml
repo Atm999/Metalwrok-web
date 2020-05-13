@@ -86,7 +86,24 @@
                             return "--";
                         }
                     },
-                }, {
+                    }, {
+                        field: 'sign_in_color',
+                        title: '签到灯颜色',
+                        formatter: function (value, row, index) {
+                            var tp = row.sign_in_color;
+                            if (tp == 1) {
+                                return "绿"
+                            } else if (tp == 2) {
+                                return "黄";
+                            } else if (tp == 4) {
+                                return "红";
+                            } else if (tp == 8) {
+                                return "蓝";
+                            } else {
+                                return "--";
+                            }
+                        },
+                    }, {
                     field: 'tag',
                     title: '绑定的标签',
                         formatter: function (value, row, index) {
@@ -97,10 +114,12 @@
                         }
 
                     },
-                }, {
-                    field: 'tag.name',
-                    title: '判断点'
-                }, {
+                    },
+                    //{
+                    //field: 'tag.name',
+                    //title: '判断点'
+                    //},
+                    {
                     field: 'type.logic_type',
                     title: '执行逻辑',
                     formatter: function (value, row, index) {
@@ -198,21 +217,12 @@
                 $("#response_person_id").select2();
                 $("#andon_logic").attr('value', row.andon_logic_id);
                 $("#andon_logic").select2();
-                //$("#notice_type").attr('value', row.notice_type);
-                //$("#notice_type").select2();
                 $("#logic_type").attr('value', row.logic_type);
                 $("#logic_type").select2();
-                //$("#alert_active").attr('value', row.alert_active);
-                //$("#alert_active").select2();
                 $("#trigger_out_color").attr('value', row.trigger_out_color);
                 $("#trigger_out_color").select2();
-                //$("#level1_notification_group_id").attr('value', row.level1_notification_group_id);
-                //$("#level1_notification_group_id").select2();
-                //$("#level2_notification_group_id").attr('value', row.level2_notification_group_id);
-                //$("#level2_notification_group_id").select2();
-                //$("#level3_notification_group_id").attr('value', row.level3_notification_group_id);
-                //$("#level3_notification_group_id").select2();
-                //document.getElementById("timeout_setting").value = row.timeout_setting;
+                $("#sign_in_color").attr('value', row.sign_in_color);
+                $("#sign_in_color").select2();
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -270,27 +280,19 @@
             // var alert_active = $('#alert_active').val();
             var tag_type_sub_id = $('#tag_type_sub_id').val();
             var trigger_out_color = $('#trigger_out_color').val();
+            var sign_in_color = $('#sign_in_color').val();
             var andon_logic = $('#andon_logic').val();
 
-            //var level1_notification_group_id = $('#level1_notification_group_id').val();
-            //var level2_notification_group_id = $('#level2_notification_group_id').val();
-            //var level3_notification_group_id = $('#level3_notification_group_id').val();
-            //var timeout_setting = $('#timeout_setting').val();
             var ec = {
                 id: parseInt(id),
                 machine_id: parseInt(machine_id),
                 response_person_id: parseInt(response_person_id),
                 andon_logic_id: parseInt(andon_logic),
-                //notice_type: parseInt(notice_type),
                 logic_type: parseInt(logic_type),
                 alert_active: Boolean(true),
-                //alert_active: Boolean(alert_active),
                 tag_type_sub_id: parseInt(tag_type_sub_id),
                 trigger_out_color: parseInt(trigger_out_color),
-                //level1_notification_group_id: parseInt(level1_notification_group_id),
-                //level2_notification_group_id: parseInt(level2_notification_group_id),
-                //level3_notification_group_id: parseInt(level3_notification_group_id),
-                //timeout_setting: timeout_setting
+                sign_in_color: parseInt(sign_in_color),
             };
             if (id != 0) {
                 $.ajax({
@@ -541,8 +543,18 @@
                                 </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">异常灯颜色</label>
+                                <label class="control-label">触发灯颜色</label>
                                 <select class="select2 span12" id="trigger_out_color" name="trigger_out_color" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="4">红</option>
+                                    <option value="1">绿</option>
+                                    <option value="2">黄</option>
+                                    <option value="8">蓝</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">签到灯颜色</label>
+                                <select class="select2 span12" id="sign_in_color" name="sign_in_color" style="width:100%">
                                     <option value="0">请选择</option>
                                     <option value="4">红</option>
                                     <option value="1">绿</option>
