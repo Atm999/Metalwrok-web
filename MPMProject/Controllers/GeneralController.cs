@@ -104,7 +104,7 @@ namespace MPMProject.Controllers
         {
             CookieOptions co = new CookieOptions();
             co.IsEssential = true;
-            co.Expires = DateTime.Now.AddHours(1);
+            co.Expires = DateTime.Now.AddDays(1);
             HttpContext.Response.Cookies.Append("userName", userName, co);
             HttpContext.Response.Cookies.Append("role", role, co);
         }

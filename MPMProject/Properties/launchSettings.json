@@ -28,7 +28,7 @@
       }
     },
     "MPMProject": {
-      "commandName": "Project",
+      "commandName": "IIS",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -42,6 +42,13 @@
         "METALWORK-API": "http://172.21.168.9:9001/"
       },
       "applicationUrl": "https://localhost:5002"
+    },
+    "docker env": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "METALWORK-API": "http://127.0.0.1:9001/",
+        "time_zone": "8"
+      }
     }
   }
 }

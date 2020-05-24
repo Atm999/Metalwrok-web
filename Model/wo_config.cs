@@ -66,4 +66,21 @@ namespace Model
         }
 
     }
+
+    public class wo_config_detail : wo_config
+    {
+        /// <summary>
+        /// 虚拟线信息
+        /// </summary>
+        public virtual_line virtual_Line { set; get; }
+
+    }
+
+    public class wo_config_excute : wo_config_detail
+    {
+        /// <summary>
+        /// 虚拟线日志信息
+        /// </summary>
+        public virtual_line_log virtual_Line_log { set; get; }
+    }
 }

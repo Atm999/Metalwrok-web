@@ -26,11 +26,11 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
-        public string access_token { get; set; }
+        public string? access_token { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public DateTime create_time { get; set; }
+        public DateTime? create_time { get; set; }
     }
 }

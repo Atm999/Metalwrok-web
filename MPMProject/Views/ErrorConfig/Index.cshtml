@@ -104,16 +104,17 @@
                             }
                         },
                     }, {
-                    field: 'tag',
-                    title: '绑定的标签',
-                        formatter: function (value, row, index) {
-                            if (row.machine != undefined && row.type != undefined) {
-                            var M = row.machine.name_en;
-                            var T = row.type.name_en;
-                            return T + ":" + M;
-                        }
+                    field: 'tag.name',
+                    title: '绑定的标签'
+                    //    formatter: function (value, row, index) {
+                    //        if (row.tag == undefined ) {
+                    //        //var M = row.machine.name_en;
+                    //        //var T = row.type.name_en;
+                    //        //return T + ":" + M;
+                    //        return "--";
+                    //    }
 
-                    },
+                    //},
                     },
                     //{
                     //field: 'tag.name',

@@ -542,7 +542,7 @@
             var area_layer_id = $('#modal_area_layer_id').val();
             var utc = $("#levelUTC").find("option:selected").val();
 
-            if (name_cn == "" || name_en == "" || name_tw == "") {
+            if ( upper_id <0 || name_cn == "" || name_en == "" || name_tw == "") {
                 toastr.error("节点名称不能为空");
             } else {
                 if (id != 0) {
