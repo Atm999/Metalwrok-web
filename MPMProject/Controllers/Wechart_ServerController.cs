@@ -22,12 +22,14 @@ namespace MPMProject.Controllers
         }
         public  JsonResult GetData()
         {
-            string myurl = url + "api/v1/configuration/public/wechart_server";
+           string myurl = url + "api/v1/configuration/public/wechart_server";
            return Json(CommonHelper<wechart_server>.Get(myurl, HttpContext));
         }
 
         public IActionResult Update([FromBody]wechart_server wechart) 
         {
+            wechart.access_token = null;
+            wechart.create_time = null;
             string myurl = url + "api/v1/configuration/public/wechart_server";
             var postData = JsonConvert.SerializeObject(wechart);
             string result = PutUrl(myurl, postData);

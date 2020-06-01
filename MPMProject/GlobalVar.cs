@@ -11,5 +11,6 @@ namespace MPMProject
         public static string role = "";
         public static string user_name = "";
         public static string password = "";
+        public static double time_zone = 8;
     }
 }

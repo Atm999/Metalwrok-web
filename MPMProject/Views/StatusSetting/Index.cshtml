@@ -109,7 +109,7 @@
         }
         function Delete() {
             var id = $('#id').val();
-            if (id == 1 || id == 2 || id == 3 || id == 4||id==5) {
+            if (id == 1 || id == 2 || id == 3 || id == 4) {
                 toastr.error('固定数据不允许删除！');
                 $('#myDelModal').modal('hide');
                 $('#table').bootstrapTable('refresh');

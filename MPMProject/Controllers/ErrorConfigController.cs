@@ -23,8 +23,9 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/andon/error_config_detail";
-           
-            return Json(CommonHelper<config>.Get(myurl, HttpContext)); 
+            List<config> list = CommonHelper<config>.Get(myurl, HttpContext);
+            list = list.OrderByDescending(x => x.id).ToList();
+            return Json(list); 
         }
 
         //Tag点修改/新增

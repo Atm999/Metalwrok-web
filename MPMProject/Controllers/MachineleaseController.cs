@@ -72,7 +72,7 @@ namespace MPMProject.Controllers
             if (list == false)//没有重复的
             {
                 string myurl = url + "api/v1/configuration/oee/machine_lease";
-                var time = DateTime.UtcNow;
+                var time = DateTime.Now.AddHours(GlobalVar.time_zone);
                 lease.start_time = time;
                 var postData = JsonConvert.SerializeObject(lease);
                 string result = PostUrl(myurl, postData);

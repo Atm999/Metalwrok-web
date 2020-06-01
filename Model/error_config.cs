@@ -24,10 +24,13 @@ namespace Model
         /// </summary>
         public bool? alert_active { get; set; }
         /// <summary>
-        /// 异常灯颜色
+        /// 异常触发灯颜色
         /// </summary>
         public int? trigger_out_color { get; set; }
-
+        /// <summary>
+        /// 异常签到灯颜色
+        /// </summary>
+        public int? sign_in_color { get; set; }
         /// <summary>
         /// 逻辑类型 0:安灯逻辑 1:自定义逻辑
         /// </summary>
@@ -36,7 +39,6 @@ namespace Model
         /// 安灯逻辑id
         /// </summary>
         public int andon_logic_id { get; set; }
-
     }
 
     public class config : error_config

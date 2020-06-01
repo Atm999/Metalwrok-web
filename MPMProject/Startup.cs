@@ -22,17 +22,20 @@ namespace MPMProject
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             try
             {
                 EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
+                
                 //EnSaaS 4.0 环境
                 if (environmentInfo.cluster != null)
                 {
                     GlobalVar.IsCloud = true;
                     BaseController.url = Environment.GetEnvironmentVariable("METALWORK_API");
+                    GlobalVar.time_zone = Convert.ToDouble(Environment.GetEnvironmentVariable("db_time_zone"));
                     //BaseController.url = "http://api-ifactory-mw-metalwork-eks005.hz.wise-paas.com.cn/";
                     //BaseController.url = "https://api-ifactory-mw-" + environmentInfo.@namespace + "-" + environmentInfo.cluster + "." + environmentInfo.ensaas_domain + "/";
                 }
@@ -41,6 +44,7 @@ namespace MPMProject
                 {
                     GlobalVar.IsCloud = false;
                     BaseController.url = Environment.GetEnvironmentVariable("METALWORK-API");
+                    GlobalVar.time_zone = Convert.ToDouble(Environment.GetEnvironmentVariable("time_zone"));
                     Console.WriteLine("METALWORK-API:" + BaseController.url);
                     //BaseController.url = "http://ifactory_metalwork-api:80/";
                 }
@@ -70,9 +74,10 @@ namespace MPMProject
                 options.AddPolicy("any", builder =>
                 {
                     //builder.AllowAnyOrigin()//允许所有站点跨域请求
-                    builder.AllowAnyMethod()//允许所有请求方法
+                    options.AddPolicy(MyAllowSpecificOrigins,
+                    builder => builder.AllowAnyMethod()//允许所有请求方法
                    .AllowAnyHeader()//允许所有请求头
-                   .AllowCredentials();//允许Cookie信息
+                   .AllowCredentials());//允许Cookie信息
                 });
             });
 
@@ -99,7 +104,7 @@ namespace MPMProject
             #endregion
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,11 +142,12 @@ namespace MPMProject
             //权限中间件
             app.UseMiddleware(typeof(MiddleWare));
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=LevelsConfig}/{action=Index}/{id?}");
+                    pattern: "{controller=LevelsConfig}/{action=Index}/{id?}").RequireCors(MyAllowSpecificOrigins);
             });
         }
     }
