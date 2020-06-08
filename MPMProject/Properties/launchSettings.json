@@ -17,6 +17,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "namespace": "metalwork",
+        "module": "All",
         "cluster": "eks005",
         "datacenter": "hz",
         "ASPNETCORE_ENVIRONMENT": "Development",

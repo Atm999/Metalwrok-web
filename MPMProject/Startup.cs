@@ -22,6 +22,9 @@ namespace MPMProject
 {
     public class Startup
     {
+        //public static string  menus="WorkOrder";
+        public static string menus = "";
+        //public static string menus = "Andon";
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
@@ -29,7 +32,8 @@ namespace MPMProject
             try
             {
                 EnvironmentInfo environmentInfo = EnvironmentVariable.Get();
-                
+                menus= Environment.GetEnvironmentVariable("module");
+
                 //EnSaaS 4.0 环境
                 if (environmentInfo.cluster != null)
                 {

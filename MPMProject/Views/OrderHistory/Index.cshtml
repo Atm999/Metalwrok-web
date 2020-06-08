@@ -26,8 +26,8 @@
                 return localDate;
             }
         $(function () {
-            $('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(3) ul li:nth-of-type(3)').addClass('active');
+            //$('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(3) ul li:nth-of-type(3)').addClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -361,3 +361,20 @@
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.OrderHistory.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.OrderHistory.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

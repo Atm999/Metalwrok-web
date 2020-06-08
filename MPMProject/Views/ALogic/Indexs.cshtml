@@ -1,5 +1,5 @@
 ﻿@{
-    @model Model.error_type
+    @model Model.error_config
 }
 <!DOCTYPE html>
 <html>
@@ -7,24 +7,31 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-           getOption();
+        //getOption();
+        //getOptionperson();
+        //getOptiontagsub();
+        getOptiongroup();
         $(document).ready(function () {
-            $("#deptSelects").select2();
+            $("#machine").select2();
+            $("#machine_id").select2();
+            //$("#response_person_id").select2();
+            $("#tag_type_sub_id").select2();
+            $("#level1_notification_group_id").select2();
+            $("#level2_notification_group_id").select2();
+            $("#level3_notification_group_id").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+
         });
 
-
         $(function () {
-          //$('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(6)').addClass('active');
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(6)').removeClass('active');
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(6)').removeClass('active');
-          //  $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(6)').removeClass('active');
-
-
+           //$('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(2)').addClass('active');
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(2)').removeClass('active');
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(2)').removeClass('active');
+           // $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(2)').removeClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -37,9 +44,8 @@
                 "showMethod": "fadeIn",//显示时的动画方式
                 "hideMethod": "fadeOut"//消失时的动画方式
             };
-
             $('#table').bootstrapTable({
-                url: '/ErrorType/GetData',
+                url: '/AndonLogic/GetData',
                 method: 'get',
                 theadClasses: "thead-blue",
                 pagination: true,
@@ -55,22 +61,37 @@
                         return index + 1;
                     }
                 }, {
-                    field: 'id',
-                    title: '序号',
-                    visible: false
-
+                    field: 'name',
+                    title: '逻辑名'
+                },  {
+                    field: 'notice_type',
+                    title: '通知方式',
+                     formatter: function (value, row, index)
+                    {
+                        var notice_type = row.notice_type;
+                         if (notice_type == 0) {
+                             return "微信"
+                         } else if (notice_type == 1) {
+                             return "邮件";
+                         } else if (notice_type == 2) {
+                             return "微信&邮件";
+                         } else {
+                             return "--";
+                         }
+                      
+                 },
                 }, {
-                    field: 'name_en',
-                    title: '类别名称（英）'
+                    field: 'timeout_setting',
+                    title: '超时处理（分钟）'
                 }, {
-                    field: 'name_tw',
-                    title: '类别名称（繁中）'
-                }, {
-                    field: 'name_cn',
-                    title: '类别名称（简中）'
-                }, {
-                    field: 'description',
-                    title: '描述'
+                    field: 'level1_notification_group.name_cn',
+                    title: '一级通知群组'
+                },{
+                    field: 'level2_notification_group.name_cn',
+                    title: '二级通知群组'
+                },{
+                    field: 'level3_notification_group.name_cn',
+                    title: '三级通知群组'
                 }, {
                     field: 'actionEvent',
                     title: '操作',
@@ -89,31 +110,46 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
-
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
-                document.getElementById("name_en").value = row.name_en;
-                document.getElementById("name_tw").value = row.name_tw;
-                document.getElementById("name_cn").value = row.name_cn;
-                document.getElementById("description").value = row.description;
+                $("#name").attr('value', row.name);
+                $("#notice_type").attr('value', row.notice_type);
+                $("#notice_type").select2();;
+                $("#level1_notification_group_id").attr('value', row.level1_notification_group_id);
+                $("#level1_notification_group_id").select2();
+                $("#level2_notification_group_id").attr('value', row.level2_notification_group_id);
+                $("#level2_notification_group_id").select2();
+                $("#level3_notification_group_id").attr('value', row.level3_notification_group_id);
+                $("#level3_notification_group_id").select2();
+                document.getElementById("timeout_setting").value = row.timeout_setting;
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
                 $('#myDelModal').modal('show');
-
             }
         };
+        function clean() {
+            $('#myEditModal').modal('show');
+            document.getElementById("id").value = 0;
+            $("#name").val('');
+            $("#notice_type").val('' + -1 + '').select2();
+            $("#level1_notification_group_id").val('' + 0 + '').select2();
+            $("#level2_notification_group_id").val('' + 0 + '').select2();
+            $("#level3_notification_group_id").val('' + 0 + '').select2();
+            $("#timeout_setting").val('' + 0 + '').select2();
+
+        }
         function Delete() {
             var id = $('#id').val();
-            var dept = {
+            var person = {
                 id: parseInt( id)
             };
             $.ajax({
                 type: "POST",
-                url: "/ErrorType/Delete",
-                data: JSON.stringify(dept),
+                url: "/AndonLogic/Delete",
+                data: JSON.stringify(person),
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
                 success: function (msg) {
@@ -132,22 +168,26 @@
         }
         function finish() {
             var id = $('#id').val();
-            var name_en = $('#name_en').val();
-            var name_tw = $('#name_tw').val();
-            var name_cn = $('#name_cn').val();
-            var description = $('#description').val();
-            var dept = {
+            var name = $('#name').val();
+            var notice_type = $('#notice_type').val();
+            var level1_notification_group_id = $('#level1_notification_group_id').val();
+            var level2_notification_group_id = $('#level2_notification_group_id').val();
+            var level3_notification_group_id = $('#level3_notification_group_id').val();
+            var timeout_setting = $('#timeout_setting').val();
+            var ec = {
                 id: parseInt( id),
-                name_en: name_en,
-                name_tw: name_tw,
-                name_cn: name_cn,
-                description: description
+                name: name,
+                notice_type: parseInt(notice_type),
+                level1_notification_group_id: parseInt(level1_notification_group_id),
+                level2_notification_group_id: parseInt(level2_notification_group_id),
+                level3_notification_group_id: parseInt(level3_notification_group_id),
+                timeout_setting:parseInt( timeout_setting)
             };
             if (id != 0) {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorType/Update",
-                    data: JSON.stringify(dept),
+                    url: "/AndonLogic/Update",
+                    data: JSON.stringify(ec),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
@@ -155,10 +195,8 @@
                             toastr.success('数据更新成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
-                            getOption();
-                            $("#deptSelects").empty();
                         } else {
-                            toastr.error('执行失败!类别名称不允许重复');
+                            toastr.error('执行失败!当前设备异常名称已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -167,8 +205,8 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "/ErrorType/Add",
-                    data: JSON.stringify(dept),
+                    url: "/AndonLogic/Add",
+                    data: JSON.stringify(ec),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (msg) {
@@ -176,10 +214,8 @@
                             toastr.success('数据新增成功!');
                             $('#myEditModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
-                            getOption();
-                            $("#deptSelects").empty();
                         } else {
-                            toastr.error('执行失败!类别名称不允许重复');
+                            toastr.error('执行失败!当前设备异常名称已存在');
                         }
                     }, error: function (msg) {
                         toastr.error('执行失败!');
@@ -189,40 +225,33 @@
             }
 
         }
-        function clean() {
-            $('#myEditModal').modal('show');
-            document.getElementById("id").value = 0;
-            document.getElementById("name_en").value = "";
-            document.getElementById("name_tw").value = "";
-            document.getElementById("name_cn").value = "";
-            document.getElementById("description").value = "";
-        }
         function search() {
-            var name_cn = $('#namecn').val();
-           $('#table').bootstrapTable('filterBy', { name_cn: name_cn},
+            var machine_id = $("#machine").val();
+            $('#table').bootstrapTable('filterBy', { machine_id: machine_id },
                 {
                     //自定义刷选函数
                     'filterAlgorithm': function (row, filters) {
                         var result1 = true;//定义一个返回结果
-                        if (filters.name_cn !=0) {
-                            result1 = filters.name_cn == row.name_cn;
+                        if (filters.machine_id != 0) //如果user_name不为空，则进行判断，否则不管
+                        {
+                            result1 = filters.machine_id == row.machine_id;
                         }
                         return result1;
                     }
-                }); 
-
+                });
         }
 
-        function getOption() {
+
+        function getOptiongroup() {
             $.ajax({
                 type: "get",
-                url: '/ErrorType/GetData',
+                url: '/ErrorConfig/Getgroup',
                 async: true,
                 success: function (data) {
-                      $("#namecn").empty();
-                      $("#namecn").append('<option  value=' + 0 + '>请选择</option>');
                     for (var i = 0; i < data.length; i++) {
-                        $("#namecn").append('<option  value=' + data[i].name_cn + '>' + data[i].name_cn + '</option>');
+                        $("#level1_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#level2_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
+                        $("#level3_notification_group_id").append('<option  value=' + data[i].id + '>' + data[i].name_cn + '</option>');
                     }
                 }
             });
@@ -234,50 +263,30 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a  style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <a  style="color:#008FD7;font-weight:600"><span>安灯异常管理</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>异常类型列表</span>
+                    <span>安灯逻辑</span>
                 </div>
 
 
             </div>
         </div>
     </div>
+   
     <div class='row-fluid'>
         <div class='span12 box bordered-box'>
             <div class="box-content box-padding">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label class="sr-only" for="name">类别名称(简中)</label>
-                    </div>
-                    <div class="form-group">
-                        <select class="select2" id="namecn">
-                            <option value="0">请选择</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
-                    </div>
-                </form>
 
-            </div>
-        </div>
-    </div>
-    <div class='row-fluid'>
-        <div class='span12 box bordered-box'>
-            <div class="box-content box-padding">
                 <div style="padding:14px 0px">
                     <div class="form-group">
                         <button class="btn btn-primary" onclick="clean()" data-toggle='modal'><span class="icon-plus"> 新增</span></button>
                     </div>
                 </div>
 
-
                 <table class="table" id="table"></table>
             </div>
-
             <!-- 编辑模态框（Modal） -->
-            <div class="modal fade" id="myEditModal"style="display:none">
+            <div class="modal fade" id="myEditModal" style="display:none">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -291,32 +300,54 @@
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
                             <div class="control-group">
-                                <label class="control-label">类别名称（英）</label>
-                                <input class="span12" type="text" id="name_en" name="name_en" />
+                                <label class="control-label">逻辑名称</label>
+                                <input class="span12" type="text" id="name" name="name" />
                             </div>
                             <div class="control-group">
-                                <label class="control-label">类别名称（繁中）</label>
-                                <input class="span12" type="text" id="name_tw" name="name_tw" />
+                                <label class="control-label">预警形式</label>
+                                <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
+                                    <option value="-1">请选择</option>
+                                    <option value="0">微信</option>
+                                    <option value="1">邮件</option>
+                                    <option value="2">微信&邮件</option>
+                                </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">类别名称（简中）</label>
-                                <input class="span12" type="text" id="name_cn" name="name_cn" />
+                                <label class="control-label">超时处理（分钟）</label>
+                                <input class="span12" type="text" id="timeout_setting" name="timeout_setting" />
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">一级通知人员</label>
+                                <select class="select2 span12" id="level1_notification_group_id" name="level1_notification_group_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">描述</label>
-                                <input class="span12" type="text" id="description" name="description" />
+                                <label class="control-label">二级通知人员</label>
+                                <select class="select2 span12" id="level2_notification_group_id" name="level2_notification_group_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                取消
-                            </button>
-                            <button onclick="finish()" class="btn btn-primary">
-                                确认
-                            </button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal -->
+                            <div class="control-group">
+                                <label class="control-label">三级通知人员</label>
+                                <select class="select2 span12" id="level3_notification_group_id" name="level3_notification_group_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    取消
+                                </button>
+                                <button type="button" onclick="finish()" class="btn btn-primary">
+                                    确认
+                                </button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
             </div>
             <!-- 删除模态框（Modal） -->
             <div class="modal fade" id="myDelModal" style="display:none">
@@ -358,8 +389,8 @@
             var _self = this;
             _self.$nextTick(function () {
                 //显示active
-                _self.$refs.ErrorType.parentNode.parentNode.className = 'nav nav-stacked in'
-                _self.$refs.ErrorType.parentNode.className = 'active'
+                _self.$refs.ALogic.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.ALogic.parentNode.className = 'active'
             });
         },
         methods: {

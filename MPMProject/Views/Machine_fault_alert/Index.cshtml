@@ -7,8 +7,8 @@
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
     <script type='text/javascript'>
-          getOptionErrorDetail();
-          getOptiongroup();
+        getOptionErrorDetail();
+        getOptiongroup();
         $(document).ready(function () {
             $("#error_type_detail_id").select2();
             $("#error_type_detail").select2();
@@ -18,14 +18,14 @@
         });
 
         $(function () {
-            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
 
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(1)').addClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(1)').addClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -59,55 +59,53 @@
                     title: '异常类型'
                 }, {
                     field: 'pdname',
-                        title: '异常信息'
+                    title: '异常信息'
                 }, {
                     field: 'fault_times',
-                        title: '出现次数'
+                    title: '出现次数'
                 }, {
                     field: 'notice_type',
-                        title: '通知方式',
-                     formatter: function (value, row, index)
-                    {
+                    title: '通知方式',
+                    formatter: function (value, row, index) {
                         var notice_type = row.notice_type;
-                         if (notice_type == 0) {
-                             return "微信"
-                         } else if (notice_type == 1) {
-                             return "邮件";
-                         } else if (notice_type == 2) {
-                             return "微信&邮件";
-                         } else {
-                             return "--";
-                         }
+                        if (notice_type == 0) {
+                            return "微信"
+                        } else if (notice_type == 1) {
+                            return "邮件";
+                        } else if (notice_type == 2) {
+                            return "微信&邮件";
+                        } else {
+                            return "--";
+                        }
 
-                 },
+                    },
                 }, {
                     field: 'nname',
                     title: '通知群组'
                 }, {
                     field: 'enable',
-                        title: '启用',
-                      formatter: function (value, row, index)
-                    {
+                    title: '启用',
+                    formatter: function (value, row, index) {
                         var enable = row.enable;
-                          if (enable == true) {
-                              return "是"
-                          } else if (enable == false) {
-                              return "否";
-                          } else {
-                              return "--";
-                          }
+                        if (enable == true) {
+                            return "是"
+                        } else if (enable == false) {
+                            return "否";
+                        } else {
+                            return "--";
+                        }
 
-                 },
-                },{
+                    },
+                }, {
                     field: 'name',
                     title: 'Tag名称'
-                }, 
-                    {
+                },
+                {
                     field: 'actionEvents',
                     title: '标签点绑定',
                     formatter: machineActionFormatters,
                     events: machineOperateEvents
-                    }, {
+                }, {
                     field: 'actionEvent',
                     title: '操作',
                     align: 'center',
@@ -125,8 +123,8 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
-         function machineActionFormatters(value, row, index) {
-             var result = "";
+        function machineActionFormatters(value, row, index) {
+            var result = "";
             result += "<a class='tagBind' id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             return result;
         };
@@ -140,14 +138,14 @@
 
 
                 } else {
-                       if (row.name != null) {
-                    var names = row.name.split(":");
-                    if (names.length >= 1)
-                        document.getElementById("scadaId").value = names[0];
-                    if (names.length >= 2)
-                        document.getElementById("name").value = names[1];
-                }
-                document.getElementById("tagDescription").value =row.description;
+                    if (row.name != null) {
+                        var names = row.name.split(":");
+                        if (names.length >= 1)
+                            document.getElementById("scadaId").value = names[0];
+                        if (names.length >= 2)
+                            document.getElementById("name").value = names[1];
+                    }
+                    document.getElementById("tagDescription").value = row.description;
                 }
                 document.getElementById("machineId").value = row.error_type_detail_id;
                 $('#myAddEditModal').modal('show');
@@ -172,12 +170,12 @@
                 $('#myDelModal').modal('show');
             }
         };
-         //设备新增修改动作的提交
+        //设备新增修改动作的提交
         function machineConfirm() {
             var id = $('#id').val();
             var machine_id = $('#machineId').val();
             var tag_type_id = 4;
-            var tag_type_sub_id =24;
+            var tag_type_sub_id = 24;
 
             var Name = new Array();
             Name.push($('#scadaId').val());
@@ -195,7 +193,7 @@
                         id: parseInt(id),
                         target_id: parseInt(machine_id),
                         tag_type_id: parseInt(tag_type_id),
-                        tag_type_sub_id: parseInt( tag_type_sub_id),
+                        tag_type_sub_id: parseInt(tag_type_sub_id),
                         name: name,
                         description: description
                     },
@@ -203,10 +201,10 @@
                         if (msg == "Success") {
                             if (parseInt(id) > 0) {
                                 toastr.success('修改Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             } else {
                                 toastr.success('新增Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             }
                             $('#myAddEditModal').modal('hide');
                             $('#machineTagList').bootstrapTable('refresh');
@@ -219,8 +217,8 @@
                     }
                 });
             }
-            
-            
+
+
 
         }
         function clean() {
@@ -236,7 +234,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: parseInt( id)
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -267,9 +265,9 @@
             var notice_group_id = $('#notice_group_id').val();
 
             var ec = {
-                id: parseInt( id),
+                id: parseInt(id),
                 error_type_detail_id: parseInt(error_type_detail_id),
-                fault_times:parseInt(fault_times),
+                fault_times: parseInt(fault_times),
                 notice_type: parseInt(notice_type),
                 enable: eval(enable),
                 notice_group_id: parseInt(notice_group_id),
@@ -329,9 +327,9 @@
                     }
                 });
         }
-      
-        
-         function getOptionErrorDetail() {
+
+
+        function getOptionErrorDetail() {
             $.ajax({
                 type: "get",
                 url: '/Machine_fault_alert/GetErrorDetail',
@@ -539,3 +537,21 @@
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.Machine_fault_alert.parentNode.parentNode.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Machine_fault_alert.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Machine_fault_alert.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

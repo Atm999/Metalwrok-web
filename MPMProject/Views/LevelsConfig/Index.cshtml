@@ -10,8 +10,8 @@
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
         $(function () {
-            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
+            //$('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(1) ul li:nth-of-type(1)').addClass('active');
             //父级名称下拉框
             GetFatherName("machineFatherSearch", "area_layer", -1);
             GetFatherName("machineFatherAdd", "area_layer", -1);
@@ -1730,3 +1730,20 @@
 
     </div>
 </body>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.LevelsConfig.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.LevelsConfig.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

@@ -6,6 +6,7 @@
 <head>
     <!-- / jquery -->
     <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    @*<script src="~/vue/vue.min.js"></script>*@
     <script type='text/javascript'>
         getOption();
         getOptionperson();
@@ -27,14 +28,14 @@
         });
 
         $(function () {
-            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(1)').addClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(1)').removeClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -86,24 +87,24 @@
                             return "--";
                         }
                     },
-                    }, {
-                        field: 'sign_in_color',
-                        title: '签到灯颜色',
-                        formatter: function (value, row, index) {
-                            var tp = row.sign_in_color;
-                            if (tp == 1) {
-                                return "绿"
-                            } else if (tp == 2) {
-                                return "黄";
-                            } else if (tp == 4) {
-                                return "红";
-                            } else if (tp == 8) {
-                                return "蓝";
-                            } else {
-                                return "--";
-                            }
-                        },
-                    }, {
+                }, {
+                    field: 'sign_in_color',
+                    title: '签到灯颜色',
+                    formatter: function (value, row, index) {
+                        var tp = row.sign_in_color;
+                        if (tp == 1) {
+                            return "绿"
+                        } else if (tp == 2) {
+                            return "黄";
+                        } else if (tp == 4) {
+                            return "红";
+                        } else if (tp == 8) {
+                            return "蓝";
+                        } else {
+                            return "--";
+                        }
+                    },
+                }, {
                     field: 'tag.name',
                     title: '绑定的标签'
                     //    formatter: function (value, row, index) {
@@ -115,12 +116,12 @@
                     //    }
 
                     //},
-                    },
-                    //{
-                    //field: 'tag.name',
-                    //title: '判断点'
-                    //},
-                    {
+                },
+                //{
+                //field: 'tag.name',
+                //title: '判断点'
+                //},
+                {
                     field: 'type.logic_type',
                     title: '执行逻辑',
                     formatter: function (value, row, index) {
@@ -377,7 +378,6 @@
                 }
             });
         }
-
         function getOptionAndonLogic() {
             $.ajax({
                 type: "get",
@@ -402,7 +402,6 @@
                 }
             });
         }
-
         function machineConfirm() {
             var id = $('#id').val();
             var machine_id = $('#machineIds').val();
@@ -451,8 +450,6 @@
                 });
             }
         }
-
-
         //function getOptiongroup() {
         //    $.ajax({
         //        type: "get",
@@ -669,3 +666,20 @@
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.ErrorConfig.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.ErrorConfig.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

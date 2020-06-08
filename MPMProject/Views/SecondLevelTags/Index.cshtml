@@ -18,8 +18,8 @@
 
         $(function () {
 
-            $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
+            //$('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(1) ul li:nth-of-type(4)').addClass('active');
 
             $('#table').bootstrapTable({
                 url: '/SecondLevelTags/GetData',
@@ -93,28 +93,28 @@
         };
         function Delete() {
             var id = $('#id').val();
-          
-                var dept = {
-                    id: parseInt(id)
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/SecondLevelTags/Delete",
-                    data: JSON.stringify(dept),
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    success: function (msg) {
-                        if (msg == "Success") {
-                            toastr.success('数据删除成功!');
-                            $('#myDelModal').modal('hide');
-                            $('#table').bootstrapTable('refresh');
-                        } else {
-                            toastr.error('执行失败!');
-                        }
-                    }, error: function (msg) {
+
+            var dept = {
+                id: parseInt(id)
+            };
+            $.ajax({
+                type: "POST",
+                url: "/SecondLevelTags/Delete",
+                data: JSON.stringify(dept),
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('数据删除成功!');
+                        $('#myDelModal').modal('hide');
+                        $('#table').bootstrapTable('refresh');
+                    } else {
                         toastr.error('执行失败!');
                     }
-                });
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
         }
         function finish() {
             var id = $('#id').val();
@@ -132,25 +132,25 @@
                 description: description
             };
             if (id != 0) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/SecondLevelTags/Update",
-                        data: JSON.stringify(sub),
-                        dataType: "json",
-                        contentType: "application/json;charset=utf-8",
-                        success: function (msg) {
-                            if (msg == "Success") {
-                                toastr.success('数据更新成功!');
-                                $('#myEditModal').modal('hide');
-                                $('#table').bootstrapTable('refresh');
-                            } else {
-                                toastr.error('执行失败!二级标签不允许重复');
-                            }
-                        }, error: function (msg) {
-                            toastr.error('执行失败!');
+                $.ajax({
+                    type: "POST",
+                    url: "/SecondLevelTags/Update",
+                    data: JSON.stringify(sub),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据更新成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!二级标签不允许重复');
                         }
-                    });
-              
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+
             } else {
                 $.ajax({
                     type: "POST",
@@ -177,7 +177,7 @@
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-              $("#firstTagSelects").val('' + 0 + '').select2();
+            $("#firstTagSelects").val('' + 0 + '').select2();
 
             document.getElementById("name_en").value = "";
             document.getElementById("name_tw").value = "";
@@ -213,7 +213,7 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a  style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
+                    <a style="color:#008FD7;font-weight:600"><span>公共配置</span></a>
                     <i class='icon-angle-right'></i>
                     <span>二级标签</span>
                 </div>
@@ -337,3 +337,20 @@
     </script>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.SecondLevelTags.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.SecondLevelTags.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

@@ -20,14 +20,14 @@
         });
 
         $(function () {
-            $('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul').attr("class", "nav nav-stacked");
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul').attr("class", "nav nav-stacked");
 
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(1)').addClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
-            $('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(1)').addClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(3) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(4) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
+            //$('.navigation ul li:nth-of-type(2) ul li:nth-of-type(5) ul li:nth-of-type(3) ul li:nth-of-type(1)').removeClass('active');
 
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
@@ -65,48 +65,46 @@
                     title: '状态'
                 }, {
                     field: 'notice_type',
-                        title: '通知方式',
-                     formatter: function (value, row, index)
-                    {
+                    title: '通知方式',
+                    formatter: function (value, row, index) {
                         var notice_type = row.notice_type;
-                         if (notice_type == 0) {
-                             return "微信"
-                         } else if (notice_type == 1) {
-                             return "邮件";
-                         } else if (notice_type == 2) {
-                             return "微信&邮件";
-                         } else {
-                              return "--";
-                         }
-                 },
+                        if (notice_type == 0) {
+                            return "微信"
+                        } else if (notice_type == 1) {
+                            return "邮件";
+                        } else if (notice_type == 2) {
+                            return "微信&邮件";
+                        } else {
+                            return "--";
+                        }
+                    },
                 }, {
                     field: 'nname',
                     title: '通知群组'
                 }, {
                     field: 'enable',
-                        title: '启用',
-                      formatter: function (value, row, index)
-                    {
+                    title: '启用',
+                    formatter: function (value, row, index) {
                         var enable = row.enable;
-                          if (enable == true) {
-                              return "是"
-                          } else if (enable == false) {
-                              return "否";
-                          } else {
-                              return "--";
-                          }
-                 }
-                    },{
+                        if (enable == true) {
+                            return "是"
+                        } else if (enable == false) {
+                            return "否";
+                        } else {
+                            return "--";
+                        }
+                    }
+                }, {
                     field: 'name',
                     title: 'Tag名称'
-                }, 
-                    {
+                },
+                {
                     field: 'actionEvents',
                     title: '标签点绑定',
                     formatter: machineActionFormatters,
                     events: machineOperateEvents
-                    },
-                    {
+                },
+                {
                     field: 'actionEvent',
                     title: '操作',
                     align: 'center',
@@ -124,8 +122,8 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         };
-         function machineActionFormatters(value, row, index) {
-             var result = "";
+        function machineActionFormatters(value, row, index) {
+            var result = "";
             result += "<a class='tagBind' id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             return result;
         };
@@ -135,19 +133,19 @@
                 if (row.extraid == null) {
                     document.getElementById('scadaId').value = "";
                     document.getElementById('name').value = "";
-                    document.getElementById('tagDescription').value= "";
+                    document.getElementById('tagDescription').value = "";
 
                 } else {
-                       if (row.name != null) {
-                    var names = row.name.split(":");
-                    if (names.length >= 1)
-                        document.getElementById("scadaId").value = names[0];
-                    if (names.length >= 2)
-                        document.getElementById("name").value = names[1];
+                    if (row.name != null) {
+                        var names = row.name.split(":");
+                        if (names.length >= 1)
+                            document.getElementById("scadaId").value = names[0];
+                        if (names.length >= 2)
+                            document.getElementById("name").value = names[1];
+                    }
+                    document.getElementById("tagDescription").value = row.description;
                 }
-                document.getElementById("tagDescription").value =row.description;
-                }
-               document.getElementById("machineId").value =row.machine_id;
+                document.getElementById("machineId").value = row.machine_id;
                 $('#myAddEditModal').modal('show');
             }
         };
@@ -164,7 +162,7 @@
                 $("#enable").select2();
                 $("#notice_group_id").attr('value', row.notice_group_id);
                 $("#notice_group_id").select2();
-             
+
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
@@ -177,7 +175,7 @@
             var id = $('#id').val();
             var machine_id = $('#machineId').val();
             var tag_type_id = 4;
-            var tag_type_sub_id =13;
+            var tag_type_sub_id = 13;
 
             var Name = new Array();
             Name.push($('#scadaId').val());
@@ -195,7 +193,7 @@
                         id: parseInt(id),
                         target_id: parseInt(machine_id),
                         tag_type_id: parseInt(tag_type_id),
-                        tag_type_sub_id: parseInt( tag_type_sub_id),
+                        tag_type_sub_id: parseInt(tag_type_sub_id),
                         name: name,
                         description: description
                     },
@@ -203,10 +201,10 @@
                         if (msg == "Success") {
                             if (parseInt(id) > 0) {
                                 toastr.success('修改Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             } else {
                                 toastr.success('新增Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             }
                             $('#myAddEditModal').modal('hide');
                             $('#machineTagList').bootstrapTable('refresh');
@@ -219,8 +217,8 @@
                     }
                 });
             }
-            
-            
+
+
 
         }
         function clean() {
@@ -235,7 +233,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: parseInt( id)
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -264,13 +262,13 @@
             var notice_type = $('#notice_type').val();
             var enable = $('#enable').val();
             var notice_group_id = $('#notice_group_id').val();
-           
+
             var ec = {
-                id: parseInt( id),
+                id: parseInt(id),
                 machine_id: parseInt(machine_id),
                 machine_status: machine_status,
                 notice_type: parseInt(notice_type),
-                enable:eval(enable),
+                enable: eval(enable),
                 notice_group_id: parseInt(notice_group_id),
             };
             if (id != 0) {
@@ -372,7 +370,7 @@
         <div class="span12">
             <div class='page-header'>
                 <div class='pull-left' style="font-size:18px">
-                    <a  style="color:#008FD7;font-weight:600"><span>预警配置</span></a>
+                    <a style="color:#008FD7;font-weight:600"><span>预警配置</span></a>
                     <i class='icon-angle-right'></i>
                     <span>机台状态预警</span>
                 </div>
@@ -442,13 +440,13 @@
                                 </select>
                             </div>
                             @*<div class="control-group">
-                                <label class="control-label">状态</label>
-                                <select class="select2 span12" id="machine_status" name="machine_status" style="width:100%">
-                                    <option value="0">请选择</option>
-                                    <option value="Run">Run</option>
-                                    <option value="Error">Error</option>
-                                </select>
-                            </div>*@
+                                    <label class="control-label">状态</label>
+                                    <select class="select2 span12" id="machine_status" name="machine_status" style="width:100%">
+                                        <option value="0">请选择</option>
+                                        <option value="Run">Run</option>
+                                        <option value="Error">Error</option>
+                                    </select>
+                                </div>*@
                             <div class="control-group">
                                 <label class="control-label">通知方式</label>
                                 <select class="select2 span12" id="notice_type" name="notice_type" style="width:100%">
@@ -512,51 +510,69 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
             </div>
-                <!-- 新增编辑模态框（Modal） -->
-                <div class="modal fade" id="myAddEditModal" style="display:none">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                    &times;
-                                </button>
-                                <h4 class="modal-title" id="myAddEditLabel">
-                                    编辑
-                                </h4>
-                            </div>
-                            <div class="modal-body">
-                                <input class="span12" type="hidden" id="id" />
-                                <input class="span12" type="hidden" id="tagId" />
-                                <input class="span12" type="hidden" id="machineId" value="@ViewBag.machine_id" />
-                                <div class="control-group">
-                                    <label class="control-label">Tag点名称(SCADA_ID:名称)</label>
-                                    <div style="border: 2px dashed #b0adad;padding: 4px;">
-                                        <label class="control-label">SCADA_ID：</label>
-                                        <input class="span12" type="text" id="scadaId" />
-                                        <label class="control-label">名称：</label>
-                                        <input class="span12" type="text" id="name" />
-                                    </div>
+            <!-- 新增编辑模态框（Modal） -->
+            <div class="modal fade" id="myAddEditModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myAddEditLabel">
+                                编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input class="span12" type="hidden" id="id" />
+                            <input class="span12" type="hidden" id="tagId" />
+                            <input class="span12" type="hidden" id="machineId" value="@ViewBag.machine_id" />
+                            <div class="control-group">
+                                <label class="control-label">Tag点名称(SCADA_ID:名称)</label>
+                                <div style="border: 2px dashed #b0adad;padding: 4px;">
+                                    <label class="control-label">SCADA_ID：</label>
+                                    <input class="span12" type="text" id="scadaId" />
+                                    <label class="control-label">名称：</label>
+                                    <input class="span12" type="text" id="name" />
+                                </div>
 
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label">描述</label>
-                                    <input class="span12" type="text" id="tagDescription" />
-                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    取消
-                                </button>
-                                <button type="button" class="btn btn-primary" onclick="machineConfirm()">
-                                    确认
-                                </button>
+                            <div class="control-group">
+                                <label class="control-label">描述</label>
+                                <input class="span12" type="text" id="tagDescription" />
                             </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal -->
-                </div>
-              
-           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="machineConfirm()">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
+
         </div>
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.Machine_status_alert.parentNode.parentNode.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Machine_status_alert.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Machine_status_alert.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

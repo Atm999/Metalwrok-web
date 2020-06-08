@@ -17,8 +17,8 @@
         });
 
         $(function () {
-            $('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(3) ul li:nth-of-type(2)').addClass('active');
+            //$('.navigation ul li:nth-of-type(3) ul').attr("class", "nav nav-stacked in");
+            //$('.navigation ul li:nth-of-type(3) ul li:nth-of-type(2)').addClass('active');
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
                 "positionClass": "toast-bottom-right",//弹出的位置
@@ -720,3 +720,20 @@
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.Order.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Order.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

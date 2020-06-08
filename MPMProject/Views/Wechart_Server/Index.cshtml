@@ -11,8 +11,8 @@
 
         $(function () {
 
-           $('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
-            $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(5)').addClass('active');
+           //$('.navigation ul li:nth-of-type(1) ul').attr("class", "nav nav-stacked in");
+           // $('.navigation ul li:nth-of-type(1) ul li:nth-of-type(5)').addClass('active');
 
             toastr.options = {
                 "closeButton": true,//显示关闭按钮
@@ -236,3 +236,20 @@
     </div>
 </body>
 </html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.Wechart_Server.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Wechart_Server.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>
