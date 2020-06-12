@@ -28,19 +28,12 @@
         "SSO_URL": "https://api-sso-ensaas.hz.wise-paas.com.cn/v4.0"
       }
     },
-    "MPMProject": {
-      "commandName": "IIS",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5002;http://localhost:5000"
-    },
     "local": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "METALWORK-API": "http://172.21.168.9:9001/"
+        "module": "All",
+        "METALWORK-API": "http://172.21.168.19:9001/"
       },
       "applicationUrl": "https://localhost:5002"
     },

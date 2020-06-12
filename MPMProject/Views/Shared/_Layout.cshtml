@@ -394,6 +394,26 @@
                             </ul>
                         </li>
                     }
+                    @if (MPMProject.Startup.menus == "EHS")
+                    {
+                        <li>
+                            <a class='dropdown-collapse' href='#'>
+                                <i class='icon-bar-chart'></i>
+                                <span>环境健康管理</span>
+                                <i class='icon-angle-down angle-down'></i>
+                            </a>
+                            <ul class='nav nav-stacked'>
+                                <li class=''>
+                                    <a ref="Standard" href='/Standard/Index'>
+                                        <i class='icon-sitemap'></i>
+                                        <span>环境状态</span>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+                    }
                     @if (MPMProject.Startup.menus == "All")
                     {
                         <li>
@@ -578,6 +598,21 @@
                                 </li>
 
 
+                            </ul>
+                        </li>
+                        <li>
+                            <a class='dropdown-collapse' href='#'>
+                                <i class='icon-bar-chart'></i>
+                                <span>环境健康管理</span>
+                                <i class='icon-angle-down angle-down'></i>
+                            </a>
+                            <ul class='nav nav-stacked'>
+                                <li class=''>
+                                    <a ref="Standard" href='/Standard/Index'>
+                                        <i class='icon-sitemap'></i>
+                                        <span>环境状态</span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     }
