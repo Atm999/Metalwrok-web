@@ -33,7 +33,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "module": "All",
-        "METALWORK-API": "http://172.21.168.19:9001/"
+        "METALWORK-API": "http://172.21.168.14:9001/"
       },
       "applicationUrl": "https://localhost:5002"
     },
