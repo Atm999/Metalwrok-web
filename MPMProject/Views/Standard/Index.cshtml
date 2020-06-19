@@ -10,6 +10,7 @@
         getOption();//标签类别   tag_type_sub
         getOptions();///标签名   tag_info
         getOptionarea();//区域  area_node
+        getOptionlogic();
         $(document).ready(function () {
             $("#firstTagSelect").select2();
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
@@ -56,6 +57,17 @@
                     field: 'tag_info.name',
                     title: '标签名'
                 }, {
+                    field: 'notice_logic.name',
+                    title: '通知逻辑',
+                    formatter: function (value, row, index) {
+                        var notice_logic = value;
+                        if (notice_logic == null) {
+                            return "未设置";
+                        } else {
+                            return notice_logic;
+                        }
+                    },
+                }, {
                     field: 'normal_min',
                     title: '正常范围',
                     formatter: function (value, row, index) {
@@ -64,9 +76,9 @@
                         if (normal_min == null || normal_max == null) {
                             return "未设置";
                         } else {
-                             return normal_min + " ~ " + normal_max;
+                            return normal_min + " ~ " + normal_max;
                         }
-                       
+
                     },
                 }, {
                     field: 'abnormal_min',
@@ -74,12 +86,12 @@
                     formatter: function (value, row, index) {
                         var abnormal_min = row.abnormal_min;
                         var abnormal_max = row.abnormal_max;
-                          if (abnormal_min == null || abnormal_max == null) {
+                        if (abnormal_min == null || abnormal_max == null) {
                             return "未设置";
                         } else {
-                             return abnormal_min + " ~ " + abnormal_max;
+                            return abnormal_min + " ~ " + abnormal_max;
                         }
-                      
+
                     },
                 }, {
                     field: 'serious_min',
@@ -87,12 +99,12 @@
                     formatter: function (value, row, index) {
                         var serious_min = row.serious_min;
                         var serious_max = row.serious_max;
-                         if (serious_min == null || serious_max == null) {
+                        if (serious_min == null || serious_max == null) {
                             return "未设置";
                         } else {
-                             return serious_min + " ~ " + serious_max;
+                            return serious_min + " ~ " + serious_max;
                         }
-                       
+
                     },
                 }, {
                     field: 'actionEvent',
@@ -118,6 +130,8 @@
                 $("#tag_type_sub_id").select2();
                 $("#tag_id").attr('value', row.tag_id);
                 $("#tag_id").select2();
+                  $("#notice_logic_id").attr('value', row.notice_logic_id);
+                $("#notice_logic_id").select2();
                 document.getElementById("normal_min").value = row.normal_min;
                 document.getElementById("normal_max").value = row.normal_max;
                 document.getElementById("abnormal_min").value = row.abnormal_min;
@@ -159,7 +173,8 @@
         }
         function finish() {
             var id = $('#id').val();
-            var tag_type_sub_id = $('#tag_type_sub_id').val();
+            var tag_type_sub_id = $('#tag_type_sub_id').val(); 
+             var notice_logic_id = $('#notice_logic_id').val();
             var tag_id = $('#tag_id').val();
             var normal_min = $('#normal_min').val();
             var normal_max = $('#normal_max').val();
@@ -169,8 +184,9 @@
             var serious_max = $('#serious_max').val();
             var sub = {
                 id: parseInt(id),
-                tag_type_id: parseInt(tag_type_sub_id),
+                tag_type_sub_id: parseInt(tag_type_sub_id),
                 tag_id: parseInt(tag_id),
+                 notice_logic_id: parseInt(notice_logic_id),
                 normal_min: parseFloat(normal_min),
                 normal_max: parseFloat(normal_max),
                 abnormal_min: parseFloat(abnormal_min),
@@ -291,6 +307,19 @@
                 }
             });
         }
+        //
+         function getOptionlogic() {
+            $.ajax({
+                type: "get",
+                url: '/Standard/Getlogic',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#notice_logic_id").append('<option  value=' + data[i].id + '>' + data[i].name + '</option>');
+                    }
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -330,10 +359,10 @@
 
             <div class="box-content box-padding">
                 @*<div style="padding:10px 0px">
-                    <div class="form-group">
-                        <button class="btn btn-primary" data-toggle='modal' onclick="clean()"><span class="icon-plus"> 新增</span></button>
-                    </div>
-                </div>*@
+                        <div class="form-group">
+                            <button class="btn btn-primary" data-toggle='modal' onclick="clean()"><span class="icon-plus"> 新增</span></button>
+                        </div>
+                    </div>*@
 
                 <table class="table" id="table"></table>
             </div>
@@ -362,6 +391,12 @@
                             <div class="control-group">
                                 <label class="control-label">标签名</label>
                                 <select class="select2 span12" id="tag_id" disabled="disabled" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">通知逻辑</label>
+                                <select class="select2 span12" id="notice_logic_id" style="width:100%">
                                     <option value="0">请选择</option>
                                 </select>
                             </div>

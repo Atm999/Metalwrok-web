@@ -10,11 +10,12 @@ namespace Model
         /// <summary>
         /// 标签id
         /// </summary>
-        public int tag_id { get; set; } 
+        public int? tag_id { get; set; } 
         /// <summary>
         /// 
         /// </summary>
-        public int  tag_type_sub_id { get; set; }
+        public int?  tag_type_sub_id { get; set; }
+        public int? notice_logic_id { get; set; }
         /// <summary>
         /// 正常范围最小值
         /// </summary>
@@ -48,5 +49,6 @@ namespace Model
         public area_layer area_layer { get; set; }
         public machine machine { get; set; }
         public tag_info tag_info { get; set; }
+        public notice_logic notice_logic { get; set; }
     }
 }

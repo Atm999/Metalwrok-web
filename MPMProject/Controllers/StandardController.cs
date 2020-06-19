@@ -55,6 +55,13 @@ namespace MPMProject.Controllers
             var purl = url + "api/v1/configuration/public/area_node";
             return Json(CommonHelper<area_node>.Get(purl, HttpContext));
         }
+
+        public JsonResult Getlogic() 
+        {
+            var purl = url + "api/v1/configuration/ehs/notice_logic";
+            return Json(CommonHelper<notice_logic>.Get(purl, HttpContext));
+        }
+        
         public IActionResult Update([FromBody]standard sub)
         {
             string msg = "";
