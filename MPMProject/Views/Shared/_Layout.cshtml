@@ -96,10 +96,6 @@
                                 @if (!GlobalVar.IsCloud)
                                 {
                                     <li id="myflag">
-                                        <a href='/User/Index'>
-                                            <i class='icon-cog'> </i>
-                                             用户管理
-                                        </a>
                                     </li>
                                 }
 
@@ -151,7 +147,7 @@
             </div>
         </div>
     </header>
-    <div id='wrapper' >
+    <div id='wrapper'>
         <div id='main-nav-bg'></div>
         <nav id='main-nav'>
             <div class='navigation'>
@@ -654,12 +650,52 @@
         <section id='content'>
             <div class='container-fluid'>
                 <div class='row-fluid' id='content-wrapper'>
-                    <div class='span12' >
+                    <div class='span12'>
                         @RenderBody()
                     </div>
                 </div>
             </div>
         </section>
+    </div>
+    <div class="modal fade" id="myEditModal" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="control-group">
+                        <label class="control-label">用户名称</label>
+                        <input class="span12" type="text" id="edit_name" name="edit_name" disabled />
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">旧密码</label>
+                        <input class="span12" type="text" id="old_pwd" name="old_pwd" disabled />
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">新密码</label>
+                        <input class="span12" type="text" id="new_pwd" name="new_pwd" disabled />
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">新密码确认</label>
+                        <input class="span12" type="text" id="comfirm_pwd" name="comfirm_pwd" disabled />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        取消
+                    </button>
+                    <button onclick="EditConfirm()" class="btn btn-primary">
+                        确认
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 
     <!-- / jquery -->
@@ -805,15 +841,54 @@
             var name = getCookie('userName');
             document.getElementById('loginName').innerHTML = name;
             var role = getCookie('role');
+            console.log(role)
             if (role == 'Admin') {
-                $('#myflag').innerHTML = "<a href='/User/Index'>< i class='icon-group' ></i >用户管理</a>";
+                $('#myflag').append("<a href='/User/Index'><i class='icon-group'></i>用户管理</a>");
             } else {
-                $('#myflag').innerHTML = "<a href='/User/EditPassword'>< i class='icon-edit-sign' ></i >修改密码</a>";
+                $('#myflag').append("<a href='#' data-toggle='modal' data-target='#myEditModal'><i class='icon-edit-sign'></i>修改密码</a>");
             }
 
-            console.log(name)
-            console.log(role)
         });
+
+        function EditConfirm() {
+            var name = $('#edit_name').val();
+            var old_pwd = $('#old_pwd').val();
+            var new_pwd = $('#new_pwd').val();
+            var confirm_pwd = $('#confirm_pwd').val();
+
+            if (old_pwd == "" || new_pwd == "" || confirm_pwd == "") {
+                toastr.error("密码不能为空");
+            }
+            else if (new_pwd != confirm_pwd) {
+                toastr.error("新密码不一致！");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/User/ChangePwd",
+                    data: {
+                        name: name,
+                        old_pwd:old_pwd,
+                        new_pwd: new_pwd
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据更新成功!');
+                            $('#myEditModal').modal('hide');
+
+                        } else {
+                            toastr.error('输入的旧密码不正确!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+
+            }
+
+            
+
+
+        }
 
     </script>
 

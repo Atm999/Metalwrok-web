@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace MPMProject.Controllers
             string myurl1 = url + "api/v1/configuration/public/user";
 
             var typeList = CommonHelper<wise_paas_user>.Get(myurl1, HttpContext);
-            var list = typeList.Where(p => p.id == user.id).ToList();
+            var list = typeList.Where(p => p.name == user.name).ToList();
 
             if (list.Count()>0)
             {
@@ -46,6 +47,42 @@ namespace MPMProject.Controllers
                 wise_Paas_User.name = list[0].name;
                 wise_Paas_User.password = list[0].password;
                 wise_Paas_User.role = user.role;
+
+                string putString = JsonConvert.SerializeObject(wise_Paas_User);
+                string result = PostUrl(myurl, putString);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(result);
+                if (Convert.ToInt32(jo["code"]) == 200)
+                {
+                    msg = "Success";
+                }
+                else
+                {
+                    msg = "fail";
+                }
+            }
+            else
+            {
+                msg = "fail";
+            }
+            return Json(msg);
+        }
+
+        public IActionResult ChangePwd(string name,string old_pwd,string new_pwd)
+        {
+            string msg = "";
+            string myurl1 = url + "api/v1/configuration/public/user";
+
+            var typeList = CommonHelper<wise_paas_user>.Get(myurl1, HttpContext);
+            var list = typeList.Where(p => p.password == old_pwd && p.name== name).ToList();
+
+            if (list.Count() > 0)
+            {
+                string myurl = url + "api/v1/configuration/public/user";
+                wise_paas_user wise_Paas_User = new wise_paas_user();
+                wise_Paas_User.id = list[0].id;
+                wise_Paas_User.name = list[0].name;
+                wise_Paas_User.password = new_pwd;
+                wise_Paas_User.role = list[0].role;
 
                 string putString = JsonConvert.SerializeObject(wise_Paas_User);
                 string result = PostUrl(myurl, putString);
@@ -95,10 +132,10 @@ namespace MPMProject.Controllers
             return Json(msg);
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string name)
         {
             string msg = "";
-            string myurl = url + "api/v1/configuration/public/user?id=" + id;
+            string myurl = url + "api/v1/configuration/public/user?user=" + name;
             string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             if (Convert.ToInt32(jo["code"]) == 200)

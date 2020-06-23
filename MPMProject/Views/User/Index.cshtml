@@ -54,8 +54,8 @@
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
-            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            result += "<a class='edit ml10'; href='#'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='#' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
 
@@ -67,7 +67,8 @@
                 $('#myEditModal').modal('show');
             },
             'click .remove': function (e, value, row, index) {
-                document.getElementById("id").value = row.id;
+                document.getElementById("delete_name").value = row.name;
+                document.getElementById("deleteUser").innerHTML = row.name;
                 $('#myDelModal').modal('show');
 
             }
@@ -114,7 +115,7 @@
                     },
                     success: function (msg) {
                         if (msg == "Success") {
-                            toastr.success('数据新增成功!');
+                            toastr.success('用户添加成功!');
                             $('#myAddModal').modal('hide');
                             $('#table').bootstrapTable('refresh');
 
@@ -160,17 +161,17 @@
         }
 
         function Delete() {
-            var id = $('#id').val();
+            var name = $('#delete_name').val();
 
             $.ajax({
                 type: "POST",
                 url: "/User/Delete",
                 data: {
-                    id: parseInt(id)
+                    name: name
                 },
                 success: function (msg) {
                     if (msg == "Success") {
-                        toastr.success('数据删除成功!');
+                        toastr.success('用户删除成功!');
                         $('#myDelModal').modal('hide');
                         $('#table').bootstrapTable('refresh');
                     } else {
@@ -310,8 +311,8 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <div>是否确认删除该条记录？</div>
-                            <input type="hidden" id="deleteId" />
+                            <div>是否确认删除用户 <span id="deleteUser"></span> ?</div>
+                            <input type="hidden" id="delete_name" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
