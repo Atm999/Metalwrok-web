@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
@@ -16,6 +17,16 @@ namespace MPMProject.Controllers
     public class BaseController : Controller
     {
         public static string url = "";
+        
+
+        public wise_paas_user GetLoginUser() {
+            wise_paas_user user = new wise_paas_user();
+            HttpContext.Request.Cookies.TryGetValue("userName", out string user_name);
+            HttpContext.Request.Cookies.TryGetValue("role", out string role);
+            user.name = user_name;
+            user.role = role;
+            return user;
+        }
         /// <summary>
         /// http post方法
         /// </summary>

@@ -62,64 +62,61 @@
                     title: '最大月费用/余额'
                 }, {
                     field: 'notice_type',
-                        title: '通知方式',
-                     formatter: function (value, row, index)
-                    {
+                    title: '通知方式',
+                    formatter: function (value, row, index) {
                         var notice_type = row.notice_type;
-                         if (notice_type == 0) {
-                             return "微信"
-                         } else if (notice_type == 1) {
-                             return "邮件";
-                         } else if (notice_type == 2) {
-                             return "微信&邮件";
-                         } else {
-                             return "--";
-                         }
-                      
-                 },
+                        if (notice_type == 0) {
+                            return "微信"
+                        } else if (notice_type == 1) {
+                            return "邮件";
+                        } else if (notice_type == 2) {
+                            return "微信&邮件";
+                        } else {
+                            return "--";
+                        }
+
+                    },
                 }, {
                     field: 'alert_mode',
-                        title: '预警模式',
-                         formatter: function (value, row, index)
-                    {
+                    title: '预警模式',
+                    formatter: function (value, row, index) {
                         var alert_mode = row.alert_mode;
-                         if (alert_mode == 0) {
-                             return "月费用超支预警"
-                         } else if (alert_mode == 1) {
-                             return "余额不足预警";
-                         } else {
-                             return "--";
-                         }
-                      
-                 },
+                        if (alert_mode == 0) {
+                            return "月费用超支预警"
+                        } else if (alert_mode == 1) {
+                            return "余额不足预警";
+                        } else {
+                            return "--";
+                        }
+
+                    },
                 }, {
                     field: 'nname',
                     title: '通知群组'
                 }, {
                     field: 'enable',
-                        title: '启用',
-                      formatter: function (value, row, index)
-                    {
+                    title: '启用',
+                    formatter: function (value, row, index) {
                         var enable = row.enable;
-                          if (enable == true) {
-                              return "是"
-                          } else if (enable == false) {
-                              return "否";
-                          } else {
-                              return "--";
-                          }
-                      
-                 },
-                },{
+                        if (enable == true) {
+                            return "是"
+                        } else if (enable == false) {
+                            return "否";
+                        } else {
+                            return "--";
+                        }
+
+                    },
+                }, {
                     field: 'name',
                     title: 'Tag名称'
-                },{
+                }, {
                     field: 'actionEvents',
                     title: '标签点绑定',
                     formatter: machineActionFormatters,
                     events: machineOperateEvents
-                    },
-                    {
+                },
+                {
                     field: 'actionEvent',
                     title: '操作',
                     align: 'center',
@@ -137,8 +134,8 @@
             result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
             return result;
         }
-         function machineActionFormatters(value, row, index) {
-             var result = "";
+        function machineActionFormatters(value, row, index) {
+            var result = "";
             result += "<a class='tagBind' id='tagBind' title='Tag点绑定' style='font-size:32px;'><span class='icon-list'></span></a>";
             return result;
         };
@@ -148,19 +145,19 @@
                 if (row.extraid == null) {
                     document.getElementById('scadaId').value = "";
                     document.getElementById('name').value = "";
-                    document.getElementById('tagDescription').value= "";
+                    document.getElementById('tagDescription').value = "";
 
                 } else {
-                       if (row.name != null) {
-                    var names = row.name.split(":");
-                    if (names.length >= 1)
-                        document.getElementById("scadaId").value = names[0];
-                    if (names.length >= 2)
-                        document.getElementById("name").value = names[1];
+                    if (row.name != null) {
+                        var names = row.name.split(":");
+                        if (names.length >= 1)
+                            document.getElementById("scadaId").value = names[0];
+                        if (names.length >= 2)
+                            document.getElementById("name").value = names[1];
+                    }
+                    document.getElementById("tagDescription").value = row.description;
                 }
-                document.getElementById("tagDescription").value =row.description;
-                }
-               document.getElementById("machineId").value =row.machine_id;
+                document.getElementById("machineId").value = row.machine_id;
                 $('#myAddEditModal').modal('show');
             }
         };
@@ -169,7 +166,7 @@
                 document.getElementById("id").value = row.id;
                 $("#machine_id").attr('value', row.machine_id);
                 $("#machine_id").select2();
-                 document.getElementById("cost").value = row.cost;
+                document.getElementById("cost").value = row.cost;
                 $("#alert_mode").attr('value', row.alert_mode);
                 $("#alert_mode").select2();
                 $("#notice_type").attr('value', row.notice_type);
@@ -186,12 +183,12 @@
                 $('#myDelModal').modal('show');
             }
         };
-          //设备新增修改动作的提交
+        //设备新增修改动作的提交
         function machineConfirm() {
             var id = $('#id').val();
             var machine_id = $('#machineId').val();
             var tag_type_id = 4;
-            var tag_type_sub_id =18;
+            var tag_type_sub_id = 18;
 
             var Name = new Array();
             Name.push($('#scadaId').val());
@@ -209,7 +206,7 @@
                         id: parseInt(id),
                         target_id: parseInt(machine_id),
                         tag_type_id: parseInt(tag_type_id),
-                        tag_type_sub_id: parseInt( tag_type_sub_id),
+                        tag_type_sub_id: parseInt(tag_type_sub_id),
                         name: name,
                         description: description
                     },
@@ -217,10 +214,10 @@
                         if (msg == "Success") {
                             if (parseInt(id) > 0) {
                                 toastr.success('修改Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             } else {
                                 toastr.success('新增Tag点成功!');
-                                 $('#table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             }
                             $('#myAddEditModal').modal('hide');
                             $('#machineTagList').bootstrapTable('refresh');
@@ -233,15 +230,15 @@
                     }
                 });
             }
-            
-            
+
+
 
         }
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
-             document.getElementById("cost").value = 0;
-             $("#machine_id").val('' + 0 + '').select2();
+            document.getElementById("cost").value = 0;
+            $("#machine_id").val('' + 0 + '').select2();
             $("#alert_mode").val('' + -1 + '').select2();
             $("#notice_type").val('' + -1 + '').select2();
             $("#enable").val('' + 0 + '').select2();
@@ -250,7 +247,7 @@
         function Delete() {
             var id = $('#id').val();
             var person = {
-                id: parseInt( id)
+                id: parseInt(id)
             };
             $.ajax({
                 type: "POST",
@@ -282,12 +279,12 @@
             var notice_group_id = $('#notice_group_id').val();
 
             var ec = {
-                id: parseInt( id),
+                id: parseInt(id),
                 machine_id: parseInt(machine_id),
                 cost: parseFloat(cost),
-                alert_mode: parseInt( alert_mode),
+                alert_mode: parseInt(alert_mode),
                 notice_type: parseInt(notice_type),
-                enable:eval(enable),
+                enable: eval(enable),
                 notice_group_id: parseInt(notice_group_id),
             };
             if (id != 0) {
