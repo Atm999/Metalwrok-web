@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    @using Microsoft.AspNetCore.Http;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <title>MPM Portal</title>
@@ -84,6 +87,24 @@
                                 <span class='icon-user' style="font-size:34px;padding:10px"></span>
                             </a>
                             <ul class='dropdown-menu'>
+                                <li>
+                                    <a href='#'>
+                                        <i id="loginName"></i>
+                                    </a>
+                                </li>
+                                <li class='divider'></li>
+                                @if (!GlobalVar.IsCloud)
+                                {
+                                    <li id="myflag">
+                                        <a href='/User/Index'>
+                                            <i class='icon-cog'> </i>
+                                             用户管理
+                                        </a>
+                                    </li>
+                                }
+
+
+                                <li class='divider'></li>
                                 <li>
                                     <a href='@(BaseController.url+"swagger/index.html")' target="_blank">
                                         <i class='icon-file-alt'></i>
@@ -754,6 +775,7 @@
     <!-- / toastr -->
     <script src="~/assets/javascripts/plugins/toastr/toastr.js"></script>
     <script>
+
         toastr.options = {
             "closeButton": true,//显示关闭按钮
             "positionClass": "toast-bottom-right",//弹出的位置
@@ -766,6 +788,33 @@
             "showMethod": "fadeIn",//显示时的动画方式
             "hideMethod": "fadeOut"//消失时的动画方式
         };
+
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=")
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1
+                    c_end = document.cookie.indexOf(";", c_start)
+                    if (c_end == -1) c_end = document.cookie.length
+                    return unescape(document.cookie.substring(c_start, c_end))
+                }
+            }
+            return "";
+        }
+        $(function () {
+            var name = getCookie('userName');
+            document.getElementById('loginName').innerHTML = name;
+            var role = getCookie('role');
+            if (role == 'Admin') {
+                $('#myflag').innerHTML = "<a href='/User/Index'>< i class='icon-group' ></i >用户管理</a>";
+            } else {
+                $('#myflag').innerHTML = "<a href='/User/EditPassword'>< i class='icon-edit-sign' ></i >修改密码</a>";
+            }
+
+            console.log(name)
+            console.log(role)
+        });
+
     </script>
 
     @RenderSection("scripts", false)
