@@ -188,6 +188,18 @@
                                 </a>
                             </li>
                             <li class=''>
+                                <a ref="Person" href='/Person/Index'>
+                                    <i class='icon-group'></i>
+                                    <span>人员列表</span>
+                                </a>
+                            </li>
+                            <li class=''>
+                                <a ref="NotificationGroup" href='/NotificationGroup/Index'>
+                                    <i class='icon-user-md'></i>
+                                    <span>群组通知列表</span>
+                                </a>
+                            </li>
+                            <li class=''>
                                 <a ref="Machinelease" href='/Machinelease/Index'>
                                     <i class='icon-html5'></i>
                                     <span>租赁价格</span>
@@ -311,18 +323,7 @@
                                         <span>异常详细列表</span>
                                     </a>
                                 </li>
-                                <li class=''>
-                                    <a ref="Person" href='/Person/Index'>
-                                        <i class='icon-group'></i>
-                                        <span>人员列表</span>
-                                    </a>
-                                </li>
-                                <li class=''>
-                                    <a ref="NotificationGroup" href='/NotificationGroup/Index'>
-                                        <i class='icon-user-md'></i>
-                                        <span>群组通知列表</span>
-                                    </a>
-                                </li>
+
                                 <li class=''>
                                     <a ref="ErrorMaintenance" href='/ErrorMaintenance/Index'>
                                         <i class='icon-wrench'></i>
@@ -413,6 +414,42 @@
                                     <a ref="Notification" href='/Notification/Index'>
                                         <i class='volume-up'></i>
                                         <span>通知逻辑</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (MPMProject.Startup.menus == "LPM")
+                    {
+                        <li>
+                            <a class='dropdown-collapse' href='#'>
+                                <i class='icon-user-md'></i>
+                                <span>人员绩效管理</span>
+                                <i class='icon-angle-down angle-down'></i>
+                            </a>
+                            <ul class='nav nav-stacked'>
+                                <li class=''>
+                                    <a ref="Standard" href='/Standard/Index'>
+                                        <i class='icon-dashboard'></i>
+                                        <span>人员设备</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/Notification/Index'>
+                                        <i class='icon-bar-chart'></i>
+                                        <span>排班计划</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/NotificatIndexion/Index'>
+                                        <i class='icon-calendar'></i>
+                                        <span>出勤统计</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/Notification/Index'>
+                                        <i class='icon-edit-sign'></i>
+                                        <span>改善计划</span>
                                     </a>
                                 </li>
                             </ul>
@@ -528,18 +565,7 @@
                                         <span>异常详细列表</span>
                                     </a>
                                 </li>
-                                <li class=''>
-                                    <a ref="Person" href='/Person/Index'>
-                                        <i class='icon-group'></i>
-                                        <span>人员列表</span>
-                                    </a>
-                                </li>
-                                <li class=''>
-                                    <a ref="NotificationGroup" href='/NotificationGroup/Index'>
-                                        <i class='icon-user-md'></i>
-                                        <span>群组通知列表</span>
-                                    </a>
-                                </li>
+
                                 <li class=''>
                                     <a ref="ErrorMaintenance" href='/ErrorMaintenance/Index'>
                                         <i class='icon-wrench'></i>
@@ -621,6 +647,40 @@
                                     <a ref="Notification" href='/Notification/Index'>
                                         <i class='icon-volume-down'></i>
                                         <span>通知逻辑</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a class='dropdown-collapse' href='#'>
+                                <i class='icon-user-md'></i>
+                                <span>人员绩效管理</span>
+                                <i class='icon-angle-down angle-down'></i>
+                            </a>
+                            <ul class='nav nav-stacked'>
+                                <li class=''>
+                                    <a ref="Standard" href='/Standard/Index'>
+                                        <i class='icon-dashboard'></i>
+                                        <span>人员设备</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/Notification/Index'>
+                                        <i class='icon-bar-chart'></i>
+                                        <span>排班计划</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/Notification/Index'>
+                                        <i class='icon-calendar'></i>
+                                        <span>出勤统计</span>
+                                    </a>
+                                </li>
+                                <li class=''>
+                                    <a ref="Notification" href='/Notification/Index'>
+                                        <i class='icon-edit-sign'></i>
+                                        <span>改善计划</span>
                                     </a>
                                 </li>
                             </ul>
