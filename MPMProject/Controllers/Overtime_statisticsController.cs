@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class Attendance_statisticsController : BaseController
+    public class Overtime_statisticsController : BaseController
     {
         public IActionResult Index()
         {
@@ -18,17 +18,24 @@ namespace MPMProject.Controllers
 
         public JsonResult GetData()
         {
-            string myurl = url + "api/v1/configuration/lpm/attendance_statistics";
-            var typeList = CommonHelper<attendance_statistics>.Get(myurl, HttpContext);
+            string myurl = url + "api/v1/configuration/lpm/overtime_statistics";
+            var typeList = CommonHelper<overtime_statistics>.Get(myurl, HttpContext);
+
             var purl = url + "api/v1/configuration/public/person";
             var subList = CommonHelper<Person>.Get(purl, HttpContext);
-            var jo2 = typeList.Join(subList, p => p.person_id, p => (p as Model.Person).id, (p, q) => new { p.id, p.person_id,p.is_attend, p.shift, p.date, q.id_num, q.user_name, q.dept_id }).ToList();
-            return Json(jo2);
+
+            var durl = url + "api/v1/configuration/public/dept";
+            var deptList = CommonHelper<dept>.Get(durl, HttpContext); 
+
+            var jo2 = typeList.Join(subList, p => p.person_id, p => (p as Model.Person).id, (p, q) => new { p.id, p.start_time, p.end_time, p.duration,p.person_id, q.id_num, q.user_name, q.dept_id }).ToList();
+
+            var jo3 = jo2.Join(deptList, p => p.dept_id, p => (p as Model.dept).id, (p, q) => new { p.id, p.start_time, p.end_time, p.duration, p.person_id, p.id_num, p.user_name, p.dept_id, q.name_cn }).ToList();
+            return Json(jo3); 
         }
 
-        public IActionResult Update([FromBody]attendance_statistics ec)
+        public IActionResult Update([FromBody]leave_statistics ec)
         {
-            string myurl = url + "api/v1/configuration/lpm/attendance_statistics";
+            string myurl = url + "api/v1/configuration/lpm/overtime_statistics";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -42,9 +49,9 @@ namespace MPMProject.Controllers
             }
             return Json("fail");
         }
-        public IActionResult Add([FromBody]attendance_statistics ec)
+        public IActionResult Add([FromBody]leave_statistics ec)
         {
-            string myurl = url + "api/v1/configuration/lpm/attendance_statistics";
+            string myurl = url + "api/v1/configuration/lpm/overtime_statistics";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -58,9 +65,9 @@ namespace MPMProject.Controllers
             return Json("fail");
         }
 
-        public IActionResult Delete([FromBody]attendance_statistics ec)
+        public IActionResult Delete([FromBody]leave_statistics ec)
         {
-            string myurl = url + "api/v1/configuration/lpm/attendance_statistics?id=" + ec.id.ToString();
+            string myurl = url + "api/v1/configuration/lpm/overtime_statistics?id=" + ec.id.ToString();
             string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -79,6 +86,7 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
+
         public JsonResult Getperson()
         {
             string myurl = url + "api/v1/configuration/public/person";

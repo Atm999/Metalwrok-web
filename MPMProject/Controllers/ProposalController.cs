@@ -18,14 +18,26 @@ namespace MPMProject.Controllers
 
         public JsonResult GetData()
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic_detail";
-            var  ne = CommonHelper<andon_logicgroup>.Get(myurl, HttpContext);
-            return Json(ne);
+            string myurl = url + "api/v1/configuration/lpm/proposal";
+            var typeList = CommonHelper<proposal>.Get(myurl, HttpContext);
+
+
+            var purl = url + "api/v1/configuration/public/person";
+            var subList = CommonHelper<Person>.Get(purl, HttpContext);
+
+            var durl = url + "api/v1/configuration/public/dept";
+            var deptList = CommonHelper<dept>.Get(durl, HttpContext);
+
+            var jo2 = typeList.Join(subList, p => p.person_id, p => (p as Model.Person).id, (p, q) => new { p.id,p.title,p.content,p.person_id,q.id_num,q.user_name,q.dept_id}).ToList();
+
+            var jo3 = jo2.Join(deptList, p => p.dept_id, p => (p as Model.dept).id, (p, q) => new { p.id, p.title, p.content, p.person_id, p.id_num,p.user_name,p.dept_id,q.name_cn }).ToList();
+
+            return Json(jo3);
         }
 
-        public IActionResult Update([FromBody]andon_logic ec)
+        public IActionResult Update([FromBody]proposal ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string myurl = url + "api/v1/configuration/lpm/proposal";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -39,9 +51,9 @@ namespace MPMProject.Controllers
             }
             return Json("fail");
         }
-        public IActionResult Add([FromBody]andon_logic ec)
+        public IActionResult Add([FromBody]proposal ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string myurl = url + "api/v1/configuration/lpm/proposal";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -55,9 +67,9 @@ namespace MPMProject.Controllers
             return Json("fail");
         }
 
-        public IActionResult Delete([FromBody]andon_logic ec)
+        public IActionResult Delete([FromBody]proposal ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic?id=" + ec.id.ToString();
+            string myurl = url + "api/v1/configuration/lpm/proposal?id=" + ec.id.ToString();
             string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -75,6 +87,13 @@ namespace MPMProject.Controllers
                     break;
             }
             return Json("Success");
+        }
+
+        public JsonResult Getperson()
+        {
+            string myurl = url + "api/v1/configuration/public/person";
+
+            return Json(CommonHelper<Person>.Get(myurl, HttpContext));
         }
     }
 }

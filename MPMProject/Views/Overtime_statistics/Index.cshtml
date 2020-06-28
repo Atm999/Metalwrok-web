@@ -1,7 +1,4 @@
-﻿@{
-    @model Model.leave_statistics
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <!-- / jquery -->
@@ -30,7 +27,7 @@
                 return localDate;
             }
             $('#table').bootstrapTable({
-                url: '/Leave_statistics/GetData',
+                url: '/Overtime_statistics/GetData',
                 method: 'get',
                 theadClasses: "thead-blue",
                 pagination: true,
@@ -53,7 +50,7 @@
                     title: '人员名称'
                 }, {
                     field: 'start_time',
-                    title: '请假开始时间',
+                    title: '加班开始时间',
                     formatter: function (value, row, index) {
                         if (value != null) {
                             var start_time = row.start_time.toString();
@@ -68,7 +65,7 @@
                     },
                 }, {
                     field: 'end_time',
-                    title: '请假结束时间',
+                    title: '加班结束时间',
                     formatter: function (value, row, index) {
                         if (value != null) {
                             var end_time = row.end_time.toString();
@@ -103,16 +100,16 @@
             return result;
         }
         function getLocalDateTimes(date) {
-            var d = new Date(date);
-            var year = d.getFullYear();
-            var month = d.getMonth() + 1;
-            var date = d.getDate();
-            var hours = d.getHours();
-            var min = d.getMinutes();
-            var seconds = d.getSeconds();
-            var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
-            return localDate;
-        }
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hours = d.getHours();
+                var min = d.getMinutes();
+                var seconds = d.getSeconds();
+                var localDate = year + "-" + month + "-" + date + " " + hours + ":" + min + ":" + seconds;
+                return localDate;
+            }
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 document.getElementById("id").value = row.id;
@@ -128,6 +125,14 @@
                 $('#myDelModal').modal('show');
             }
         };
+         function change() {
+            var start_time = $('#start_time').val();
+            var end_time = $('#end_time').val();
+            var a1 = Date.parse(new Date(start_time));
+            var a2 = Date.parse(new Date(end_time));
+            var day = Math.round((a2 - a1) / (1000 * 60 * 60));//核心：时间戳相减，然后除以天数
+            document.getElementById("duration").value = day;
+        }
         function clean() {
             $('#myEditModal').modal('show');
             document.getElementById("id").value = 0;
@@ -137,14 +142,6 @@
             $("#person_id").val('' + 0 + '').select2();
 
         }
-        function change() {
-            var start_time = $('#start_time').val();
-            var end_time = $('#end_time').val();
-            var a1 = Date.parse(new Date(start_time));
-            var a2 = Date.parse(new Date(end_time));
-            var day = Math.ceil((a2 - a1) / (1000 * 60 * 60));//核心：时间戳相减，然后除以天数
-            document.getElementById("duration").value = day;
-        }
         function Delete() {
             var id = $('#id').val();
             var person = {
@@ -152,7 +149,7 @@
             };
             $.ajax({
                 type: "POST",
-                url: "/Leave_statistics/Delete",
+                url: "/Overtime_statistics/Delete",
                 data: JSON.stringify(person),
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
@@ -176,25 +173,20 @@
             var end_time = $('#end_time').val();
             var duration = $('#duration').val();
             var person_id = $('#person_id').val();
-            //var ec = {
-            //    id: parseInt(id),
-            //    start_time:start_time,
-            //    end_time: end_time,
-            //    duration: parseInt(duration),
-            //    person_id: parseInt(person_id),
-            //};
+            var ec = {
+                id: parseInt(id),
+                start_time: start_time,
+                end_time: end_time,
+                duration: parseInt(duration),
+                person_id: parseInt(person_id),
+            };
             if (id != 0) {
                 $.ajax({
                     type: "POST",
-                    url: "/Leave_statistics/Update",
-                    data: {
-                        id: parseInt(id),
-                        start_time: start_time,
-                        end_time: end_time,
-                        duration: parseInt(duration),
-                        person_id: parseInt(person_id),
-                    },
-
+                    url: "/Overtime_statistics/Update",
+                    data: JSON.stringify(ec),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
                     success: function (msg) {
                         if (msg == "Success") {
                             toastr.success('数据更新成功!');
@@ -210,7 +202,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "/Leave_statistics/Add",
+                    url: "/Overtime_statistics/Add",
                     data: JSON.stringify(ec),
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
@@ -254,7 +246,7 @@
         function getOption() {
             $.ajax({
                 type: "get",
-                url: '/Leave_statistics/Getperson',
+                url: '/Overtime_statistics/Getperson',
                 async: true,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -289,7 +281,7 @@
                 <div class='pull-left' style="font-size:18px">
                     <a style="color:#008FD7;font-weight:600"><span>人员绩效管理</span></a>
                     <i class='icon-angle-right'></i>
-                    <span>请假统计</span>
+                    <span>加班统计</span>
                 </div>
 
 
@@ -359,7 +351,7 @@
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label">开始时间</label>
+                                <label class="control-label">加班开始时间</label>
                                 <div class='input-append date datetimepicker' id='datetimepicker'>
                                     <input class='span12' type="text" id="start_time" name="start_time" placeholder='2000-01-01 00:00' />
                                     <span class='add-on'>
@@ -367,9 +359,9 @@
                                     </span>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label">结束时间</label>
+                                    <label class="control-label">加班结束时间</label>
                                     <div class='input-append date datetimepicker' id='datetimepicker'>
-                                        <input class='span12' type="text" id="end_time" name="end_time" placeholder='2000-01-01 00:00' onchange="change()" />
+                                        <input class='span12' type="text" id="end_time" name="end_time" onchange="change()" placeholder='2000-01-01 00:00' />
                                         <span class='add-on'>
                                             <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-calendar"></i>
                                         </span>
@@ -431,8 +423,8 @@
             var _self = this;
             _self.$nextTick(function () {
                 //显示active
-                _self.$refs.Leave_statistics.parentNode.parentNode.className = 'nav nav-stacked in'
-                _self.$refs.Leave_statistics.parentNode.className = 'active'
+                _self.$refs.Overtime_statistics.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Overtime_statistics.parentNode.className = 'active'
             });
         },
         methods: {

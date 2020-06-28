@@ -1,7 +1,437 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    @model Model.attendance_statistics
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- / jquery -->
+    <script src='~/assets/javascripts/jquery/jquery.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
 
-<h1>Index</h1>
+        getOption();
+        $(document).ready(function () {
+            $("#person_id").select2();
+            $("#personSelects").select2();
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
 
+        });
+
+        $(function () {
+             function getLocalDateTime(date) {
+                var d = new Date(date);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var localDate = year + "-" + month + "-" + date ;
+                return localDate;
+            }
+            $('#table').bootstrapTable({
+                url: '/Attendance_statistics/GetData',
+                method: 'get',
+                theadClasses: "thead-blue",
+                pagination: true,
+                sidePagination: "client",//分页方式：client客户端(前台)分页，server服务端（后台）分页（*）
+                pageNumber: 1,//初始化加载第一页，默认第一页
+                pageSize: 10,//每页的记录行数（*）
+                pageList: [10, 25, 50, 100],//可供选择的每页的行数（*）
+                columns: [
+                    {
+                        field: 'no',
+                        title: '序号',
+                        formatter: function (value, row, index) {
+                            var options = $('#table').bootstrapTable('getOptions');
+                            return index + 1;
+                        }
+                    }, {
+                        field: 'date',
+                        title: '日期',
+                         formatter: function (value, row, index) {
+                        if (value != null) {
+                            var date = row.date.toString();
+                            if (date == "0001-01-01T08:00:00+08:00") {
+                                return "--"
+                            } else {
+                                return getLocalDateTime(row.date);
+                            }
+                        }
+
+
+                    },
+                    }, {
+                        field: 'shift',
+                        title: '班别',
+                        formatter: function (value, row, index) {
+                            var shift = row.shift;
+                            if (shift == 0) {
+                                return "--"
+                            } else if (shift == 1) {
+                                return "白班";
+                            } else {
+                                return "夜班";
+                            }
+
+                        },
+
+                    }, {
+                        field: 'user_name',
+                        title: '人员'
+                    }, {
+                        field: 'is_attend',
+                        title: '是否出席',
+                        formatter: function (value, row, index) {
+                            var is_attend = row.is_attend;
+                            if (is_attend == true) {
+                                return "出席"
+                            } else if (is_attend ==false) {
+                                return "不出席";
+                            } else {
+                                return "--";
+                            }
+
+                        },
+                    }
+                    //, {
+                    //    field: 'status',
+                    //    title: '状态',
+                    //    formatter: project_status,
+                    //}
+                  ]
+                //,
+                //onLoadSuccess: function () {
+                //    initSwitch();
+                //},
+            });
+        });
+        //function initSwitch() {
+        //    $('#project_status_switch').bootstrapSwitch({
+        //        onText: "启用",      // 设置ON文本
+        //        offText: "禁用",    // 设置OFF文本
+        //        onColor: "success",// 设置ON文本颜色(info/success/warning/danger/primary)
+        //        offColor: "warning",  // 设置OFF文本颜色 (info/success/warning/danger/primary)
+        //        size: "small",    // 设置控件大小,从小到大  (mini/small/normal/large)
+        //        // 当开关状态改变时触发
+        //        onSwitchChange: function (event, state) {
+        //            if (state == true) {
+        //                alert("ON");
+        //            } else {
+        //                alert("OFF");
+        //            }
+        //        }
+        //    })
+        //}
+
+        //function project_status(value, row, index) {
+        //    return "<input type='checkbox' checked id='project_status_switch' name='mycheck'>";
+        //}
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a class='edit ml10'; href='javascript:;'  title='编辑'  style='font-size:32px;'><span class='icon-edit-sign'></span></a>";
+            result += "<a class='remove ml10';  href='javascript:;' title='删除' data-toggle='modal'  style='font-size:32px;'><span class='icon-trash'></span></a>";
+            return result;
+        }
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $("#date").attr('value', row.date);
+                $("#person_id").attr('value', row.person_id);
+                $("#person_id").select2();
+                $("#shift").attr('value', row.shift);
+                $("#shift").select2();
+                $("#is_attend").attr('value', row.is_attend);
+                $("#is_attend").select2();
+                $('#myEditModal').modal('show');
+            },
+            'click .remove': function (e, value, row, index) {
+                document.getElementById("id").value = row.id;
+                $('#myDelModal').modal('show');
+            }
+        };
+        function clean() {
+            $('#myEditModal').modal('show');
+            document.getElementById("id").value = 0;
+            $("#date").val('');
+            $("#person_id").val('' + 0 + '').select2();
+            $("#shift").val('' + 0 + '').select2();
+            $("#is_attend").val('' + 0 + '').select2();
+
+        }
+        function Delete() {
+            var id = $('#id').val();
+            var person = {
+                id: parseInt(id)
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Attendance_statistics/Delete",
+                data: JSON.stringify(person),
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (msg) {
+                    if (msg == "Success") {
+                        toastr.success('数据删除成功!');
+                        $('#myDelModal').modal('hide');
+                        $('#table').bootstrapTable('refresh');
+                    } else {
+                        toastr.error('执行失败!');
+                    }
+                }, error: function (msg) {
+                    toastr.error('执行失败!');
+                }
+            });
+
+        }
+        function finish() {
+            var id = $('#id').val();
+            var date = $('#date').val();
+            var shift = $('#shift').val();
+            var is_attend = $('#is_attend').val();
+            var person_id = $('#person_id').val();
+            var ec = {
+                id: parseInt(id),
+                date: date,
+                shift: parseInt(shift),
+                is_attend: parseInt(is_attend),
+                person_id: parseInt(person_id),
+            };
+            if (id != 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Attendance_statistics/Update",
+                    data: JSON.stringify(ec),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据更新成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Attendance_statistics/Add",
+                    data: JSON.stringify(ec),
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据新增成功!');
+                            $('#myEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
+
+            }
+
+        }
+        function search() {
+            var shift = $("#shiftSelects").val();
+            var person_id = $("#personSelects").val();
+            $('#table').bootstrapTable('filterBy', { shift: shift, person_id: person_id },
+                {
+                    //自定义刷选函数
+                    'filterAlgorithm': function (row, filters) {
+                        var result1 = true;//定义一个返回结果
+                        var result2 = true;//定义一个返回结果
+                        if (filters.shift != 0) //如果user_name不为空，则进行判断，否则不管
+                        {
+                            result1 = filters.shift == row.shift;
+                        }
+                        if (filters.person_id != 0) //如果user_name不为空，则进行判断，否则不管
+                        {
+                            result2 = filters.person_id == row.person_id;
+                        }
+                        return result1 && result2;
+                    }
+                });
+        }
+        function getOption() {
+            $.ajax({
+                type: "get",
+                url: '/Attendance_statistics/Getperson',
+                async: true,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#person_id").append('<option  value=' + data[i].id + '>' + data[i].user_name + '</option>');
+                        $("#personSelects").append('<option  value=' + data[i].id + '>' + data[i].user_name + '</option>');
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class='row-fluid'>
+        <div class="span12">
+            <div class='page-header'>
+                <div class='pull-left' style="font-size:18px">
+                    <a style="color:#008FD7;font-weight:600"><span>人员绩效管理</span></a>
+                    <i class='icon-angle-right'></i>
+                    <span>出勤统计</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="name">班别</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="select2" id="shiftSelects">
+                            <option value="0">请选择</option>
+                            <option value="1">白班</option>
+                            <option value="2">夜班</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="name">人员</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="select2" id="personSelects">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="search()" data-toggle='modal' class="btn btn-primary"><span class="icon-search"> 查询</span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12 box bordered-box'>
+            <div class="box-content box-padding">
+
+                @*<div style="padding:14px 0px">
+                        <div class="form-group">
+                            <button class="btn btn-primary" onclick="clean()" data-toggle='modal'><span class="icon-plus"> 新增</span></button>
+                        </div>
+                    </div>*@
+
+                <table class="table" id="table"></table>
+            </div>
+            <!-- 编辑模态框（Modal） -->
+            <div class="modal fade" id="myEditModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                新增/编辑
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" class="span12" id="id" name="id" />
+                            <div class="control-group">
+                                <label class="control-label">日期</label>
+                                <div class='input-append date daypicker' id='datetimepicker'>
+                                    <input class='span12' type="text" id="date" style="margin-top:10px" placeholder='2000-01-01' />
+                                    <span class='add-on' style="margin-top:12px">
+                                        <i data-date-icon='icon-calendar' data-time-icon='icon-time' class="icon-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">人员名称</label>
+                                <select class="select2 span12" id="person_id" style="width:100%">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">班次</label>
+                                <select class="select2 span12" id="shiftSelect" name="shiftSelect" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="1">白班</option>
+                                    <option value="2">夜班</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">是否出席</label>
+                                <select class="select2 span12" id="is_attendSelect" name="is_attendSelect" style="width:100%">
+                                    <option value="0">请选择</option>
+                                    <option value="1">是</option>
+                                    <option value="2">否</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                取消
+                            </button>
+                            <button type="button" onclick="finish()" class="btn btn-primary">
+                                确认
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 删除模态框（Modal） -->
+            <div class="modal fade" id="myDelModal" style="display:none">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                删除
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>是否确认删除该条记录？</div>
+                            <input type="hidden" id="deleteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                否
+                            </button>
+                            <button type="button" onclick="Delete()" class="btn btn-primary">
+                                是
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var app = new Vue({
+        el: '#wrapper',
+        data: {
+        },
+        mounted: function () {
+            var _self = this;
+            _self.$nextTick(function () {
+                //显示active
+                _self.$refs.Attendance_statistics.parentNode.parentNode.className = 'nav nav-stacked in'
+                _self.$refs.Attendance_statistics.parentNode.className = 'active'
+            });
+        },
+        methods: {
+        }
+    });
+</script>

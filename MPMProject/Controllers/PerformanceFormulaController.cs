@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MPMProject.Controllers
 {
-    public class ProposalController : BaseController
+    public class PerformanceFormulaController : BaseController
     {
         public IActionResult Index()
         {
@@ -18,14 +18,14 @@ namespace MPMProject.Controllers
 
         public JsonResult GetData()
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic_detail";
-            var  ne = CommonHelper<andon_logicgroup>.Get(myurl, HttpContext);
-            return Json(ne);
+            string myurl = url + "api/v1/configuration/lpm/performance_formula";
+            var typeList = CommonHelper<leave_statistics>.Get(myurl, HttpContext);
+            return Json(typeList); 
         }
 
-        public IActionResult Update([FromBody]andon_logic ec)
+        public IActionResult Update(performance_formula ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string myurl = url + "api/v1/configuration/lpm/performance_formula";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PutUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -39,9 +39,9 @@ namespace MPMProject.Controllers
             }
             return Json("fail");
         }
-        public IActionResult Add([FromBody]andon_logic ec)
+        public IActionResult Add([FromBody]performance_formula ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic";
+            string myurl = url + "api/v1/configuration/lpm/performance_formula";
             var postData = JsonConvert.SerializeObject(ec);
             string result = PostUrl(myurl, postData);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
@@ -55,9 +55,9 @@ namespace MPMProject.Controllers
             return Json("fail");
         }
 
-        public IActionResult Delete([FromBody]andon_logic ec)
+        public IActionResult Delete([FromBody]performance_formula ec)
         {
-            string myurl = url + "api/v1/configuration/andon/andon_logic?id=" + ec.id.ToString();
+            string myurl = url + "api/v1/configuration/lpm/performance_formula?id=" + ec.id.ToString();
             string result = DeleteUrl(myurl);
             JObject jo = (JObject)JsonConvert.DeserializeObject(result);
             switch (Convert.ToInt32(jo["code"]))
@@ -76,5 +76,6 @@ namespace MPMProject.Controllers
             }
             return Json("Success");
         }
+
     }
 }
