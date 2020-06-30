@@ -7,9 +7,8 @@ namespace Model
     public class performance_formula
     {
         public int id { get; set; }
-        public double productivity { get; set; }
-        public double attendance { get; set; }
-        public double leave { get; set; }
-        public double proposal { get; set; }
+        public string name { get; set; }
+        public double ratio { get; set; }
+        public Boolean enable { get; set; }
     }
 }

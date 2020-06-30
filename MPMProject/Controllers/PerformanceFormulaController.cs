@@ -19,7 +19,7 @@ namespace MPMProject.Controllers
         public JsonResult GetData()
         {
             string myurl = url + "api/v1/configuration/lpm/performance_formula";
-            var typeList = CommonHelper<leave_statistics>.Get(myurl, HttpContext);
+            var typeList = CommonHelper<performance_formula>.Get(myurl, HttpContext);
             return Json(typeList); 
         }
 
@@ -39,7 +39,7 @@ namespace MPMProject.Controllers
             }
             return Json("fail");
         }
-        public IActionResult Add([FromBody]performance_formula ec)
+        public IActionResult Add(performance_formula ec)
         {
             string myurl = url + "api/v1/configuration/lpm/performance_formula";
             var postData = JsonConvert.SerializeObject(ec);
