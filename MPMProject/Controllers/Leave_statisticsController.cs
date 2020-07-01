@@ -25,12 +25,12 @@ namespace MPMProject.Controllers
             var subList = CommonHelper<Person>.Get(purl, HttpContext);
 
             var durl = url + "api/v1/configuration/public/dept";
-            var deptList = CommonHelper<dept>.Get(durl, HttpContext); 
+            var deptList = CommonHelper<dept>.Get(durl, HttpContext);
 
-            var jo2 = typeList.Join(subList, p => p.person_id, p => (p as Model.Person).id, (p, q) => new { p.id, p.start_time, p.end_time, p.duration,p.person_id, q.id_num, q.user_name, q.dept_id }).ToList();
+            var jo2 = typeList.Join(subList, p => p.person_id, p => (p as Model.Person).id, (p, q) => new { p.id, p.start_time, p.end_time, p.duration, p.person_id, q.id_num, q.user_name, q.dept_id }).ToList();
 
             var jo3 = jo2.Join(deptList, p => p.dept_id, p => (p as Model.dept).id, (p, q) => new { p.id, p.start_time, p.end_time, p.duration, p.person_id, p.id_num, p.user_name, p.dept_id, q.name_cn }).ToList();
-            return Json(jo3); 
+            return Json(jo3);
         }
 
         public IActionResult Update(leave_statistics ec)
@@ -49,7 +49,7 @@ namespace MPMProject.Controllers
             }
             return Json("fail");
         }
-        public IActionResult Add([FromBody]leave_statistics ec)
+        public IActionResult Add(leave_statistics ec)
         {
             string myurl = url + "api/v1/configuration/lpm/leave_statistics";
             var postData = JsonConvert.SerializeObject(ec);
@@ -92,6 +92,22 @@ namespace MPMProject.Controllers
             string myurl = url + "api/v1/configuration/public/person";
 
             return Json(CommonHelper<Person>.Get(myurl, HttpContext));
+        }
+
+        public JsonResult Getpersonsubstitute()
+        {
+            string purl = url + "api/v1/configuration/public/person";
+
+            var plist = (CommonHelper<Person>.Get(purl, HttpContext));//所有人员
+
+            string myurl = url + "api/v1/configuration/lpm/person_shift";
+            var typeList = CommonHelper<person_shift>.Get(myurl, HttpContext);//计划里面的人员
+
+          
+            var lists = plist.Where(p => !typeList.Any(p2 => p2.person_id == p.id)).ToList();
+            return Json(lists);
+
+
         }
     }
 }

@@ -100,7 +100,7 @@
             });
             //设备绑定中，已绑定的设备
             $('#personList').bootstrapTable({
-                url: '/Schedule/GetList',
+               // url: '/Schedule/GetList',
                 method: 'get',
                 theadClasses: "thead-blue",
                 striped: true,  //表格显示条纹，默认为false
@@ -161,11 +161,16 @@
         };
         window.POperateEvents = {
             "click #PtagBind": function (e, value, row, index) {
+               $('#personList').bootstrapTable('refresh', { url: "/Schedule/GetList?schedule_id=" + row.id + "" });
                 $('#PmyAddEditModal').modal('show');
             }
         };
         window.machineOperateEvents = {
             "click #tagBind": function (e, value, row, index) {
+                  document.getElementById("schedule_id").value = row.id;
+                $("#shiftSelects").val('' + 0 + '').select2();
+                $("#machine_id").val('' + 0 + '').select2();
+                 $("#personSelects").val('' + 0 + '').select2();
                 $('#myAddEditModal').modal('show');
             }
         };
@@ -243,7 +248,6 @@
                     url: "/Schedule/Add",
                     data: {
                         id: parseInt(id),
-                        id: parseInt(id),
                         name: name,
                         start_time: start_time,
                         end_time: end_time
@@ -265,6 +269,34 @@
 
             }
 
+        }
+
+        function machineConfirm() {
+             var schedule_id = $('#schedule_id').val();
+             var machine_id = $('#machine_id').val();
+            var person_id = $('#personSelects').val();
+            var shift = $('#shiftSelects').val();
+            $.ajax({
+                    type: "POST",
+                    url: "/Schedule/addpshift",
+                    data: {
+                        schedule_id:schedule_id,
+                        machine_id: machine_id,
+                        person_id: person_id,
+                        shift: shift
+                    },
+                    success: function (msg) {
+                        if (msg == "Success") {
+                            toastr.success('数据新增成功!');
+                            $('#myAddEditModal').modal('hide');
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            toastr.error('执行失败!');
+                        }
+                    }, error: function (msg) {
+                        toastr.error('执行失败!');
+                    }
+                });
         }
         function clean() {
             $('#myEditModal').modal('show');
@@ -341,6 +373,7 @@
                         </div>
                         <div class="modal-body">
                             <input type="hidden" class="span12" id="id" name="id" />
+                            <input type="hidden" class="span12" id="schedule_id" name="schedule_id" />
                             <div class="control-group">
                                 <label class="control-label">排班计划</label>
                                 <input class="span12" type="text" id="name" name="name" />
@@ -416,8 +449,6 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <input class="span12" type="hidden" id="id" />
-                            <input class="span12" type="hidden" id="machineIds" />
                             <div class="control-group">
                                 <div class="form-group">
                                     <label class="sr-only" for="name">人员</label>
