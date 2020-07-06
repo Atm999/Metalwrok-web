@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPMProject", "MPMProject\MP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{D3F559F1-C34D-43CD-9BAC-536D00E418F3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wise_Paas", "..\WebApplication1\WebApplication1\wise_paas_sso\Wise_Paas.csproj", "{657CFFAB-368C-426C-970C-FBCFB3597BC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3F559F1-C34D-43CD-9BAC-536D00E418F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{657CFFAB-368C-426C-970C-FBCFB3597BC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{657CFFAB-368C-426C-970C-FBCFB3597BC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{657CFFAB-368C-426C-970C-FBCFB3597BC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{657CFFAB-368C-426C-970C-FBCFB3597BC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
